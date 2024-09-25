@@ -1,7 +1,7 @@
 package com.store_management_system.sms.repository;
 
 import com.store_management_system.sms.exception.CustomDatabaseException;
-import com.store_management_system.sms.model.Supplier;
+import com.store_management_system.sms.model.*;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
@@ -66,8 +66,8 @@ public class SupplierRepository {
             
             return supplier;
         } catch (DataAccessException e) {
-            System.err.println("Error querying supplier by id: " + e.getMessage());
-            throw new CustomDatabaseException("Error querying supplier with id:"+id,e);
+            System.err.println("Error querying supplier  " + e.getMessage());
+            throw new CustomDatabaseException("Error querying supplier ",e);
             // return null;
         }
     }
@@ -76,7 +76,7 @@ public class SupplierRepository {
         try {
             if (supplier.getId() == null) {
                 String sql = "INSERT INTO suppliers (name,phoneNo,street,state,city,pincode) VALUES (?, ?, ?, ?,?,?)";
-                jdbcTemplate.update(sql, supplier.getName(), supplier.getPhoneNo(), supplier.getStreet(), supplier.getState(), supplier.getCity, supplier.getPincode());
+                jdbcTemplate.update(sql, supplier.getName(), supplier.getPhoneNo(), supplier.getStreet(), supplier.getState(), supplier.getCity(), supplier.getPincode());
                 Long id=findByPhoneNo(supplier.getPhoneNo()).getId();
                 for(SupplierMail supplierMail: supplier.getEmails()){
                     supplierMail.setSupplierId(id);
@@ -85,17 +85,18 @@ public class SupplierRepository {
                 }
                 
             } else {
-                String sql = "UPDATE suppliers SET name = ?,phoneNo=?,street=?,state=?,city=?,pincode=?, WHEN id = ?";
-                jdbcTemplate.update(sql, supplier.getName(), supplier.getPhoneNo(), supplier.getStreet(), supplier.getState(), supplier.getCity, supplier.getPincode(), supplier.getId());
-                supplierMailRepository.deleteBySupplierId(Supplier.getId());
+                String sql = "UPDATE suppliers SET name = ?,phoneNo=?,street=?,state=?,city=?,pincode=? WHERE id = ?";
+                jdbcTemplate.update(sql, supplier.getName(), supplier.getPhoneNo(), supplier.getStreet(), supplier.getState(), supplier.getCity(), supplier.getPincode(), supplier.getId());
+                supplierMailRepository.deleteBySupplierId(supplier.getId());
                 for(SupplierMail supplierMail: supplier.getEmails()){
+                    supplierMail.setSupplierId(supplier.getId());
                     supplierMailRepository.save(supplierMail);
                 }
                 
             }
         } catch (DataAccessException e) {
             System.err.println("Error saving supplier: " + e.getMessage());
-            throw new CustomDatabaseException("Error saving or updating supplier...",e);
+            throw new CustomDatabaseException("Error saving or updating supplier..."+e.getMessage(),e);
         }
     }
     public Long count(){

@@ -82,6 +82,7 @@ public class CustomerRepository {
                 jdbcTemplate.update(sql,customer.getFirstName(),customer.getMiddleName(),customer.getLastName(),customer.getPhoneNo(),customer.getHouseNo(),customer.getCity(),customer.getState(),customer.getPincode(),customer.getSex(),customer.getDob(),customer.getId());
                     customerMailRepository.deleteByCustomerId(customer.getId());
                 for(CustomerMail customerMail: customer.getEmails()){
+                    customerMail.setCustomerId(customer.getId());
                     customerMailRepository.save(customerMail);
                 }
                 

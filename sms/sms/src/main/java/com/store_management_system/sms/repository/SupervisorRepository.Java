@@ -11,7 +11,7 @@ import org.springframework.dao.DataAccessException;
 
 import java.util.List;
 
-import javax.management.RuntimeErrorException
+import javax.management.RuntimeErrorException;
 @Repository
 public class SupervisorRepository {
     @Autowired

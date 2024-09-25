@@ -17,10 +17,10 @@ public class SupplierMailRepository {
     @Autowired
     private JdbcTemplate jdbcTemplate;
 
-    public List<SupplierMailRepository> findAll(){
+    public List<SupplierMail> findAll(){
         try {
             String sql="select * from supplierMails";
-            List<SupplierMailRepository> supplierMails = jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(SupplierMailRepository.class));
+            List<SupplierMail> supplierMails = jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(SupplierMail.class));
             
             return supplierMails;
         } catch (DataAccessException  e) {
@@ -28,10 +28,10 @@ public class SupplierMailRepository {
             throw new CustomDatabaseException("Error querying  Supplier emails"+e.getMessage(),e);
         }   
     }
-    public List<SupplierMailRepository> findBySupplierId(Long supplierId){
+    public List<SupplierMail> findBySupplierId(Long supplierId){
         try {
             String sql="select * from supplierMails where supplierId=?  ";
-            List<SupplierMailRepository> supplierMails = jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(SupplierMailRepository.class),supplierId);
+            List<SupplierMail> supplierMails = jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(SupplierMail.class),supplierId);
             
             return supplierMails;
         } catch (DataAccessException  e) {
