@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Create Store</title>
+    <link rel="stylesheet" href="/css/styles.css" />
+</head>
+<body>
+    <h1>Create Store</h1>
+    
+    <form th:action="@{/create/store}" th:object="${store}" method="post">
+        <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
+        <label for="name">Store Name:</label>
+        <input type="text" id="name" name="name" th:field="*{name}" required/>
+
+        <label for="street">Street:</label>
+        <input type="text" id="street" name="street" th:field="*{street}" placeholder="Enter street" />
+
+        <label for="city">City:</label>
+        <input type="text" id="city" name="city" th:field="*{city}" placeholder="Enter city" />
+
+        <label for="state">State:</label>
+        <input type="text" id="state" name="state" th:field="*{state}" placeholder="Enter state" />
+
+        <label for="pincode">Pincode:</label>
+        <input type="number" step="1" id="pincode" name="pincode" th:field="*{pincode}" placeholder="Enter pincode" />
+
+        <label for="emailId">Email ID:</label>
+        <input type="email" id="emailId" name="emailId" th:field="*{emailId}" placeholder="Enter email" />
+
+        <label for="phoneNo">Phone Number:</label>
+        <input type="tel" pattern="\d{10}" maxlength="10" id="phoneNo" name="phoneNo" th:field="*{phoneNo}" placeholder="Enter phone number" required/>
+
+        <label for="managerId">Manager ID:</label>
+        <input type="number" step="1" id="managerId" name="managerId" th:field="*{managerId}" placeholder="Enter manager ID"/>
+
+        <button type="submit">Save</button>
+    </form>
+
+    <div th:if="${errorMessage}">
+        <p th:text="${errorMessage}" style="color: red;"></p>
+    </div>
+    <a class="button" th:href="@{/home}">home</a>
+</body>
+</html>

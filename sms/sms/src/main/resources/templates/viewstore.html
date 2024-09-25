@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Store Details</title>
+    <link rel="stylesheet" href="/css/styles.css" />
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const url = window.location.pathname;
+            const formElements = document.querySelectorAll('#storeForm input, #storeForm select, #submitButton');
+            const editButton = document.getElementById('editButton');
+            const submitButton = document.getElementById('submitButton');
+            const cancelButton = document.getElementById('cancelButton');
+            // const errorMessageDiv = document.getElementById('errorMessageDiv');
+            
+            // Function to disable all fields
+            function disableFields() {
+                formElements.forEach(element => element.disabled = true);
+            }
+    
+            // Function to enable all fields
+            function enableFields() {
+                formElements.forEach(element => element.disabled = false);
+            }
+    
+            // If the URL contains 'view'
+            if (url.includes('/view/')) {
+                disableFields();  // Disable fields in view mode
+                editButton.style.display = 'inline';  // Show Edit button
+            }
+    
+            // If the URL contains 'edit'
+            if (url.includes('/edit/')) {
+                enableFields();  // Enable fields in edit mode
+                submitButton.style.display = 'inline';  // Show Submit button
+                cancelButton.style.display = 'inline';  // Show Cancel button
+            }
+    
+            // When Edit button is clicked
+            editButton.addEventListener('click', function () {
+                const newUrl = url.replace('/view/', '/edit/');
+                window.history.pushState(null, null, newUrl);  // Change URL without reloading
+                enableFields();  // Enable all form fields
+                editButton.style.display = 'none';  // Hide Edit button
+                submitButton.style.display = 'inline';  // Show Submit button
+                cancelButton.style.display = 'inline';  // Show Cancel button
+                // errorMessageDiv.style.display = 'inline';
+            });
+    
+            // When Cancel button is clicked
+            cancelButton.addEventListener('click', function () {
+                const newUrl = url.replace('/edit/', '/view/');
+                window.history.pushState(null, null, newUrl);  // Change URL without reloading
+                disableFields();  // Disable all form fields
+                submitButton.style.display = 'none';  // Hide Submit button
+                cancelButton.style.display = 'none';  // Hide Cancel button
+                editButton.style.display = 'inline';  // Show Edit button
+                // errorMessageDiv.style.display = 'none';
+            });
+        });
+    </script>
+</head>
+<body>
+    <div class="container">
+        <form id="storeForm" method="post" th:object="${store}" th:action="@{/update/store/{id}(id=${store.id})}">
+            <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
+            <div id="errorMessageDiv" th:if="${errorMessage}" style="color: red; display: block;">
+                <p th:text="${errorMessage}"></p>
+            </div>
+            <label for="name">Store Name</label>
+            <input type="text" id="name" th:field="*{name}" th:value="${store != null ? store.name : ''}" disabled="true"  required/>
+            
+            <label for="street">Street</label>
+            <input type="text" id="street" th:field="*{street}" th:value="${store != null ? store.street : ''}" disabled="true"  />
+
+            <label for="city">City</label>
+            <input type="text" id="city" th:field="*{city}" th:value="${store != null ? store.city : ''}" disabled="true"  />
+
+            <label for="state">State</label>
+            <input type="text" id="state" th:field="*{state}" th:value="${store != null ? store.state : ''}" disabled="true"  />
+
+            <label for="pincode">Pincode</label>
+            <input type="number" step="1" id="pincode" th:field="*{pincode}" th:value="${store != null ? store.pincode : ''}" disabled="true"  />
+
+            <label for="emailId">Email ID</label>
+            <input type="email" id="emailId" th:field="*{emailId}" th:value="${store != null ? store.emailId : ''}" disabled="true"  />
+
+            <label for="phoneNo">Phone No</label>
+            <input type="tel" pattern="\d{10}" maxlength="10"  id="phoneNo" th:field="*{phoneNo}" th:value="${store != null ? store.phoneNo : ''}" disabled="true" required />
+
+            <label for="managerId">Manager ID</label>
+            <input type="number" step="1" id="managerId" th:field="*{managerId}" th:value="${store != null ? store.managerId : ''}" disabled="true"  />
+
+            <button type="button" id="editButton" style="display:none;">Edit</button>
+            <button type="submit" id="submitButton" style="display:none;">Submit</button>
+            <button type="button" id="cancelButton" style="display:none;">Cancel</button>
+            <a class="button" th:href="@{/admin/stores}">Stores</a>
+        </form>
+    </div>
+</body>
+</html>

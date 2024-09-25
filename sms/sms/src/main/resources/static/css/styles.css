@@ -1,0 +1,40 @@
+
+.button:disabled {
+    background-color: #cccccc; /* Grey color for disabled state */
+    cursor: not-allowed; /* Change cursor to indicate disabled state */
+    color: #666666; /* Darker text color for disabled state */
+}
+.button {
+    display: inline-block;
+    padding: 10px 15px;
+    margin: 5px;
+    font-size: 16px;
+    color: white;
+    background-color: #007bff; /* Bootstrap primary color */
+    border: none;
+    border-radius: 5px;
+    text-decoration: none; /* Remove underline */
+    text-align: center;
+    cursor: pointer; /* Change cursor on hover */
+    transition: background-color 0.3s ease; /* Smooth transition for hover effect */
+}
+
+.button:hover {
+    background-color: #0056b3; /* Darker blue on hover */
+}
+.nested {
+    display: none; /* Hide inner lists by default */
+}
+.active {
+    display: block; /* Show inner lists when active */
+}
+.caret {
+    cursor: pointer;
+    user-select: none; /* Prevent text selection */
+}
+.caret-down {
+    transform: rotate(90deg); /* Rotate caret when active */
+}
+.error {
+    color: red;
+}

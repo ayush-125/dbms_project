@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User details</title>
+    <link rel="stylesheet" href="/css/styles.css" />
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const url = window.location.pathname;
+            const formElements = document.querySelectorAll('#userForm input, #userForm select, #userForm textarea, #submitButton');
+            const editButton = document.getElementById('editButton');
+            const submitButton = document.getElementById('submitButton');
+            const cancelButton = document.getElementById('cancelButton');
+            // const errorMessageDiv = document.getElementById('errorMessageDiv');
+            
+            // Function to disable all fields
+            function disableFields() {
+                formElements.forEach(element => element.disabled = true);
+            }
+    
+            // Function to enable all fields
+            function enableFields() {
+                formElements.forEach(element => element.disabled = false);
+            }
+    
+            // If the URL contains 'view'
+            if (url.includes('/view/')) {
+                disableFields();  // Disable fields in view mode
+                editButton.style.display = 'inline';  // Show Edit button
+            }
+    
+            // If the URL contains 'edit'
+            if (url.includes('/edit/')) {
+                enableFields();  // Enable fields in edit mode
+                submitButton.style.display = 'inline';  // Show Submit button
+                cancelButton.style.display = 'inline';  // Show Cancel button
+            }
+    
+            // When Edit button is clicked
+            editButton.addEventListener('click', function () {
+                const newUrl = url.replace('/view/', '/edit/');
+                window.history.pushState(null, null, newUrl);  // Change URL without reloading
+                enableFields();  // Enable all form fields
+                editButton.style.display = 'none';  // Hide Edit button
+                submitButton.style.display = 'inline';  // Show Submit button
+                cancelButton.style.display = 'inline';  // Show Cancel button
+                // errorMessageDiv.style.display = 'inline';
+            });
+    
+            // When Cancel button is clicked
+            cancelButton.addEventListener('click', function () {
+                const newUrl = url.replace('/edit/', '/view/');
+                window.history.pushState(null, null, newUrl);  // Change URL without reloading
+                disableFields();  // Disable all form fields
+                submitButton.style.display = 'none';  // Hide Submit button
+                cancelButton.style.display = 'none';  // Hide Cancel button
+                editButton.style.display = 'inline';  // Show Edit button
+                // errorMessageDiv.style.display = 'none';
+            });
+        });
+    </script>
+</head>
+<body>
+    <div class="container">
+        <form id="userForm" method="post" th:object="${user}" th:action="@{/update/user/{id}(id=${user.id })}">
+            <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
+            <div id="errorMessageDiv" th:if="${errorMessage}" style="color: red; display: block;">
+                <p th:text="${errorMessage}"></p>
+            </div>
+            <input type="text" th:field="*{username}" th:value="${user != null ? user.username : ''}" disabled="true" required />
+            <input type="password" th:field="*{password}" th:value="${user != null ? user.password : ''}" disabled="true" required />
+            <select id="role" th:field="*{roleId}" disabled="true" required>
+                <option value="1" th:if="${user != null && currentUser!=null && currentUser.roles[0].name == 'ADMIN'}" th:selected="${user!=null && user.roleId==1}">Admin</option>
+                <option value="2" th:if="${user != null && currentUser!=null && currentUser.roles[0].name == 'ADMIN'}" th:selected="${user!=null && user.roleId==2}">Manager</option>
+                <option value="3" th:if="${user != null}" th:selected="${user!=null && user.roleId==3}">Employee</option>
+            </select>
+            <div id="empIdField" style="display: block;">
+                <label for="employeeId">Employee ID</label>
+                <input type="number" step="1" id="employeeId" th:field="*{employeeId}" readonly th:value="${user != null ? user.employeeId : ''}" disabled="true" />
+            </div>
+            <button type="button" id="editButton" style="display:none;">Edit</button>
+            <button type="submit" id="submitButton" style="display:none;">Submit</button>
+            <button type="button" id="cancelButton" style="display:none;">Cancel</button>
+            <a class="button" th:href="@{/home}">HOME</a>
+        </form>
+    </div>
+</body>
+</html>

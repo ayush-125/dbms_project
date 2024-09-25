@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Create Employee</title>
+    <link rel="stylesheet" href="/css/styles.css" />
+    <style>
+        
+
+
+
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Create a New Employee</h2>
+
+        <form th:object="${employee}" th:action="@{/create/employee}" method="post">
+
+            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+
+            <div>
+                <label for="firstName">First Name</label>
+                <input type="text" id="firstName" th:field="*{firstName}" required />
+            </div>
+
+            <div>
+                <label for="middleName">Middle Name</label>
+                <input type="text" id="middleName" th:field="*{middleName}" placeholder="Optional" />
+            </div>
+
+            <div>
+                <label for="lastName">Last Name</label>
+                <input type="text" id="lastName" th:field="*{lastName}" />
+            </div>
+
+            <div>
+                <label for="houseNo">House Number</label>
+                <input type="text" id="houseNo" th:field="*{houseNo}"  />
+            </div>
+
+            <div>
+                <label for="city">City</label>
+                <input type="text" id="city" th:field="*{city}"  />
+            </div>
+
+            <div>
+                <label for="state">State</label>
+                <input type="text" id="state" th:field="*{state}" />
+            </div>
+
+            <div>
+                <label for="pincode">Pincode</label>
+                <input type="number" step="1" id="pincode" th:field="*{pincode}"  />
+            </div>
+            
+
+            <div>
+                <label for="designation">Designation</label>
+                <select id="designation" th:field="*{designation}" required>
+                    <option value="Manager">Manager</option>
+                    <option value="Employee">Employee</option>
+                    <option value="Senior Employee">Senior Employee</option>
+                </select>
+            </div>
+
+            <div>
+                <label for="phoneNo">Phone Number</label>
+                <input type="tel" pattern="\d{10}" maxlength="10"  id="phoneNo" th:field="*{phoneNo}" required />
+            </div>
+
+            <div>
+                <label for="emailId">Email</label>
+                <input type="email" id="emailId" th:field="*{emailId}" />
+            </div>
+
+            <div>
+                <label for="dob">Date of Birth</label>
+                <input type="date" id="dob" th:field="*{dob}" required />
+            </div>
+
+            <div>
+                <label for="sex">Sex</label>
+                <select id="sex" th:field="*{sex}" required>
+                    <option value="M">Male</option>
+                    <option value="F">Female</option>
+                </select>
+            </div>
+            <div>
+                <label for="salary">Salary</label>
+                <input type="number" id="salary" th:field="*{salary}" required />
+            </div>
+            <div>
+                <label for="storeId">Store ID</label>
+                <input type="number" id="storeId" step="1" th:field="*{storeId}"  readonly required />
+            </div>
+
+            <div>
+                <button type="submit">Save</button>
+            </div>
+        </form>
+
+        <div th:if="${errorMessage}">
+            <p th:text="${errorMessage}" style="color: red;"></p>
+        </div>
+        <a class="button" th:href="@{/home}">home</a>
+
+    </div>
+</body>
+</html>

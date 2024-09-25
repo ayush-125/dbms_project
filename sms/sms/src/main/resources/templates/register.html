@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Register</title>
+    <link rel="stylesheet" href="/css/styles.css" />
+</head>
+<body>
+    <div class="container">
+        <h2>Register a New User</h2>
+        <form action="#" th:object="${user}" th:action="@{/register}" method="post">
+            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+            <div>
+                <label for="username">Username</label>
+                <input type="text" id="username" th:field="*{username}" required />
+            </div>
+            <div>
+                <label for="password">Password</label>
+                <input type="password" id="password" th:field="*{password}" required />
+            </div>
+            <div>
+                <label for="role">Role</label>
+                <select id="role" th:field="*{roleId}" required>
+                    <option value="1" th:if="${currentUser!=null && currentUser.roles[0].name == 'ADMIN'}">Admin</option>
+                    <option value="2" th:if="${currentUser!=null && check!=null && check==true && currentUser.roles[0].name == 'ADMIN'}">Manager</option>
+                    <option value="3" th:if="${check!=null && check==true}">Employee</option>
+                </select>
+            </div>
+            <div id="empIdField">
+                <label for="empId">Employee ID</label>
+                <input type="number" step="1" id="empId" th:field="*{employeeId}" readonly />
+            </div>
+            <div>
+                <button type="submit">Register</button>
+            </div>
+            <a class="button" href="javascript:history.back()">Go Back</a>
+        </form>
+    </div>
+</body>
+</html>
