@@ -75,8 +75,8 @@ public class SupplierRepository {
     public void save(Supplier supplier) {
         try {
             if (supplier.getId() == null) {
-                String sql = "INSERT INTO suppliers (name,phoneNo,account,street,state,city,pincode) VALUES (?,?, ?, ?, ?,?,?)";
-                jdbcTemplate.update(sql, supplier.getName(), supplier.getPhoneNo(),supplier.getAccount(), supplier.getStreet(), supplier.getState(), supplier.getCity, supplier.getPincode());
+                String sql = "INSERT INTO suppliers (name,phoneNo,street,state,city,pincode) VALUES (?, ?, ?, ?,?,?)";
+                jdbcTemplate.update(sql, supplier.getName(), supplier.getPhoneNo(), supplier.getStreet(), supplier.getState(), supplier.getCity, supplier.getPincode());
                 Long id=findByPhoneNo(supplier.getPhoneNo()).getId();
                 for(SupplierMail supplierMail: supplier.getEmails()){
                     supplierMail.setSupplierId(id);
@@ -85,8 +85,8 @@ public class SupplierRepository {
                 }
                 
             } else {
-                String sql = "UPDATE suppliers SET name = ?,phoneNo=?,account=?,street=?,state=?,city=?,pincode=?, WHEN id = ?";
-                jdbcTemplate.update(sql, supplier.getName(), supplier.getPhoneNo(),supplier.getAccount(), supplier.getStreet(), supplier.getState(), supplier.getCity, supplier.getPincode(), supplier.getId());
+                String sql = "UPDATE suppliers SET name = ?,phoneNo=?,street=?,state=?,city=?,pincode=?, WHEN id = ?";
+                jdbcTemplate.update(sql, supplier.getName(), supplier.getPhoneNo(), supplier.getStreet(), supplier.getState(), supplier.getCity, supplier.getPincode(), supplier.getId());
                 supplierMailRepository.deleteBySupplierId(Supplier.getId());
                 for(SupplierMail supplierMail: supplier.getEmails()){
                     supplierMailRepository.save(supplierMail);

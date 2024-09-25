@@ -16,8 +16,9 @@
                 <li th:if="${user.roles[0].name == 'ADMIN'}"><a href="/admin/users" >Admin Users</a></li>
                 <!-- <li th:if="${user.roles[0].name == 'MANAGER'}"><a href="/manager/users" >My Store Users</a></li> -->
                 <li th:if="${user.roles[0].name == 'MANAGER'}"><a href="/employees" >All employees</a></li>
-
-                <!-- <li><a href="/view/user/{}" >Current User details</a></li> -->
+                <li th:if="${user.roles[0].name == 'MANAGER' ||user.roles[0].name=='ADMIN'}"><a href="/suppliers" >All suppliers</a></li>
+                
+                <li><a href="/customers" >Customers</a></li>
                 <form th:action="@{/logout}" method="post">
                     <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
                     <button type="submit">Logout</button>

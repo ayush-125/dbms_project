@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>customer Details</title>
+    <link rel="stylesheet" href="/css/styles.css" />
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const url = window.location.pathname;
+            const formElements = document.querySelectorAll('#customerForm input, #customerForm select, #submitButton');
+            const editButton = document.getElementById('editButton');
+            const submitButton = document.getElementById('submitButton');
+            const cancelButton = document.getElementById('cancelButton');
+            // const errorMessageDiv = document.getElementById('errorMessageDiv');
+            
+            // Function to disable all fields
+            function disableFields() {
+                formElements.forEach(element => element.disabled = true);
+            }
+    
+            // Function to enable all fields
+            function enableFields() {
+                formElements.forEach(element => element.disabled = false);
+            }
+    
+            // If the URL contains 'view'
+            if (url.includes('/view/')) {
+                disableFields();  // Disable fields in view mode
+                editButton.style.display = 'inline';  // Show Edit button
+            }
+    
+            // If the URL contains 'edit'
+            if (url.includes('/edit/')) {
+                enableFields();  // Enable fields in edit mode
+                submitButton.style.display = 'inline';  // Show Submit button
+                cancelButton.style.display = 'inline';  // Show Cancel button
+            }
+    
+            // When Edit button is clicked
+            editButton.addEventListener('click', function () {
+                const newUrl = url.replace('/view/', '/edit/');
+                window.history.pushState(null, null, newUrl);  // Change URL without reloading
+                enableFields();  // Enable all form fields
+                editButton.style.display = 'none';  // Hide Edit button
+                submitButton.style.display = 'inline';  // Show Submit button
+                cancelButton.style.display = 'inline';  // Show Cancel button
+                // errorMessageDiv.style.display = 'inline';
+            });
+    
+            // When Cancel button is clicked
+            cancelButton.addEventListener('click', function () {
+                const newUrl = url.replace('/edit/', '/view/');
+                window.history.pushState(null, null, newUrl);  // Change URL without reloading
+                disableFields();  // Disable all form fields
+                submitButton.style.display = 'none';  // Hide Submit button
+                cancelButton.style.display = 'none';  // Hide Cancel button
+                editButton.style.display = 'inline';  // Show Edit button
+                // errorMessageDiv.style.display = 'none';
+            });
+        });
+    </script>
+</head>
+<body>
+    <div class="container">
+        <form id="customerForm" method="post" th:object="${customer}" th:action="@{/update/customer/{id}(id=${customer.id})}">
+            <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
+            <div id="errorMessageDiv" th:if="${errorMessage}" style="color: red; display:block ;">
+                <p th:text="${errorMessage}"></p>
+            </div>
+            <label for="firstName">First Name</label>
+            <input type="text" id="firstName" th:field="*{firstName}" th:value="${customer != null ? customer.firstName : ''}" disabled="true" required />
+            
+            <label for="middleName">Middle Name</label>
+            <input type="text" id="middleName" th:field="*{middleName}" th:value="${customer != null ? customer.middleName : ''}" disabled="true" />
+
+            <label for="lastName">Last Name</label>
+            <input type="text" id="lastName" th:field="*{lastName}" th:value="${customer != null ? customer.lastName : ''}" disabled="true"  />
+
+            <label for="houseNo">House No</label>
+            <input type="text" id="houseNo" th:field="*{houseNo}" th:value="${customer != null ? customer.houseNo : ''}" disabled="true"  />
+
+            <label for="city">City</label>
+            <input type="text" id="city" th:field="*{city}" th:value="${customer != null ? customer.city : ''}" disabled="true"  />
+
+            <label for="state">State</label>
+            <input type="text" id="state" th:field="*{state}" th:value="${customer != null ? customer.state : ''}" disabled="true"  />
+
+            <label for="pincode">Pincode</label>
+            <input type="number" step="1" id="pincode" th:field="*{pincode}" th:value="${customer != null ? customer.pincode : ''}" disabled="true"  />
+
+            <!-- <label for="designation">Designation</label>
+            <select id="designation" th:field="*{designation}" disabled="true" required>
+                <option value="Manager" th:selected="${customer != null && customer.designation == 'Manager'}">Manager</option>
+                <option value="Senior customer" th:selected="${customer != null && customer.designation == 'Senior customer'}">Senior customer</option>
+                <option value="customer" th:selected="${customer != null && customer.designation == 'customer'}">customer</option>
+            </select> -->
+
+            <label for="phoneNo">Phone No</label>
+            <input type="tel" pattern="\d{10}" maxlength="10"  id="phoneNo" th:field="*{phoneNo}" th:value="${customer != null ? customer.phoneNo : ''}" disabled="true" required/>
+
+            <div>
+                <label for="account">Account</label>
+                <input type="number"   id="account" th:field="*{account}" th:value="${customer != null ? customer.phoneNo : ''}" disabled="true" readonly required />
+            </div>
+            <!-- <label for="emailId">Email ID</label>
+            <input type="email" id="emailId" th:field="*{emailId}" th:value="${customer != null ? customer.emailId : ''}" disabled="true"  />
+
+            <label for="salary">Salary </label>
+            <input type="number"  id="salary" th:field="*{salary}" th:value="${customer != null ? customer.salary : ''}" disabled="true" required  />
+
+
+            <label for="storeId">Store ID</label>
+            <input type="number" step="1" id="storeId" th:field="*{storeId}" th:value="${customer != null ? customer.storeId : ''}" disabled="true" required readonly /> -->
+
+            <label for="dob">Date of Birth</label>
+            <input type="date" id="dob" th:field="*{dob}" th:value="${customer != null ? customer.dob : ''}" disabled="true" />
+            <input type="text" id="dobtext"  th:value="${customer != null ? customer.dob : ''}" disabled="true" readonly  />
+
+            <label for="age">Age </label>
+            <input type="number"  id="age" th:field="*{age}" th:value="${customer != null ? customer.age +'years' : ''}" disabled="true" readonly   />
+
+
+            <label for="sex">Sex</label>
+            <select id="sex" th:field="*{sex}" disabled="true" required>
+                <option value="M" th:selected="${customer != null && customer.sex == 'M'}">Male</option>
+                <option value="F" th:selected="${customer != null && customer.sex == 'F'}">Female</option>
+                <option value="Other" th:selected="${customer != null && customer.sex == 'Other'}">Other</option>
+            </select>
+             
+            <div id="emailFields"></div>
+                <!-- Loop through existing emails -->
+                <div th:each="mail, iterStat : ${customer.emails}">
+                    <!-- Bind userId field from the parent user -->
+                    <input type="hidden" th:field="*{emails[__${iterStat.index}__].customerId}" th:value="*{id}" />
+        
+                    <!-- email input field -->
+                    <input type="email" th:field="*{emails[__${iterStat.index}__].customerEmail}" placeholder="Email" disabled="true"/>
+                </div>
+                <!-- Predefined additional email fields -->
+            <!-- <div th:each="i : ${#numbers.sequence(0, 4)}">
+                <input type="hidden" th:field="*{emails[__${user.emails.size() + i}__].customerId}" th:value="*{id}" />
+                <input type="email" th:field="*{emails[__${user.emails.size() + i}__].customerEmail}" placeholder="Email" />
+            </div> -->
+            </div>
+
+            <!-- <div id="storeIdField" style="display: block;">
+                <label for="storeId">Store ID</label>
+                <input type="text" id="storeId" th:field="*{storeId}" th:value="${customer != null ? customer.storeId : ''}" disabled="true" required />
+            </div> -->
+
+            <button type="button" id="editButton" style="display:none;">Edit</button>
+            <button type="submit" id="submitButton" style="display:none;">Submit</button>
+            <button type="button" id="cancelButton" style="display:none;">Cancel</button>
+            <a class="button" th:href="@{/home}">home</a>
+        </form>
+    </div>
+</body>
+</html>

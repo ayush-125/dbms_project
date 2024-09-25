@@ -69,8 +69,8 @@ public class CustomerRepository {
     public void save(Customer customer) {
         try {
             if (customer.getId() == null) {
-                String sql = "insert into customers(firstName,middleName,lastName,phoneNo,account,houseNo,city,state,pincode,sex,dob) values(?,?,?,?,?,?,?,?,?,?,?)";
-                jdbcTemplate.update(sql,customer.getFirstName(),customer.getMiddleName(),customer.getLastName(),customer.getPhoneNo(),customer.getAccount(),customer.getHouseNo(),customer.getCity(),customer.getState(),customer.getPincode(),customer.getSex(),customer.getDob());
+                String sql = "insert into customers(firstName,middleName,lastName,phoneNo,houseNo,city,state,pincode,sex,dob) values(?,?,?,?,?,?,?,?,?,?)";
+                jdbcTemplate.update(sql,customer.getFirstName(),customer.getMiddleName(),customer.getLastName(),customer.getPhoneNo(),customer.getHouseNo(),customer.getCity(),customer.getState(),customer.getPincode(),customer.getSex(),customer.getDob());
                 Long id=findByPhoneNo(customer.getPhoneNo()).getId();
                 for(CustomerMail customerMail: customer.getEmails()){
                     customerMail.setCustomerId(id);
@@ -78,8 +78,8 @@ public class CustomerRepository {
                 }
                 
             } else {
-                String sql = "UPDATE customers set firstName=?,middleName=?,lastName=?,phoneNo=?,account=?,houseNo=?,city=?,state=?,pincode=?,sex=?,dob=? where id=? ";
-                jdbcTemplate.update(sql,customer.getFirstName(),customer.getMiddleName(),customer.getLastName(),customer.getPhoneNo(),customer.getAccount(),customer.getHouseNo(),customer.getCity(),customer.getState(),customer.getPincode(),customer.getSex(),customer.getDob(),customer.getId());
+                String sql = "UPDATE customers set firstName=?,middleName=?,lastName=?,phoneNo=?,houseNo=?,city=?,state=?,pincode=?,sex=?,dob=? where id=? ";
+                jdbcTemplate.update(sql,customer.getFirstName(),customer.getMiddleName(),customer.getLastName(),customer.getPhoneNo(),customer.getHouseNo(),customer.getCity(),customer.getState(),customer.getPincode(),customer.getSex(),customer.getDob(),customer.getId());
                     customerMailRepository.deleteByCustomerId(customer.getId());
                 for(CustomerMail customerMail: customer.getEmails()){
                     customerMailRepository.save(customerMail);

@@ -243,7 +243,7 @@ create table suppliers(
     city varchar(20),
     state varchar(20),
     pincode decimal(6,0));
-    
+    alter table suppliers modify column account double default 0;
 create table supplierMails(
 	supplierId bigint,
     supplierEmail varchar(50),
@@ -310,6 +310,7 @@ create table customers(
     pincode decimal(6,0),
     sex ENUM('M', 'F', 'Other') NOT NULL default 'M',
     dob DATE );
+    alter table customers modify column account double default 0;
 create table customeremails(
 	customerId bigint,
     customerEmail varchar(50),
