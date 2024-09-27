@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>product Details</title>
+    <link rel="stylesheet" href="/css/styles.css" />
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const url = window.location.pathname;
+            const formElements = document.querySelectorAll('#productForm input, #productForm select, #submitButton');
+            const editButton = document.getElementById('editButton');
+            const submitButton = document.getElementById('submitButton');
+            const cancelButton = document.getElementById('cancelButton');
+            // const errorMessageDiv = document.getElementById('errorMessageDiv');
+            
+            // Function to disable all fields
+            function disableFields() {
+                formElements.forEach(element => element.disabled = true);
+            }
+    
+            // Function to enable all fields
+            function enableFields() {
+                formElements.forEach(element => element.disabled = false);
+            }
+    
+            // If the URL contains 'view'
+            if (url.includes('/view/')) {
+                disableFields();  // Disable fields in view mode
+                editButton.style.display = 'inline';  // Show Edit button
+            }
+    
+            // If the URL contains 'edit'
+            if (url.includes('/edit/')) {
+                enableFields();  // Enable fields in edit mode
+                submitButton.style.display = 'inline';  // Show Submit button
+                cancelButton.style.display = 'inline';  // Show Cancel button
+            }
+    
+            // When Edit button is clicked
+            editButton.addEventListener('click', function () {
+                const newUrl = url.replace('/view/', '/edit/');
+                window.history.pushState(null, null, newUrl);  // Change URL without reloading
+                enableFields();  // Enable all form fields
+                editButton.style.display = 'none';  // Hide Edit button
+                submitButton.style.display = 'inline';  // Show Submit button
+                cancelButton.style.display = 'inline';  // Show Cancel button
+                // errorMessageDiv.style.display = 'inline';
+            });
+    
+            // When Cancel button is clicked
+            cancelButton.addEventListener('click', function () {
+                const newUrl = url.replace('/edit/', '/view/');
+                window.history.pushState(null, null, newUrl);  // Change URL without reloading
+                disableFields();  // Disable all form fields
+                submitButton.style.display = 'none';  // Hide Submit button
+                cancelButton.style.display = 'none';  // Hide Cancel button
+                editButton.style.display = 'inline';  // Show Edit button
+                // errorMessageDiv.style.display = 'none';
+            });
+        });
+    </script>
+</head>
+<body>
+    <div class="container">
+        <form id="productForm" method="post" th:object="${product}" th:action="@{/update/product/{id}(id=${product.id})}">
+            <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
+            <div id="errorMessageDiv" th:if="${errorMessage}" style="color: red; display:block ;">
+                <p th:text="${errorMessage}"></p>
+            </div>
+            <label for="Name">Name</label>
+            <input type="text" id="Name" th:field="*{name}" th:value="${product != null ? product.name : ''}" disabled="true" required />
+            
+            <!-- <label for="middleName">Middle Name</label>
+            <input type="text" id="middleName" th:field="*{middleName}" th:value="${product != null ? product.middleName : ''}" disabled="true" />
+
+            <label for="lastName">Last Name</label>
+            <input type="text" id="lastName" th:field="*{lastName}" th:value="${product != null ? product.lastName : ''}" disabled="true"  /> -->
+
+            <label for="Category">Category</label>
+            <input type="text" id="Category" th:field="*{Category}" th:value="${product != null ? product.category : ''}" disabled="true"  />
+
+            <label for="subcategory">Sub-Category</label>
+            <input type="text" id="subcategory" th:field="*{subcategory}" th:value="${product != null ? product.subcategory : ''}" disabled="true"  />
+
+            <label for="brand">Brand</label>
+            <input type="text" id="brand" th:field="*{brand}" th:value="${product != null ? product.brand : ''}" disabled="true"  />
+
+            <label for="size">Size</label>
+            <input type="text" id="size" th:field="*{size}" th:value="${product != null ? product.size : ''}" disabled="true"  />
+
+            <label for="color">Color</label>
+            <input type="text" id="color" th:field="*{color}" th:value="${product != null ? product.color : ''}" disabled="true"  />
+
+
+            <label for="price">Price</label>
+            <input type="number" id="price" th:field="*{price}" th:value="${product != null ? product.price : ''}" disabled="true"  />
+
+            <!-- <label for="designation">Designation</label>
+            <select id="designation" th:field="*{designation}" disabled="true" required>
+                <option value="Manager" th:selected="${product != null && product.designation == 'Manager'}">Manager</option>
+                <option value="Senior product" th:selected="${product != null && product.designation == 'Senior product'}">Senior product</option>
+                <option value="product" th:selected="${product != null && product.designation == 'product'}">product</option>
+            </select> -->
+
+            <!-- <label for="phoneNo">Phone No</label>
+            <input type="tel" pattern="\d{10}" maxlength="10"  id="phoneNo" th:field="*{phoneNo}" th:value="${product != null ? product.phoneNo : ''}" disabled="true" required/>
+
+            <div>
+                <label for="account">Account</label>
+                <input type="number"   id="account" th:field="*{account}" th:value="${product != null ? product.phoneNo : ''}" disabled="true"  required />
+            </div> -->
+            <!-- <label for="emailId">Email ID</label>
+            <input type="email" id="emailId" th:field="*{emailId}" th:value="${product != null ? product.emailId : ''}" disabled="true"  />
+
+            <label for="salary">Salary </label>
+            <input type="number"  id="salary" th:field="*{salary}" th:value="${product != null ? product.salary : ''}" disabled="true" required  />
+
+
+            <label for="storeId">Store ID</label>
+            <input type="number" step="1" id="storeId" th:field="*{storeId}" th:value="${product != null ? product.storeId : ''}" disabled="true" required readonly /> -->
+
+            <!-- <label for="dob">Date of Birth</label>
+            <input type="date" id="dob" th:field="*{dob}" th:value="${product != null ? product.dob : ''}" disabled="true" />
+            <input type="text" id="dobtext"  th:value="${product != null ? product.dob : ''}" disabled="true" readonly  />
+
+            <label for="age">Age </label>
+            <input type="number"  id="age" th:field="*{age}" th:value="${product != null ? product.age +'years' : ''}" disabled="true" readonly   />
+
+
+            <label for="sex">Sex</label>
+            <select id="sex" th:field="*{sex}" disabled="true" required>
+                <option value="M" th:selected="${product != null && product.sex == 'M'}">Male</option>
+                <option value="F" th:selected="${product != null && product.sex == 'F'}">Female</option>
+                <option value="Other" th:selected="${product != null && product.sex == 'Other'}">Other</option>
+            </select> -->
+             
+            
+
+            <!-- <div id="storeIdField" style="display: block;">
+                <label for="storeId">Store ID</label>
+                <input type="text" id="storeId" th:field="*{storeId}" th:value="${product != null ? product.storeId : ''}" disabled="true" required />
+            </div> -->
+
+            <button type="button" id="editButton" style="display:none;">Edit</button>
+            <button type="submit" id="submitButton" style="display:none;">Submit</button>
+            <button type="button" id="cancelButton" style="display:none;">Cancel</button>
+            <a class="button" th:href="@{/home}">home</a>
+        </form>
+    </div>
+</body>
+</html>

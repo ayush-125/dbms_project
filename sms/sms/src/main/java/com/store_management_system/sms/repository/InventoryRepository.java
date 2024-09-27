@@ -41,6 +41,16 @@ public class InventoryRepository {
             throw new CustomDatabaseException("Error querying inventory "+e.getMessage(),e);
         }
     }
+    public List<Inventory> findByProductAndStoreId(Long productId,Long storeId){
+        try {
+            String sql="select * from inventory where productId=? and storeId=?";
+            List<Inventory> inventories=jdbcTemplate.query(sql,new BeanPropertyRowMapper<>(Inventory.class),productId,storeId);
+            return inventories;
+        } catch (Exception e) {
+            System.err.println("Error querying inventory " + e.getMessage());
+            throw new CustomDatabaseException("Error querying inventory "+e.getMessage(),e);
+        }
+    }
 
     public void save(Inventory inventory) {
         try {

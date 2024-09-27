@@ -1,0 +1,130 @@
+package com.store_management_system.sms.controller;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import com.store_management_system.sms.model.*;
+import com.store_management_system.sms.repository.ProductRepository;
+import com.store_management_system.sms.service.UserService;
+
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestParam;
+import java.util.List;
+import org.springframework.web.bind.annotation.RequestBody;
+
+
+@Controller
+public class ProductController {
+    @Autowired
+    private ProductRepository productRepository;
+    @Autowired
+    private UserService userService;
+
+    @GetMapping("/products")
+    public String showProducts(Model model,@AuthenticationPrincipal UserDetails userDetails){
+        try {
+            List<Product>products=productRepository.findAll();
+            model.addAttribute("products",products);
+            return "products";
+        } catch (Exception e) {
+            model.addAttribute("errorMessage", e.getMessage());
+            return "products";
+        }
+    }
+
+
+    @GetMapping("/create/product")
+    public String getCreateProduct(Model model,@AuthenticationPrincipal UserDetails userDetails) {
+        try {
+            User currentUser= userService.getUserByUsername(userDetails.getUsername());
+            Product product=new Product();
+            if(currentUser.getRoleId().equals(3L)){
+                return "error/403";
+            }
+            model.addAttribute("product",product);
+            return "createProduct";
+        } catch (Exception e) {
+            model.addAttribute("errorMessage",e.getMessage());
+            return "createProduct";
+        }
+    }
+
+    @PostMapping("/create/product")
+    public String postCreateProduct(@ModelAttribute Product product,Model model,@AuthenticationPrincipal UserDetails userDetails) {
+        try {
+            User currentUser= userService.getUserByUsername(userDetails.getUsername());
+            
+            if(currentUser.getRoleId().equals(3L)){
+                return "error/403";
+            }
+            
+            productRepository.save(product);
+            return "redirect:/products";
+        } catch (Exception e) {
+            model.addAttribute("errorMessage",e.getMessage());
+            model.addAttribute("product", product);
+            return "createProduct";
+        }
+    }
+
+    @GetMapping("/view/product/{id}")
+    public String viewProduct(@PathVariable Long id,Model model,@AuthenticationPrincipal UserDetails userDetails) {
+        try {
+            User currentUser= userService.getUserByUsername(userDetails.getUsername());
+            
+            if(currentUser.getRoleId().equals(3L)){
+                return "error/403";
+            }
+            Product product=productRepository.findById(id);
+            model.addAttribute("product", product);
+            return "viewproduct";
+        } catch (Exception e) {
+            model.addAttribute("errorMessage",e.getMessage());
+            
+            return "viewproduct";
+        }
+    }
+
+    @PostMapping("/update/product/{id}")
+    public String updateProduct(@PathVariable Long id,Model model,@ModelAttribute Product product,@AuthenticationPrincipal UserDetails userDetails) {
+        try {
+            User currentUser= userService.getUserByUsername(userDetails.getUsername());
+            
+            if(currentUser.getRoleId().equals(3L)){
+                return "error/403";
+            }
+            productRepository.save(product);
+            
+            return "redirect:/view/product/{id}";
+        } catch (Exception e) {
+            model.addAttribute("errorMessage",e.getMessage());
+            model.addAttribute("product", product);
+            return "viewproduct";
+        }
+    }
+
+    @PostMapping("/delete/product/{id}")
+    public String deleteProduct(@PathVariable Long id,Model model,@AuthenticationPrincipal UserDetails userDetails) {
+        try {
+            User currentUser= userService.getUserByUsername(userDetails.getUsername());
+            
+            if(currentUser.getRoleId().equals(3L)){
+                return "error/403";
+            }
+            productRepository.deleteById(id);
+            return "redirect:/products";
+        } catch (Exception e) {
+            model.addAttribute("errorMessage",e.getMessage());
+            return "products";
+        }
+    }
+    
+
+    
+    
+}

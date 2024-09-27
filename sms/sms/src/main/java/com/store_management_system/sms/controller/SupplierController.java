@@ -122,7 +122,7 @@ public class SupplierController {
     public String postUpdateSupplier(Model model,@ModelAttribute Supplier supplier,@PathVariable Long id,@AuthenticationPrincipal UserDetails userDetails) {
         try {
             User currentUser = userService.getUserByUsername(userDetails.getUsername());
-            if(currentUser.getRoleId().equals(  1L)){
+            if(currentUser.getRoleId().equals(  1L) || currentUser.getRoleId().equals(2L)){
                 supplier.getEmails().removeIf(email -> email.getSupplierEmail() == null || email.getSupplierEmail().isEmpty());
         
                 supplierRepository.save(supplier);
@@ -143,7 +143,7 @@ public class SupplierController {
     public String deleteSupplier(@PathVariable Long id,@AuthenticationPrincipal UserDetails userDetails,Model model) {
         User currentUser = userService.getUserByUsername(userDetails.getUsername());
     try {
-        if ((currentUser.getRoles().stream().anyMatch(role -> role.getName().equals("ADMIN")))  ) {
+        if (!(currentUser.getRoles().stream().anyMatch(role -> role.getName().equals("EMPLOYEE")))  ) {
                 supplierRepository.deleteById(id);
                 return "redirect:/suppliers";
         } else {

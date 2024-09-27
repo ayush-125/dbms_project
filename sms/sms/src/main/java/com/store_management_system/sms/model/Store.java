@@ -13,6 +13,7 @@ public class Store {
     private Long phoneNo;
     private Long managerId ;
     private List<Employee> employees;
+    private List<Product> products;
 
     public List<Employee> getEmployees() {
         return employees;
@@ -26,6 +27,12 @@ public class Store {
          && (state==null || state.isEmpty()) && (pincode==null )
          && (emailId==null || emailId.isEmpty()) && (phoneNo==null )
          );
+    }
+    public List<Product> getProducts() {
+        return products;
+    }
+    public void setProducts(List<Product> products) {
+        this.products = products;
     }
     public Long getId(){
         return id;

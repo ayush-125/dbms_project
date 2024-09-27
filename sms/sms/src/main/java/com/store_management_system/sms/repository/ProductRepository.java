@@ -27,6 +27,17 @@ public class ProductRepository {
         }   
     }
 
+    public List<Product> findByStoreId(Long storeId){
+        try {
+            String sql="select * from products where id in (select distinct productId from inventory where storeId=? )";
+            List<Product> products=jdbcTemplate.query(sql,new BeanPropertyRowMapper<>(Product.class),storeId);
+            return products;
+        } catch (Exception e) {
+            System.err.println("Error querying products for the store: " + e.getMessage());
+            throw new CustomDatabaseException("Error querying products for the store"+e.getMessage(),e);
+        }
+    }
+
     public Product findById(Long id){
         try {
             String sql="select * from products where id=? ";
@@ -41,7 +52,7 @@ public class ProductRepository {
             throw new CustomDatabaseException("Error querying product "+e.getMessage(),e);
         }
     }
-
+    
     public void save(Product product) {
         try {
             if (product.getId() == null) {

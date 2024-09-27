@@ -1,5 +1,5 @@
 package com.store_management_system.sms.model;
-
+import java.util.List;
 public class Product {
     private Long id;
     private String name;
@@ -10,6 +10,7 @@ public class Product {
     private String color;
     private Double price;
 
+    private List<Inventory> inventories;
     public boolean isEmpty(){
        return( (id==null && (name==null || name.isEmpty())
                 &&(category==null || category.isEmpty())
@@ -22,7 +23,12 @@ public class Product {
                 
 
     }
-
+    public List<Inventory> getInventories() {
+        return inventories;
+    }
+    public void setInventories(List<Inventory> inventories) {
+        this.inventories = inventories;
+    }
     public Long getId() {
         return id;
     }

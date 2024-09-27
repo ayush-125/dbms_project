@@ -101,7 +101,7 @@
 
             <div>
                 <label for="account">Account</label>
-                <input type="number"   id="account" th:field="*{account}" th:value="${customer != null ? customer.phoneNo : ''}" disabled="true" readonly required />
+                <input type="number"   id="account" th:field="*{account}" th:value="${customer != null ? customer.phoneNo : ''}" disabled="true"  required />
             </div>
             <!-- <label for="emailId">Email ID</label>
             <input type="email" id="emailId" th:field="*{emailId}" th:value="${customer != null ? customer.emailId : ''}" disabled="true"  />

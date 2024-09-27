@@ -102,7 +102,7 @@ public class CustomerController {
     public String postUpdateCustomer(Model model,@ModelAttribute Customer customer,@PathVariable Long id,@AuthenticationPrincipal UserDetails userDetails) {
         try {
             User currentUser = userService.getUserByUsername(userDetails.getUsername());
-            if(currentUser.getRoleId().equals(  1L)){
+            if(currentUser.getRoleId().equals(  1L) || currentUser.getRoleId().equals(2L)){
                 customer.getEmails().removeIf(email -> email.getCustomerEmail() == null || email.getCustomerEmail().isEmpty());
         
                 customerRepository.save(customer);
@@ -123,11 +123,11 @@ public class CustomerController {
     public String deleteCustomer(@PathVariable Long id,@AuthenticationPrincipal UserDetails userDetails,Model model) {
         User currentUser = userService.getUserByUsername(userDetails.getUsername());
     try {
-        if ((currentUser.getRoles().stream().anyMatch(role -> role.getName().equals("ADMIN")))  ) {
-                customerRepository.deleteById(id);
-                return "redirect:/customers";
-        } else {
-            return "error/403"; 
+        if (!(currentUser.getRoles().stream().anyMatch(role -> role.getName().equals("EMPLOYEE")))  ) {
+            customerRepository.deleteById(id);
+            return "redirect:/customers";
+        } else { 
+            return "error/403";
         }
         
         }catch(Exception e){
