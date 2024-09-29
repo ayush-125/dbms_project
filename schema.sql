@@ -23,7 +23,9 @@ create table if not exists employees(
     storeId bigint,
     dob date,
     sex enum('M','F') not null default 'M',
-    salary double default 0
+    salary double default 0,
+    supervisor bigint ,
+    foreign key(supervisor) references employees(id) on update cascade on delete cascade
    --  ,foreign key(storeId) references stores(id) on update cascade on delete set null
 );
 -- desc employees;
@@ -173,12 +175,12 @@ delimiter ;
 show databases;
 
 
-create table supervisors (
-	worker bigint,
-    supervisor bigint,
-    foreign key (worker) references employees(id) on delete cascade on update cascade,
-    foreign key (supervisor) references employees(id) on delete cascade on update cascade,
-    primary key (worker,supervisor));
+-- create table supervisors (
+-- 	worker bigint,
+--     supervisor bigint,
+--     foreign key (worker) references employees(id) on delete cascade on update cascade,
+--     foreign key (supervisor) references employees(id) on delete cascade on update cascade,
+--     primary key (worker,supervisor));
 -- create table store(
 -- 	storeid bigint primary key auto_increment,
 --     name varchar(50),
@@ -273,6 +275,7 @@ create table buy (
 --     amount double not null default 0,
 --     foreign key (supplierId) references suppliers(id)
 -- );
+-- drop trigger insertionorders;
 delimiter //
 create trigger insertionbuy
 before insert on buy
@@ -285,15 +288,16 @@ begin
 --     else
 -- 		update accountsupplier set amount=amount+(new.price*new.quantity-new.payment) where id=new.supplierId;
 --     end if;
-    update suppliers set amount=amount+(new.price*new.quantity-new.payment) where id=new.supplierId;
+    update suppliers set account=account+(new.price*new.quantity-new.payment) where id=new.supplierId;
 end//
 create trigger updationbuy
 before update on buy
 for each row
 begin
-	update suppliers set amount=amount+(old.payment-new.payment) where id=old.supplierId;
+	update suppliers set account=account+(old.payment-new.payment) where id=old.supplierId;
 end //
 delimiter ;
+show triggers;
 -- desc buy;
 -- show tables;
 create table customers(
@@ -336,7 +340,7 @@ create table orders (
     pincode decimal(6,0),
     paymentMethod varchar(20),
     payment double not null default 0,
-    employeeId bigint not null,
+    employeeId bigint ,
     customerId bigint not null,
     -- storeId bigint not null,
     inventoryId bigint not null,
@@ -351,6 +355,10 @@ create table orders (
 --     amount double not null default 0,
 --     foreign key (customerId) references customers(id)
 -- );
+-- alter table orders modify column employeeId bigint ;
+desc orders;
+-- show triggers;
+-- drop trigger updationbuy;
 delimiter //
 create trigger insertionorders
 before insert on orders
@@ -363,15 +371,16 @@ begin
 --     else
 -- 		update accountcustomer set amount=amount+(new.price*new.quantity-new.payment) where id=new.customerId;
 --     end if;
-    update customers set amount=amount+(new.price*new.quantity-new.payment) where id=new.customerId;
+    update customers set account=account+(new.price*new.quantity-new.payment) where id=new.customerId;
 end//
 create trigger updationorders
 before update on orders
 for each row
 begin
-	update customers set amount=amount+(old.payment-new.payment) where id=old.customerId;
+	update customers set account=account+(old.payment-new.payment) where id=old.customerId;
 end //
 delimiter ;
+show triggers;
 create table returnproducts(
 	id bigint auto_increment primary key ,
     rdate date not null,
@@ -409,4 +418,6 @@ create table feedbacks(
 insert into roles values(1,"ADMIN");
 INSERT intO ROLES VALUES(2,"MANAGER");
 INSERT intO ROLES VALUES (3,"EMPLOYEE");
-select * from users;
+
+-- use project2;
+show triggers;

@@ -17,6 +17,8 @@ public class Customer {
     private LocalDate dob;
 
     private Double account;
+
+    private List<Order>orders;
     private List<CustomerMail>emails;
     public boolean isEmpty(){
         return ((id==null && pincode==null && dob==null)
@@ -37,6 +39,12 @@ public class Customer {
             return (long)0;
         }
         
+    }
+    public List<Order> getOrders() {
+        return orders;
+    }
+    public void setOrders(List<Order> orders) {
+        this.orders = orders;
     }
 
     public Double getAccount() {

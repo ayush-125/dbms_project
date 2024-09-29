@@ -19,7 +19,7 @@ public class Order{
     private Double payment;
     private Long employeeId;
     private Long customerId;
-
+    
     private Double totalAmount;
     public boolean isEmpty(){
         return ((id==null && price==null && quantity==null && inventoryId==null)

@@ -41,6 +41,17 @@ public class InventoryRepository {
             throw new CustomDatabaseException("Error querying inventory "+e.getMessage(),e);
         }
     }
+    public Double getPriceById(Long id){
+        try {
+            String sql="select price from products where id=any(select productId from inventory where id=?) ";
+            Double price = jdbcTemplate.queryForObject(sql, Double.class,id);
+            
+            return price;
+        } catch (DataAccessException  e) {
+            System.err.println("Error querying inventory product price " + e.getMessage());
+            throw new CustomDatabaseException("Error querying inventory product price"+e.getMessage(),e);
+        }
+    }
     public List<Inventory> findByProductAndStoreId(Long productId,Long storeId){
         try {
             String sql="select * from inventory where productId=? and storeId=?";

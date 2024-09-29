@@ -54,11 +54,11 @@ public class EmployeeRepository {
     public void save(Employee employee) {
         try {
             if (employee.getId() == null) {
-                String sql = "INSERT INTO employees (salary,dob,sex,firstName,middleName,lastName,houseNo,city,state,pincode,designation,phoneNo,emailId,storeId) VALUES (?,?, ?, ?, ?,?,?,?,?,?,?,?,?,?)";
-                jdbcTemplate.update(sql,employee.getSalary(),employee.getDob(),employee.getSex(), employee.getFirstName(), employee.getMiddleName(), employee.getLastName(), employee.getHouseNo(),employee.getCity(),employee.getState(),employee.getPincode(),employee.getDesignation(),employee.getPhoneNo(),employee.getEmailId(),employee.getStoreId());
+                String sql = "INSERT INTO employees (supervisor,salary,dob,sex,firstName,middleName,lastName,houseNo,city,state,pincode,designation,phoneNo,emailId,storeId) VALUES (?,?, ?,?, ?, ?,?,?,?,?,?,?,?,?,?)";
+                jdbcTemplate.update(sql,employee.getSupervisor(),employee.getSalary(),employee.getDob(),employee.getSex(), employee.getFirstName(), employee.getMiddleName(), employee.getLastName(), employee.getHouseNo(),employee.getCity(),employee.getState(),employee.getPincode(),employee.getDesignation(),employee.getPhoneNo(),employee.getEmailId(),employee.getStoreId());
             } else {
-                String sql = "UPDATE employees SET salary=?,dob=?,sex=?,firstName = ?, middleName = ?,lastName=?,houseNo=?,city=?,state=?,pincode=?,designation=?,phoneNo=?,emailId=?,storeId=? WHERE id = ?";
-                jdbcTemplate.update(sql,employee.getSalary(),employee.getDob(),employee.getSex(), employee.getFirstName(), employee.getMiddleName(), employee.getLastName(), employee.getHouseNo(),employee.getCity(),employee.getState(),employee.getPincode(),employee.getDesignation(),employee.getPhoneNo(),employee.getEmailId(),employee.getStoreId(),employee.getId());
+                String sql = "UPDATE employees SET supervisor=?, salary=?,dob=?,sex=?,firstName = ?, middleName = ?,lastName=?,houseNo=?,city=?,state=?,pincode=?,designation=?,phoneNo=?,emailId=?,storeId=? WHERE id = ?";
+                jdbcTemplate.update(sql,employee.getSupervisor(),employee.getSalary(),employee.getDob(),employee.getSex(), employee.getFirstName(), employee.getMiddleName(), employee.getLastName(), employee.getHouseNo(),employee.getCity(),employee.getState(),employee.getPincode(),employee.getDesignation(),employee.getPhoneNo(),employee.getEmailId(),employee.getStoreId(),employee.getId());
             }
         } catch (DataAccessException e) {
             System.err.println("Error saving employee: " + e.getMessage());

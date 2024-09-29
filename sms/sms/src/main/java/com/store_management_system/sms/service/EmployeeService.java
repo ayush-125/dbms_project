@@ -35,6 +35,9 @@ public class EmployeeService {
         try {
             // return employeeRepository.findById(id);
             Employee employee = employeeRepository.findById(employeeId);
+            if(employee==null){
+                throw new CustomServiceException("Employee does not exist", null);
+            }
             List<User> users = userRepository.findByEmployeeId(employeeId);
         employee.setUsers(users);
         return employee;

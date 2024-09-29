@@ -39,6 +39,21 @@ public class BuyRepository {
             throw new CustomDatabaseException("Error querying Buy "+e.getMessage(),e);
         }   
     }
+    public List<Buy> findBySupplierId(Long id){
+        try {
+            String sql="select * from buy where supplierId=? ";
+            List<Buy> buys = jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(Buy.class),id);
+            // if(buys.isEmpty()){
+            //     return null;
+            // }
+            // Buy buy=buys.get(0);
+            return buys;
+        } catch (DataAccessException  e) {
+            System.err.println("Error querying Buy  " + e.getMessage());
+            throw new CustomDatabaseException("Error querying Buy "+e.getMessage(),e);
+        }   
+    }
+    
     
     public void save(Buy buy) {
         try {

@@ -20,14 +20,15 @@ public class SupplierRepository {
     private JdbcTemplate jdbcTemplate;
     @Autowired
     private SupplierMailRepository supplierMailRepository;
-    
+    @Autowired
+    private BuyRepository buyRepository;
     public List<Supplier> findAll() {
         try {
             String sql = "SELECT * FROM suppliers";
             List<Supplier> suppliers = jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(Supplier.class));
             for (Supplier supplier :suppliers){
                 supplier.setEmails(supplierMailRepository.findBySupplierId(supplier.getId()));
-                
+                supplier.setBuys(buyRepository.findBySupplierId((long)supplier.getId()));
             }
             return suppliers;
         } catch (DataAccessException e) {
@@ -75,8 +76,8 @@ public class SupplierRepository {
     public void save(Supplier supplier) {
         try {
             if (supplier.getId() == null) {
-                String sql = "INSERT INTO suppliers (name,phoneNo,street,state,city,pincode) VALUES (?, ?, ?, ?,?,?)";
-                jdbcTemplate.update(sql, supplier.getName(), supplier.getPhoneNo(), supplier.getStreet(), supplier.getState(), supplier.getCity(), supplier.getPincode());
+                String sql = "INSERT INTO suppliers (name,phoneNo,street,state,city,pincode,account) VALUES (?, ?, ?, ?,?,?,?)";
+                jdbcTemplate.update(sql, supplier.getName(), supplier.getPhoneNo(), supplier.getStreet(), supplier.getState(), supplier.getCity(), supplier.getPincode(),supplier.getAccount());
                 Long id=findByPhoneNo(supplier.getPhoneNo()).getId();
                 for(SupplierMail supplierMail: supplier.getEmails()){
                     supplierMail.setSupplierId(id);
@@ -85,8 +86,8 @@ public class SupplierRepository {
                 }
                 
             } else {
-                String sql = "UPDATE suppliers SET name = ?,phoneNo=?,street=?,state=?,city=?,pincode=? WHERE id = ?";
-                jdbcTemplate.update(sql, supplier.getName(), supplier.getPhoneNo(), supplier.getStreet(), supplier.getState(), supplier.getCity(), supplier.getPincode(), supplier.getId());
+                String sql = "UPDATE suppliers SET name = ?,phoneNo=?,street=?,state=?,city=?,pincode=?,account=? WHERE id = ?";
+                jdbcTemplate.update(sql, supplier.getName(), supplier.getPhoneNo(), supplier.getStreet(), supplier.getState(), supplier.getCity(), supplier.getPincode(),supplier.getAccount(), supplier.getId());
                 supplierMailRepository.deleteBySupplierId(supplier.getId());
                 for(SupplierMail supplierMail: supplier.getEmails()){
                     supplierMail.setSupplierId(supplier.getId());

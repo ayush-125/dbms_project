@@ -20,6 +20,7 @@
                 <li th:if="${user.roles[0].name == 'MANAGER' ||user.roles[0].name=='ADMIN'}"><a href="/products" >All Products</a></li>
                 <li><a href="/inventory" >Inventory</a></li>
                 <li><a href="/customers" >Customers</a></li>
+                
                 <form th:action="@{/logout}" method="post">
                     <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
                     <button type="submit">Logout</button>

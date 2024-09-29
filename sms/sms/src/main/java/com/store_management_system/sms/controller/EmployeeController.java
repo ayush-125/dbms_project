@@ -65,6 +65,15 @@ public String updateEmployee(@AuthenticationPrincipal UserDetails userDetails, @
         User currentUser = userService.getUserByUsername(userDetails.getUsername());
         if ((currentUser.getRoles().stream().anyMatch(role -> role.getName().equals("ADMIN"))) || 
             ((currentUser.getRoles().stream().anyMatch(role -> role.getName().equals("MANAGER"))) && employeeService.checkBelongToSameStoreById(id, currentUser.getEmployeeId()))) {
+                Long supervisor=employee.getSupervisor();
+                if(supervisor!=null){
+                    Employee sup=employeeService.getEmployeeById(supervisor);
+                if(sup==null){
+                    model.addAttribute("errorMessage", "Incorrect supevisor..");
+                    model.addAttribute("employee", employee);
+                    return "createEmployee";
+                }
+                }
                 employeeService.saveEmployee(employee);
         } else {
             return "error/403"; 
@@ -114,6 +123,16 @@ public String createEmployee(@AuthenticationPrincipal UserDetails userDetails,@M
         User currentUser = userService.getUserByUsername(userDetails.getUsername());
         if ((currentUser.getRoles().stream().anyMatch(role -> role.getName().equals("ADMIN"))) || 
             ((currentUser.getRoles().stream().anyMatch(role -> role.getName().equals("MANAGER"))) && employeeService.checkBelongToSameStoreByStoreId(employee.getStoreId(), currentUser.getEmployeeId()))) {
+                Long supervisor=employee.getSupervisor();
+                if(supervisor!=null){
+                    Employee sup=employeeService.getEmployeeById(supervisor);
+                if(sup==null){
+                    model.addAttribute("errorMessage", "Incorrect supevisor..");
+                    model.addAttribute("employee", employee);
+                    return "createEmployee";
+                }
+                }
+                
                 employeeService.saveEmployee(employee);
         } else  {
             return "error/403"; 

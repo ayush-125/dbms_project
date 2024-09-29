@@ -115,7 +115,7 @@
 
             <label for="dob">Date of Birth</label>
             <input type="date" id="dob" th:field="*{dob}" th:value="${customer != null ? customer.dob : ''}" disabled="true" />
-            <input type="text" id="dobtext"  th:value="${customer != null ? customer.dob : ''}" disabled="true" readonly  />
+            <!-- <input type="text" id="dobtext"  th:value="${customer != null ? customer.dob : ''}" disabled="true" readonly  /> -->
 
             <label for="age">Age </label>
             <input type="number"  id="age" th:field="*{age}" th:value="${customer != null ? customer.age +'years' : ''}" disabled="true" readonly   />

@@ -11,12 +11,20 @@ public class Supplier {
     private Long pincode;
 
     private Double account;
+    private List<Buy>buys;
+
     private List<SupplierMail>emails;
     public List<SupplierMail> getEmails() {
         return emails;
     }
     public void setEmails(List<SupplierMail> emails) {
         this.emails = emails;
+    }
+    public List<Buy> getBuys() {
+        return buys;
+    }
+    public void setBuys(List<Buy> buys) {
+        this.buys = buys;
     }
     public boolean isEmpty(){
         return ((name==null || name.isEmpty())

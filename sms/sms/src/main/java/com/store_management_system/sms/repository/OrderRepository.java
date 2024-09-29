@@ -41,6 +41,21 @@ public class OrderRepository {
             throw new CustomDatabaseException("Error querying order "+e.getMessage(),e);
         }
     }
+    public List<Order> findByCustomerId(Long id){
+        try {
+            String sql="select * from orders where customerId=? ";
+            List<Order> orders = jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(Order.class),id);
+            // if(orders.isEmpty()){
+            //     return null;
+            // }
+            // Order order=orders.get(0);
+            return orders;
+        } catch (DataAccessException  e) {
+            System.err.println("Error querying order " + e.getMessage());
+            throw new CustomDatabaseException("Error querying order "+e.getMessage(),e);
+        }
+    }
+    
 
     public void save(Order order) {
         try {

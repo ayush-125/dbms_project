@@ -117,6 +117,9 @@
 
                             (Inventory ID: <span th:text="${inventory.id}"></span>)
                             Quantity: <span th:text="${inventory.quantity}"></span>
+                            <a th:href="@{/order/{inventoryId}(inventoryId=${inventory.id})}">Place Order</a>
+                            <a th:href="@{/buy/{inventoryId}(inventoryId=${inventory.id})}" th:if="${user.roles[0].name == 'MANAGER' || user.roles[0].name == 'ADMIN'}">Buy</a>
+                            
                             <button type="button" th:if="${user.roles[0].name == 'MANAGER' || user.roles[0].name == 'ADMIN'}"
                                     class="editButton" 
                                     onclick="editInventory(this)">Edit</button>

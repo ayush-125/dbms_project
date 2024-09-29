@@ -24,8 +24,14 @@ public class Employee {
     private List<User>users;
 
 
+    private Long supervisor;
+    public Long getSupervisor(){
+        return supervisor;
 
-    
+    }
+    public void setSupervisor(Long supervisor){
+        this.supervisor=supervisor;
+    }
     public Double getSalary() {
         return salary;
     }
