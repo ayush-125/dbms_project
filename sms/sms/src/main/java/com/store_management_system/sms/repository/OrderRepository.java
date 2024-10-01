@@ -4,22 +4,37 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
+import org.springframework.data.repository.query.ReturnedType;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
 import com.store_management_system.sms.exception.CustomDatabaseException;
-import com.store_management_system.sms.model.Order;
+import com.store_management_system.sms.model.*;
 @Repository
 public class OrderRepository {
     @Autowired
     private JdbcTemplate jdbcTemplate;
+    @Autowired
+    private ReturnRepository returnRepository;
+    @Autowired
+    private FeedbackRepository feedbackRepository;
 
     public List<Order> findAll(){
         try {
             String sql="select * from orders";
             List<Order> orders = jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(Order.class));
-            
+            for(Order order:orders){
+                Return return1=returnRepository.findByOrderId(order.getId());
+                Feedback feedback=feedbackRepository.findByOrderId(order.getId());
+                if(return1!=null){
+                    order.setReturnId(return1.getId());
+                }
+                if(feedback!=null){
+                    order.setFeedbackId(feedback.getId());
+                
+                }
+            }
             return orders;
         } catch (DataAccessException  e) {
             System.err.println("Error querying orders: " + e.getMessage());
@@ -35,6 +50,15 @@ public class OrderRepository {
                 return null;
             }
             Order order=orders.get(0);
+            Return return1=returnRepository.findByOrderId(order.getId());
+                Feedback feedback=feedbackRepository.findByOrderId(order.getId());
+                if(return1!=null){
+                    order.setReturnId(return1.getId());
+                }
+                if(feedback!=null){
+                    order.setFeedbackId(feedback.getId());
+                
+                }
             return order;
         } catch (DataAccessException  e) {
             System.err.println("Error querying order " + e.getMessage());
@@ -45,10 +69,23 @@ public class OrderRepository {
         try {
             String sql="select * from orders where customerId=? ";
             List<Order> orders = jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(Order.class),id);
-            // if(orders.isEmpty()){
-            //     return null;
+            // for(Order order:orders){
+            //     order.setFeedbackId(feedbackRepository.findByOrderId(order.getId()).getId());
+            //     order.setReturnId(returnRepository.findByOrderId(order.getId()).getId());
             // }
-            // Order order=orders.get(0);
+            for(Order order:orders){
+                Return return1=returnRepository.findByOrderId(order.getId());
+                Feedback feedback=feedbackRepository.findByOrderId(order.getId());
+                if(return1!=null){
+                    order.setReturnId(return1.getId());
+                }
+                if(feedback!=null){
+                    order.setFeedbackId(feedback.getId());
+                
+                }
+                
+                
+            }
             return orders;
         } catch (DataAccessException  e) {
             System.err.println("Error querying order " + e.getMessage());

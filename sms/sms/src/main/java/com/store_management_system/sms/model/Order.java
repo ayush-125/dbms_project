@@ -20,6 +20,8 @@ public class Order{
     private Long employeeId;
     private Long customerId;
     
+    private Long returnId;
+    private Long feedbackId;
     private Double totalAmount;
     public boolean isEmpty(){
         return ((id==null && price==null && quantity==null && inventoryId==null)
@@ -30,6 +32,22 @@ public class Order{
             &&(pincode==null && payment==null && employeeId==null && customerId==null) 
             &&(paymentMethod==null || paymentMethod.isEmpty())
         );
+    }
+    
+    public Long getReturnId() {
+        return returnId;
+    }
+
+    public void setReturnId(Long returnId) {
+        this.returnId = returnId;
+    }
+
+    public Long getFeedbackId() {
+        return feedbackId;
+    }
+
+    public void setFeedbackId(Long feedbackId) {
+        this.feedbackId = feedbackId;
     }
 
     public Long getId() {

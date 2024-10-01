@@ -55,7 +55,7 @@ public class SupplierController {
             }
 
             Supplier supplier=new Supplier();
-            
+            supplier.setAccount((double)0);
             if(supplier.getEmails()==null){
                 supplier.setEmails(new ArrayList<>());
             }

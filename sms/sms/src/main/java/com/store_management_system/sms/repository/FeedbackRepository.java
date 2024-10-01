@@ -45,6 +45,22 @@ public class FeedbackRepository {
         }
     }
 
+    public Feedback findByOrderId(Long id) {
+        try {
+            String sql = "SELECT * FROM feedbacks WHERE orderId = ?";
+            List<Feedback> feedbacks = jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(Feedback.class), id);
+            if (feedbacks.isEmpty()) {
+                return null;
+            }
+            Feedback feedback = feedbacks.get(0);
+            
+            return feedback;
+        } catch (DataAccessException e) {
+            System.err.println("Error querying feedback : " + e.getMessage());
+            throw new CustomDatabaseException("Error querying feedback: ",e);
+        }
+    }
+
     public void save(Feedback feedback) {
         try {
             if (feedback.getId() == null) {

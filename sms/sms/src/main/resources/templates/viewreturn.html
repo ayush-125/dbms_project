@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Return Details</title>
+    <link rel="stylesheet" href="/css/styles.css" />
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const url = window.location.pathname;
+            const formElements = document.querySelectorAll('#returnForm input, #productForm select, #submitButton');
+            const editButton = document.getElementById('editButton');
+            const submitButton = document.getElementById('submitButton');
+            const cancelButton = document.getElementById('cancelButton');
+            // const errorMessageDiv = document.getElementById('errorMessageDiv');
+            
+            // Function to disable all fields
+            function disableFields() {
+                formElements.forEach(element => element.disabled = true);
+            }
+    
+            // Function to enable all fields
+            function enableFields() {
+                formElements.forEach(element => element.disabled = false);
+            }
+    
+            // If the URL contains 'view'
+            if (url.includes('/view/')) {
+                disableFields();  // Disable fields in view mode
+                editButton.style.display = 'inline';  // Show Edit button
+            }
+    
+            // If the URL contains 'edit'
+            if (url.includes('/edit/')) {
+                enableFields();  // Enable fields in edit mode
+                submitButton.style.display = 'inline';  // Show Submit button
+                cancelButton.style.display = 'inline';  // Show Cancel button
+            }
+    
+            // When Edit button is clicked
+            editButton.addEventListener('click', function () {
+                const newUrl = url.replace('/view/', '/edit/');
+                window.history.pushState(null, null, newUrl);  // Change URL without reloading
+                enableFields();  // Enable all form fields
+                editButton.style.display = 'none';  // Hide Edit button
+                submitButton.style.display = 'inline';  // Show Submit button
+                cancelButton.style.display = 'inline';  // Show Cancel button
+                // errorMessageDiv.style.display = 'inline';
+            });
+    
+            // When Cancel button is clicked
+            cancelButton.addEventListener('click', function () {
+                const newUrl = url.replace('/edit/', '/view/');
+                window.history.pushState(null, null, newUrl);  // Change URL without reloading
+                disableFields();  // Disable all form fields
+                submitButton.style.display = 'none';  // Hide Submit button
+                cancelButton.style.display = 'none';  // Hide Cancel button
+                editButton.style.display = 'inline';  // Show Edit button
+                // errorMessageDiv.style.display = 'none';
+            });
+        });
+    </script>
+</head>
+<body>
+    <div class="container">
+        <form id="returnForm" method="post" th:object="${return1}" th:action="@{/update/return/{id}(id=${return1.id})}">
+            <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
+            <div id="errorMessageDiv" th:if="${errorMessage}" style="color: red; display:block ;">
+                <p th:text="${errorMessage}"></p>
+            </div>
+            <label for="orderId">Order Id</label>
+            <input type="number" id="orderId" th:field="*{orderId}" th:value="${return1 != null ? return1.orderId : ''}" disabled="true" readonly required />
+            
+            <label for="reason">Reason</label>
+            <input type="text" id="reason" th:field="*{reason}" th:value="${return1 != null ? return1.reason : ''}" disabled="true"  />
+
+            
+            <label for="price">Price</label>
+            <input type="number" id="price" th:field="*{price}" th:value="${return1 != null ? return1.price : ''}" disabled="true"  />
+            <label for="quantity"> Quantity</label>
+            <input type="number" step="1" id="quantity" th:field="*{quantity}" th:value="${return1 != null ? return1.quantity: ''}" disabled="true"  />
+
+             
+           <label for="rdate">Return date</label>
+            <input type="date" id="rdate" th:field="*{rdate}" th:value="${return1 != null ? return1.rdate : ''}" disabled="true" readonly/>
+            
+            
+            
+
+            <button type="button" id="editButton" style="display:none;">Edit</button>
+            <button type="submit" id="submitButton" style="display:none;">Submit</button>
+            <button type="button" id="cancelButton" style="display:none;">Cancel</button>
+            <a class="button" th:href="@{/home}">home</a>
+        </form>
+    </div>
+</body>
+</html>

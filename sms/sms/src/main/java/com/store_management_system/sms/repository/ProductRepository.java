@@ -17,7 +17,7 @@ public class ProductRepository {
 
     public List<Product> findAll(){
         try {
-            String sql="select * from products";
+            String sql="select * from productD";
             List<Product> products = jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(Product.class));
             
             return products;
@@ -29,7 +29,7 @@ public class ProductRepository {
 
     public List<Product> findByStoreId(Long storeId){
         try {
-            String sql="select * from products where id in (select distinct productId from inventory where storeId=? )";
+            String sql="select * from productD where id in (select distinct productId from inventory where storeId=? )";
             List<Product> products=jdbcTemplate.query(sql,new BeanPropertyRowMapper<>(Product.class),storeId);
             return products;
         } catch (Exception e) {
@@ -40,7 +40,7 @@ public class ProductRepository {
 
     public Product findById(Long id){
         try {
-            String sql="select * from products where id=? ";
+            String sql="select * from productD where id=? ";
             List<Product> products = jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(Product.class),id);
             if(products.isEmpty()){
                 return null;

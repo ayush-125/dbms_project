@@ -41,6 +41,20 @@ public class ReturnRepository {
             throw new CustomDatabaseException("Error querying return "+e.getMessage(),e);
         }
     }
+    public Return findByOrderId(Long id){
+        try {
+            String sql="select * from returnproducts where orderId=? ";
+            List<Return> returns = jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(Return.class),id);
+            if(returns.isEmpty()){
+                return null;
+            }
+            Return return1=returns.get(0);
+            return return1;
+        } catch (DataAccessException  e) {
+            System.err.println("Error querying return " + e.getMessage());
+            throw new CustomDatabaseException("Error querying return "+e.getMessage(),e);
+        }
+    }
 
     public void save(Return return1) {
         try {

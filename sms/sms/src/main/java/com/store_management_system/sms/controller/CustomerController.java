@@ -34,9 +34,13 @@ public class CustomerController {
         try {
             List<Customer> customers=customerRepository.findAll();
             model.addAttribute("customers",customers);
+            model.addAttribute("count", 5);
+            
             return "customers";
         } catch (Exception e) {
-            model.addAttribute("errorMessage", e.getMessage());
+            model.addAttribute("errorMessage", "Error fetching all customers..."+e.getMessage());
+            model.addAttribute("count", 5);
+            
             return "customers";
         }
     }
@@ -46,7 +50,7 @@ public class CustomerController {
     public String getCreateCustomer(Model model) {
         try {
             Customer customer=new Customer();
-            
+            customer.setAccount((double)0);
             if(customer.getEmails()==null){
                 customer.setEmails(new ArrayList<>());
             }
@@ -64,8 +68,9 @@ public class CustomerController {
     @PostMapping("/create/customer")
     public String postCreateCustomer(@ModelAttribute Customer customer,Model model) {
         try {
-            customer.getEmails().removeIf(email -> email.getCustomerEmail() == null || email.getCustomerEmail().isEmpty());
-        
+            if(customer.getEmails()!=null){
+                customer.getEmails().removeIf(email -> email.getCustomerEmail() == null || email.getCustomerEmail().isEmpty());
+            }
             customerRepository.save(customer);
             return "redirect:/customers";
         } catch (Exception e) {
@@ -103,8 +108,10 @@ public class CustomerController {
         try {
             User currentUser = userService.getUserByUsername(userDetails.getUsername());
             if(currentUser.getRoleId().equals(  1L) || currentUser.getRoleId().equals(2L)){
-                customer.getEmails().removeIf(email -> email.getCustomerEmail() == null || email.getCustomerEmail().isEmpty());
-        
+                if(customer.getEmails()!=null){
+                    customer.getEmails().removeIf(email -> email.getCustomerEmail() == null || email.getCustomerEmail().isEmpty());
+                }
+                
                 customerRepository.save(customer);
             }else{
                 return "error/403";

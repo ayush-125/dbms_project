@@ -43,7 +43,7 @@ public class InventoryRepository {
     }
     public Double getPriceById(Long id){
         try {
-            String sql="select price from products where id=any(select productId from inventory where id=?) ";
+            String sql="select price from productD where id=any(select productId from inventory where id=?) ";
             Double price = jdbcTemplate.queryForObject(sql, Double.class,id);
             
             return price;

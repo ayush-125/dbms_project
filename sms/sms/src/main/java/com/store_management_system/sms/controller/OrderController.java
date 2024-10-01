@@ -1,6 +1,7 @@
 package com.store_management_system.sms.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cglib.core.Local;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
@@ -8,7 +9,7 @@ import com.store_management_system.sms.model.*;
 import com.store_management_system.sms.repository.CustomerRepository;
 import com.store_management_system.sms.repository.InventoryRepository;
 import com.store_management_system.sms.repository.OrderRepository;
-
+import java.time.LocalDate;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -39,7 +40,7 @@ public class OrderController {
         Order order=new Order();
         order.setEmployeeId(currentUser.getEmployeeId());
         order.setInventoryId((long)inventoryId);
-        
+        order.setOdate(LocalDate.now());
         order.setPrice(inventoryRepository.getPriceById(inventoryId));
         model.addAttribute("order", order);
             return "order";

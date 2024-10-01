@@ -16,11 +16,13 @@
         <h2>Customers</h2>
         <input type="number" step="1" maxlength="10" id="searchBar" onkeyup="filterCustomers()" placeholder="Search for phone numbers..">
         <ul id="customerList">
-            <li th:each="customer : ${customers}">
+            <!-- <li><span th:text="${count}">hello</span></li> -->
+            
+            <li th:each="customer : ${customers}" >
                 (ID:<span th:text="${customer.id}"></span>) - 
                 <span class="caret" th:text="${customer.firstName}"></span> 
                 <span th:text="${customer.middleName}"></span> 
-                <span th:text="${customer.LastName}"></span> Mobile:
+                <span th:text="${customer.lastName}"></span> Mobile:
                 <span class="phoneNo" th:text="${customer.phoneNo}"></span> 
                 <div><span>Account:</span><span th:if="${#authorization.expression('hasAnyAuthority(''ADMIN'', ''MANAGER'')')}"
                     th:text="${customer.account}"></span></div>
@@ -42,6 +44,21 @@
                             <input type="hidden" name="_method" value="delete" />
                             <button type="submit">Delete Order</button>
                         </form>
+                        <a th:if="${order.returnId==null}" th:href="@{/return/create/{id}(id=${order.id})}" class="button">Return</a>
+                        <a th:if="${order.feedbackId==null}" th:href="@{/feedback/create/{id}(id=${order.id})}" class="button">Give feedback</a>
+                        <a th:if="${order.returnId!=null}" th:href="@{/return/view/{id}(id=${order.returnId})}" class="button">View Return statement</a>
+                        <a th:if="${order.feedbackId!=null}" th:href="@{/feedback/view/{id}(id=${order.feedbackId})}" class="button">View feedback</a>
+                        <form th:if="${order.feedbackId!=null}" th:action="@{/delete/feedback/{id}(id=${order.feedbackId})}" method="post" onsubmit="return confirm('Are you sure you want to delete this feedback?');">
+                            <input type="hidden" name="_method" value="delete" />
+                            <button type="submit">Delete Feedback</button>
+                        </form>
+                        <form th:if="${order.returnId!=null}" th:action="@{/delete/return/{id}(id=${order.returnId})}" method="post" onsubmit="return confirm('Are you sure you want to delete this return statement?');">
+                            <input type="hidden" name="_method" value="delete" />
+                            <button type="submit">Delete return statement</button>
+                        </form>
+
+
+
                         <hr>
                     </li>
                     <li th:if="${customer==null || customer.orders==null || customer.orders.size()==0}">No orders for this customer</li>
