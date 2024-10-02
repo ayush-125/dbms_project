@@ -35,12 +35,12 @@ public class InventoryController {
             if(currentUser.getRoleId().equals(1L)){
                 List<Store> stores = storeService.findAllStores();
                 model.addAttribute("stores", stores);
-                model.addAttribute("user", currentUser);
+                model.addAttribute("currentUser", currentUser);
             }else{
                 Long storeId=userService.getStoreIdById(currentUser.getId());
                 List<Store> stores = storeService.findById(storeId);
                 model.addAttribute("stores", stores);
-                model.addAttribute("user", currentUser);
+                model.addAttribute("currentUser", currentUser);
                 return "storeinventorys";
             }
         

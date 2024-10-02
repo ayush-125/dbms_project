@@ -34,18 +34,18 @@
                            
                             (Inventory ID: <span th:text="${inventory.id}"></span>)
                             
-                            <button type="button" th:if="${user.roles[0].name == 'MANAGER' ||user.roles[0].name=='ADMIN'}" id="editButton" onclick="">Edit</button>
-                            <button type="button" th:if="${user.roles[0].name == 'MANAGER' ||user.roles[0].name=='ADMIN'}" id="cancelButton" onclick="">Cancel</button>
+                            <button type="button" th:if="${currentUser.roles[0].name == 'MANAGER' ||currentUser.roles[0].name=='ADMIN'}" id="editButton" onclick="">Edit</button>
+                            <button type="button" th:if="${currentUser.roles[0].name == 'MANAGER' ||currentUser.roles[0].name=='ADMIN'}" id="cancelButton" onclick="">Cancel</button>
                             
                             <form th:action="@{/update/inventory/{id}(id=${inventory.id})}" th:object="${inventory}" method="post" onsubmit="return confirm('Are you sure you want to update this inventory?');"></form>
                                 <input type="hidden" name="_method" value="update" />
                                 <label for="quantity">Account</label>
                                 <input id="quantity" th:field="$*{id}" type="text" th: readonly="true">
-                                <button th:if="${user.roles[0].name == 'MANAGER' ||user.roles[0].name=='ADMIN'}" type="submit" style="display: none;">Update Inventory</button>
+                                <button th:if="${currentUser.roles[0].name == 'MANAGER' ||currentUser.roles[0].name=='ADMIN'}" type="submit" style="display: none;">Update Inventory</button>
                             </form>
                              <form th:action="@{/delete/inventory/{id}(id=${inventory.id})}" method="post" onsubmit="return confirm('Are you sure you want to delete this inventory?');">
                                 <input type="hidden" name="_method" value="delete" />
-                                <button th:if="${user.roles[0].name == 'MANAGER' ||user.roles[0].name=='ADMIN'}" type="submit">Delete Inventory</button>
+                                <button th:if="${currentUser.roles[0].name == 'MANAGER' ||currentUser.roles[0].name=='ADMIN'}" type="submit">Delete Inventory</button>
                             </form>
                             
                         </li>
@@ -102,9 +102,9 @@
                     Color: <span th:text="${product.color}"></span>,
                     Price: $<span th:text="${product.price}"></span>
                     <ul class="nested">
-                        <div id="createInventoryForm" th:if="${user.roles[0].name == 'MANAGER' || user.roles[0].name == 'ADMIN'}">
+                        <div id="createInventoryForm" th:if="${currentUser.roles[0].name == 'MANAGER' || currentUser.roles[0].name == 'ADMIN'}">
                             <h3>Create Inventory</h3>
-                            <form th:action="@{/create/inventory}"  method="post" th:if="${user.roles[0].name == 'MANAGER' || user.roles[0].name == 'ADMIN'}">
+                            <form th:action="@{/create/inventory}"  method="post" th:if="${currentUser.roles[0].name == 'MANAGER' || currentUser.roles[0].name == 'ADMIN'}">
                                 <label for="quantity">Quantity</label>
                                 <input id="quantity" name="quantity" type="text" required>
                                 <input type="hidden" name="storeId" th:value="${store.id}" readonly/>
@@ -118,11 +118,11 @@
                             (Inventory ID: <span th:text="${inventory.id}"></span>)
                             Quantity: <span th:text="${inventory.quantity}"></span>
                             <a th:href="@{/order/{inventoryId}(inventoryId=${inventory.id})}">Place Order</a>
-                            <a th:href="@{/buy/{inventoryId}(inventoryId=${inventory.id})}" th:if="${user.roles[0].name == 'MANAGER' || user.roles[0].name == 'ADMIN'}">Buy</a>
-                            <button type="button" th:if="${user.roles[0].name == 'MANAGER' || user.roles[0].name == 'ADMIN'}"
+                            <a th:href="@{/buy/{inventoryId}(inventoryId=${inventory.id})}" th:if="${currentUser.roles[0].name == 'MANAGER' || currentUser.roles[0].name == 'ADMIN'}">Buy</a>
+                            <button type="button" th:if="${currentUser.roles[0].name == 'MANAGER' || currentUser.roles[0].name == 'ADMIN'}"
                                     class="editButton" 
                                     onclick="editInventory(this)">Edit</button>
-                            <button type="button" th:if="${user.roles[0].name == 'MANAGER' || user.roles[0].name == 'ADMIN'}"
+                            <button type="button" th:if="${currentUser.roles[0].name == 'MANAGER' || currentUser.roles[0].name == 'ADMIN'}"
                                     class="cancelButton" 
                                     onclick="cancelEdit(this)" style="display: none;">Cancel</button>
 
@@ -135,7 +135,7 @@
 
                             <form th:action="@{/delete/inventory/{id}(id=${inventory.id})}" method="post" onsubmit="return confirm('Are you sure you want to delete this inventory?');">
                                 <input type="hidden" name="_method" value="delete" />
-                                <button th:if="${user.roles[0].name == 'MANAGER' || user.roles[0].name == 'ADMIN'}" type="submit">Delete Inventory</button>
+                                <button th:if="${currentUser.roles[0].name == 'MANAGER' || currentUser.roles[0].name == 'ADMIN'}" type="submit">Delete Inventory</button>
                             </form>
                         </li>
                         <li th:if="${product.inventories == null || product.inventories.size() == 0}">No inventory found for this product</li>

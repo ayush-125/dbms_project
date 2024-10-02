@@ -35,7 +35,7 @@ public class UserController {
     public String home(Model model, @AuthenticationPrincipal UserDetails userDetails) {
         try {
             User currentUser = userService.getUserByUsername(userDetails.getUsername());
-            model.addAttribute("user", currentUser);
+            model.addAttribute("currentUser", currentUser);
             return "home";
         } catch (Exception e) {
             model.addAttribute("errorMessage", e.getMessage());

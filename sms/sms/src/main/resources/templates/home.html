@@ -12,13 +12,13 @@
             
             <ul>
                 <li><a href="/home">Home</a></li>
-                <li th:if="${user.roles[0].name == 'ADMIN'}"><a href="/admin/stores" >All Stores</a></li>
-                <li th:if="${user.roles[0].name == 'ADMIN'}"><a href="/admin/users" >Admin Users</a></li>
-                <!-- <li th:if="${user.roles[0].name == 'MANAGER'}"><a href="/manager/users" >My Store Users</a></li> -->
-                <li th:if="${user.roles[0].name == 'MANAGER'}"><a href="/employees" >All employees</a></li>
-                <li th:if="${user.roles[0].name == 'MANAGER' ||user.roles[0].name=='ADMIN'}"><a href="/suppliers" >All suppliers</a></li>
-                <li th:if="${user.roles[0].name == 'MANAGER' ||user.roles[0].name=='ADMIN'}"><a href="/products" >All Products</a></li>
-                <li th:if="${user.roles[0].name == 'MANAGER' ||user.roles[0].name=='ADMIN'}"><a href="/discounts" >All Discounts</a></li>
+                <li th:if="${currentUser.roles[0].name == 'ADMIN'}"><a href="/admin/stores" >All Stores</a></li>
+                <li th:if="${currentUser.roles[0].name == 'ADMIN'}"><a href="/admin/users" >Admin Users</a></li>
+                <!-- <li th:if="${currentUser.roles[0].name == 'MANAGER'}"><a href="/manager/users" >My Store Users</a></li> -->
+                <li th:if="${currentUser.roles[0].name == 'MANAGER'}"><a href="/employees" >All employees</a></li>
+                <li th:if="${currentUser.roles[0].name == 'MANAGER' ||currentUser.roles[0].name=='ADMIN'}"><a href="/suppliers" >All suppliers</a></li>
+                <li th:if="${currentUser.roles[0].name == 'MANAGER' ||currentUser.roles[0].name=='ADMIN'}"><a href="/products" >All Products</a></li>
+                <li th:if="${currentUser.roles[0].name == 'MANAGER' ||currentUser.roles[0].name=='ADMIN'}"><a href="/discounts" >All Discounts</a></li>
                 <li><a href="/inventory" >Inventory</a></li>
                 <li><a href="/customers" >Customers</a></li>
                 
@@ -31,7 +31,7 @@
     </header>
 
     <div class="container">
-        <h2>Welcome, <span th:text="${user.username}">User</span></h2>
+        <h2>Welcome, <span th:text="${currentUser.username}">User</span></h2>
     </div>
 </body>
 </html>
