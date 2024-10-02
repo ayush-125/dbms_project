@@ -42,6 +42,8 @@ public class ProductController {
     public String getCreateProduct(Model model,@AuthenticationPrincipal UserDetails userDetails) {
         try {
             User currentUser= userService.getUserByUsername(userDetails.getUsername());
+        model.addAttribute("currentUser", currentUser);
+
             Product product=new Product();
             if(currentUser.getRoleId().equals(3L)){
                 return "error/403";
@@ -58,6 +60,7 @@ public class ProductController {
     public String postCreateProduct(@ModelAttribute Product product,Model model,@AuthenticationPrincipal UserDetails userDetails) {
         try {
             User currentUser= userService.getUserByUsername(userDetails.getUsername());
+        model.addAttribute("currentUser", currentUser);
             
             if(currentUser.getRoleId().equals(3L)){
                 return "error/403";
@@ -76,6 +79,7 @@ public class ProductController {
     public String viewProduct(@PathVariable Long id,Model model,@AuthenticationPrincipal UserDetails userDetails) {
         try {
             User currentUser= userService.getUserByUsername(userDetails.getUsername());
+        model.addAttribute("currentUser", currentUser);
             
             if(currentUser.getRoleId().equals(3L)){
                 return "error/403";
@@ -94,6 +98,7 @@ public class ProductController {
     public String updateProduct(@PathVariable Long id,Model model,@ModelAttribute Product product,@AuthenticationPrincipal UserDetails userDetails) {
         try {
             User currentUser= userService.getUserByUsername(userDetails.getUsername());
+        model.addAttribute("currentUser", currentUser);
             
             if(currentUser.getRoleId().equals(3L)){
                 return "error/403";
@@ -112,6 +117,7 @@ public class ProductController {
     public String deleteProduct(@PathVariable Long id,Model model,@AuthenticationPrincipal UserDetails userDetails) {
         try {
             User currentUser= userService.getUserByUsername(userDetails.getUsername());
+        model.addAttribute("currentUser", currentUser);
             
             if(currentUser.getRoleId().equals(3L)){
                 return "error/403";

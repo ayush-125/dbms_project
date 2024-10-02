@@ -34,6 +34,7 @@ public class BuyController {
     @GetMapping("/buy/{inventoryId}")
     public String createBuy(@PathVariable Long inventoryId,@AuthenticationPrincipal UserDetails userDetails,Model model) {
         User currentUser = userService.getUserByUsername(userDetails.getUsername());
+        
         model.addAttribute("currentUser", currentUser);
         try {
         Buy buy=new Buy();

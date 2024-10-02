@@ -33,6 +33,7 @@ public class SupplierController {
     public String getSuppliers(Model model,@AuthenticationPrincipal UserDetails userDetails) {
         try {
             User currentUser = userService.getUserByUsername(userDetails.getUsername());
+            model.addAttribute("currentUser", currentUser);
             if(currentUser.getRoleId().equals(3L)){
                 return "error/403";
             }
@@ -50,6 +51,7 @@ public class SupplierController {
     public String getCreateSupplier(Model model,@AuthenticationPrincipal UserDetails userDetails) {
         try {
             User currentUser = userService.getUserByUsername(userDetails.getUsername());
+            model.addAttribute("currentUser", currentUser);
             if(currentUser.getRoleId().equals(3L)){
                 return "error/403";
             }
@@ -75,6 +77,7 @@ public class SupplierController {
         try {
             
             User currentUser = userService.getUserByUsername(userDetails.getUsername());
+            model.addAttribute("currentUser", currentUser);
             if(currentUser.getRoleId().equals(3L)){
                 return "error/403";
             }
@@ -93,6 +96,7 @@ public class SupplierController {
     public String getViewSupplier(@PathVariable Long id,Model model,@AuthenticationPrincipal UserDetails userDetails ) {
         try {
             User currentUser = userService.getUserByUsername(userDetails.getUsername());
+            model.addAttribute("currentUser", currentUser);
             if(currentUser.getRoleId().equals(3L)){
                 return "error/403";
             }
@@ -122,6 +126,7 @@ public class SupplierController {
     public String postUpdateSupplier(Model model,@ModelAttribute Supplier supplier,@PathVariable Long id,@AuthenticationPrincipal UserDetails userDetails) {
         try {
             User currentUser = userService.getUserByUsername(userDetails.getUsername());
+            model.addAttribute("currentUser", currentUser);
             if(currentUser.getRoleId().equals(  1L) || currentUser.getRoleId().equals(2L)){
                 supplier.getEmails().removeIf(email -> email.getSupplierEmail() == null || email.getSupplierEmail().isEmpty());
         
@@ -142,6 +147,7 @@ public class SupplierController {
     @PostMapping("/delete/supplier/{id}")
     public String deleteSupplier(@PathVariable Long id,@AuthenticationPrincipal UserDetails userDetails,Model model) {
         User currentUser = userService.getUserByUsername(userDetails.getUsername());
+        model.addAttribute("currentUser", currentUser);
     try {
         if (!(currentUser.getRoles().stream().anyMatch(role -> role.getName().equals("EMPLOYEE")))  ) {
                 supplierRepository.deleteById(id);

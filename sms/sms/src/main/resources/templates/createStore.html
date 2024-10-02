@@ -3,42 +3,145 @@
 <head>
     <title>Create Store</title>
     <link rel="stylesheet" href="/css/styles.css" />
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        body {
+            background-color: #f8f9fa; /* Softer background */
+        }
+
+        .container {
+            position: relative; /* Needed for z-index */
+            margin-top: 60px;
+            padding: 30px; /* Increased padding for better spacing */
+            max-width: 600px;
+            background-color: white;
+            border-radius: 15px; /* Slightly increased border radius */
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+            z-index: 2; /* Ensure the container is above the overlay */
+        }
+        
+        h1 {
+            color: #343a40; /* Darker color for better contrast */
+            font-weight: 700;
+            margin-bottom: 20px; /* Adjusted margin */
+            text-align: center;
+            font-size: 2.2rem; /* Increased font size */
+        }
+
+        .form-control {
+            border: 1px solid #ced4da;
+            border-radius: 5px;
+            transition: border-color 0.3s;
+            padding: 12px; /* Added padding for better usability */
+        }
+
+        .form-control:focus {
+            border-color: #007bff;
+            box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+        }
+
+        .btn-primary {
+            background-color: #007bff;
+            border: none;
+            border-radius: 5px;
+            padding: 12px 15px;
+            font-size: 16px;
+            transition: background-color 0.3s, transform 0.3s;
+        }
+
+        .btn-primary:hover {
+            background-color: #0056b3;
+            transform: translateY(-2px);
+        }
+
+        .error-message {
+            color: red;
+            font-weight: bold;
+            text-align: center;
+        }
+
+        .back-button {
+            margin-top: 20px;
+        }
+
+        .required-field {
+            color: red; /* Color for the asterisk */
+        }
+
+        hr {
+            border: 1px solid #e0e0e0; /* Light gray color for the horizontal line */
+        }
+
+        @media (max-width: 576px) {
+            .container {
+                padding: 20px;
+                width: 90%; /* Adjust width for smaller screens */
+            }
+        }
+    </style>
 </head>
 <body>
-    <h1>Create Store</h1>
-    
-    <form th:action="@{/create/store}" th:object="${store}" method="post">
-        <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
-        <label for="name">Store Name:</label>
-        <input type="text" id="name" name="name" th:field="*{name}" required/>
+    <div th:replace="navbar :: navbar"></div>
+    <div class="overlay"></div> <!-- Overlay div for background opacity -->
+    <div class="container">
+        <h1 class="text-info">Create Store of VastraVihar</h1>
+        <hr>
+        <form th:action="@{/create/store}" th:object="${store}" method="post">
+            <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
 
-        <label for="street">Street:</label>
-        <input type="text" id="street" name="street" th:field="*{street}" placeholder="Enter street" />
+            <div class="form-group mb-8">
+                <label for="name">Store Name: <span class="required-field">*</span></label>
+                <input type="text" id="name" name="name" th:field="*{name}" class="form-control" required/>
+            </div>
 
-        <label for="city">City:</label>
-        <input type="text" id="city" name="city" th:field="*{city}" placeholder="Enter city" />
+            <div class="form-group">
+                <label for="street">Street:</label>
+                <input type="text" id="street" name="street" th:field="*{street}" class="form-control" placeholder="Enter street" />
+            </div>
 
-        <label for="state">State:</label>
-        <input type="text" id="state" name="state" th:field="*{state}" placeholder="Enter state" />
+            <div class="form-group">
+                <label for="city">City:</label>
+                <input type="text" id="city" name="city" th:field="*{city}" class="form-control" placeholder="Enter city" />
+            </div>
 
-        <label for="pincode">Pincode:</label>
-        <input type="number" step="1" id="pincode" name="pincode" th:field="*{pincode}" placeholder="Enter pincode" />
+            <div class="form-group">
+                <label for="state">State:</label>
+                <input type="text" id="state" name="state" th:field="*{state}" class="form-control" placeholder="Enter state" />
+            </div>
 
-        <label for="emailId">Email ID:</label>
-        <input type="email" id="emailId" name="emailId" th:field="*{emailId}" placeholder="Enter email" />
+            <div class="form-group">
+                <label for="pincode">Pincode:</label>
+                <input type="number" step="1" id="pincode" name="pincode" th:field="*{pincode}" class="form-control" placeholder="Enter pincode" />
+            </div>
 
-        <label for="phoneNo">Phone Number:</label>
-        <input type="tel" pattern="\d{10}" maxlength="10" id="phoneNo" name="phoneNo" th:field="*{phoneNo}" placeholder="Enter phone number" required/>
+            <div class="form-group">
+                <label for="emailId">Email ID:</label>
+                <input type="email" id="emailId" name="emailId" th:field="*{emailId}" class="form-control" placeholder="Enter email" />
+            </div>
 
-        <label for="managerId">Manager ID:</label>
-        <input type="number" step="1" id="managerId" name="managerId" th:field="*{managerId}" placeholder="Enter manager ID"/>
+            <div class="form-group">
+                <label for="phoneNo">Phone Number: <span class="required-field">*</span></label>
+                <input type="tel" pattern="\d{10}" maxlength="10" id="phoneNo" name="phoneNo" th:field="*{phoneNo}" class="form-control" placeholder="Enter phone number" required/>
+            </div>
 
-        <button type="submit">Save</button>
-    </form>
+            <div class="form-group">
+                <label for="managerId">Manager ID:</label>
+                <input type="number" step="1" id="managerId" name="managerId" th:field="*{managerId}" class="form-control" placeholder="Enter manager ID"/>
+            </div>
 
-    <div th:if="${errorMessage}">
-        <p th:text="${errorMessage}" style="color: red;"></p>
+            <button type="submit" class="btn btn-primary btn-block">Save</button>
+        </form>
+
+        <div th:if="${errorMessage}" class="error-message mt-3">
+            <p th:text="${errorMessage}"></p>
+        </div>
+        <div class="text-center back-button">
+            <a class="btn btn-secondary" th:href="@{/home}">Back to Home</a>
+        </div>
     </div>
-    <a class="button" th:href="@{/home}">home</a>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>
 </html>

@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Navbar</title>
+</head>
+<body>
+    <header th:fragment="navbar" style="position: relative;">
+        <!-- Alert message container -->
+        <nav class="navbar navbar-expand-lg navbar-dark bg-light">
+            <a class="navbar-brand text-dark fw-bold" href="/home">
+                <img src="/Images/BrandLogo.png" width="45px" height="45px" style="border-radius:0%;" alt="Brand Logo">
+                VastraVihar
+            </a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav mx-auto justify-content-center w-75">
+                    <li class="nav-item">
+                        <a class="nav-link text-dark fw-bold" href="/home">Home</a>
+                    </li>
+                    <li class="nav-item" th:if="${currentUser.roles[0].name == 'ADMIN'}">
+                        <a class="nav-link text-dark fw-bold" href="/admin/stores">All Stores</a>
+                    </li>
+                    <li class="nav-item" th:if="${currentUser.roles[0].name == 'ADMIN'}">
+                        <a class="nav-link text-dark fw-bold" href="/admin/users">Admin Users</a>
+                    </li>
+                    <li class="nav-item" th:if="${currentUser.roles[0].name == 'MANAGER'}">
+                        <a class="nav-link text-dark fw-bold" href="/employees">All Employees</a>
+                    </li>
+                    <li class="nav-item" th:if="${currentUser.roles[0].name == 'MANAGER' || currentUser.roles[0].name=='ADMIN'}">
+                        <a class="nav-link text-dark fw-bold" href="/suppliers">All Suppliers</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-dark fw-bold" href="/customers">Customers</a>
+                    </li>
+                </ul>
+                <!-- Logout button on the right -->
+                <form th:action="@{/logout}" method="post" class="form-inline ml-auto">
+                    <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
+                    <button type="submit" class="btn btn-outline-danger fw-bold">Logout</button>
+                </form>
+            </div>
+        </nav>
+                    <div th:if="${errorMessage}" class="alert alert-danger alert-dismissible fade show" role="alert" th:classappend="${errorMessage != null} ? 'show'">
+                <strong>Error!</strong> <span th:text="${errorMessage}"></span>
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div th:if="${successMessage}" class="alert alert-success alert-dismissible fade show" role="alert" th:classappend="${successMessage != null} ? 'show'">
+                <strong>Success!</strong> <span th:text="${successMessage}"></span>
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+        </header>
+    <footer class="footer bg-dark text-white text-center py-3">
+        <div class="container">
+            <span>&copy; 2024 Company. All rights reserved.</span>
+        </div>
+    </footer>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Script to handle alert visibility
+        $(document).ready(function() {
+            // Show alert with fade-in and slide-down effect
+            $('.alert').each(function() {
+                if ($(this).hasClass('show')) {
+                    $(this).css('opacity', '1');
+                    $(this).css('transform', 'translateY(0)');
+                }
+            });
+
+            // Automatically hide alert after 5 seconds
+            setTimeout(function() {
+                $('.alert').fadeOut('slow', function() {
+                    $(this).removeClass('show');
+                    $(this).css('transform', 'translateY(-50px)');
+                });
+            }, 5000); // Adjust the duration if needed
+        });
+    </script>
+</body>
+</html>

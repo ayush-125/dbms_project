@@ -4,7 +4,43 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Store Details</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" />
     <link rel="stylesheet" href="/css/styles.css" />
+    <style>
+        body {
+            background-color: #f8f9fa; /* Light background for better contrast */
+        }
+        .container {
+            margin-top: 50px;
+            max-width: 700px; /* Set a max width for the form */
+        }
+        .form-group {
+            margin-bottom: 20px; /* Space between form groups */
+        }
+        .btn-custom {
+            width: auto; /* Auto width for a more compact button */
+            padding: 5px 10px; /* Reduced padding */
+            font-size: 0.9rem; /* Smaller font size */
+            text-transform: uppercase;
+            font-weight: bold;
+            margin: 5px; /* Margin for spacing between buttons */
+        }
+        .error {
+            color: red;
+            font-weight: bold;
+            margin-bottom: 20px; /* Space below the error message */
+        }
+        .button {
+            margin-top: 20px; /* Space above the stores link */
+        }
+        .card {
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        label {
+            font-weight: bold; /* Make all label text bold */
+        }
+    </style>
+    
     <script>
         document.addEventListener('DOMContentLoaded', function () {
             const url = window.location.pathname;
@@ -12,91 +48,98 @@
             const editButton = document.getElementById('editButton');
             const submitButton = document.getElementById('submitButton');
             const cancelButton = document.getElementById('cancelButton');
-            // const errorMessageDiv = document.getElementById('errorMessageDiv');
             
-            // Function to disable all fields
             function disableFields() {
                 formElements.forEach(element => element.disabled = true);
             }
     
-            // Function to enable all fields
             function enableFields() {
                 formElements.forEach(element => element.disabled = false);
             }
     
-            // If the URL contains 'view'
             if (url.includes('/view/')) {
-                disableFields();  // Disable fields in view mode
-                editButton.style.display = 'inline';  // Show Edit button
+                disableFields();
+                editButton.style.display = 'inline';
             }
     
-            // If the URL contains 'edit'
             if (url.includes('/edit/')) {
-                enableFields();  // Enable fields in edit mode
-                submitButton.style.display = 'inline';  // Show Submit button
-                cancelButton.style.display = 'inline';  // Show Cancel button
+                enableFields();
+                submitButton.style.display = 'inline';
+                cancelButton.style.display = 'inline';
             }
     
-            // When Edit button is clicked
             editButton.addEventListener('click', function () {
                 const newUrl = url.replace('/view/', '/edit/');
-                window.history.pushState(null, null, newUrl);  // Change URL without reloading
-                enableFields();  // Enable all form fields
-                editButton.style.display = 'none';  // Hide Edit button
-                submitButton.style.display = 'inline';  // Show Submit button
-                cancelButton.style.display = 'inline';  // Show Cancel button
-                // errorMessageDiv.style.display = 'inline';
+                window.history.pushState(null, null, newUrl);
+                enableFields();
+                editButton.style.display = 'none';
+                submitButton.style.display = 'inline';
+                cancelButton.style.display = 'inline';
             });
     
-            // When Cancel button is clicked
             cancelButton.addEventListener('click', function () {
                 const newUrl = url.replace('/edit/', '/view/');
-                window.history.pushState(null, null, newUrl);  // Change URL without reloading
-                disableFields();  // Disable all form fields
-                submitButton.style.display = 'none';  // Hide Submit button
-                cancelButton.style.display = 'none';  // Hide Cancel button
-                editButton.style.display = 'inline';  // Show Edit button
-                // errorMessageDiv.style.display = 'none';
+                window.history.pushState(null, null, newUrl);
+                disableFields();
+                submitButton.style.display = 'none';
+                cancelButton.style.display = 'none';
+                editButton.style.display = 'inline';
             });
         });
     </script>
 </head>
 <body>
+    <div th:replace="navbar :: navbar"></div>
     <div class="container">
-        <form id="storeForm" method="post" th:object="${store}" th:action="@{/update/store/{id}(id=${store.id})}">
-            <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
-            <div id="errorMessageDiv" th:if="${errorMessage}" style="color: red; display: block;">
-                <p th:text="${errorMessage}"></p>
-            </div>
-            <label for="name">Store Name</label>
-            <input type="text" id="name" th:field="*{name}" th:value="${store != null ? store.name : ''}" disabled="true"  required/>
-            
-            <label for="street">Street</label>
-            <input type="text" id="street" th:field="*{street}" th:value="${store != null ? store.street : ''}" disabled="true"  />
+        <div class="card p-5">
+            <h1 class="text-center mb-10 text-warning">Store Details</h1>
+            <hr style="color:green;">
+            <form id="storeForm" method="post" th:object="${store}" th:action="@{/update/store/{id}(id=${store.id})}">
+                <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
+                <div id="errorMessageDiv" th:if="${errorMessage}" class="error">
+                    <p th:text="${errorMessage}"></p>
+                </div>
+                <div class="form-group">
+                    <label for="name">Store Name:</label>
+                    <input type="text" id="name" class="form-control" th:field="*{name}" th:value="${store != null ? store.name : ''}" required />
+                </div>
+                <div class="form-group">
+                    <label for="street">Street:</label>
+                    <input type="text" id="street" class="form-control" th:field="*{street}" th:value="${store != null ? store.street : ''}" />
+                </div>
+                <div class="form-group">
+                    <label for="city">City:</label>
+                    <input type="text" id="city" class="form-control" th:field="*{city}" th:value="${store != null ? store.city : ''}" />
+                </div>
+                <div class="form-group">
+                    <label for="state">State:</label>
+                    <input type="text" id="state" class="form-control" th:field="*{state}" th:value="${store != null ? store.state : ''}" />
+                </div>
+                <div class="form-group">
+                    <label for="pincode">Pincode:</label>
+                    <input type="number" step="1" id="pincode" class="form-control" th:field="*{pincode}" th:value="${store != null ? store.pincode : ''}" />
+                </div>
+                <div class="form-group">
+                    <label for="emailId">Email ID:</label>
+                    <input type="email" id="emailId" class="form-control" th:field="*{emailId}" th:value="${store != null ? store.emailId : ''}" />
+                </div>
+                <div class="form-group">
+                    <label for="phoneNo">Phone No:</label>
+                    <input type="tel" pattern="\d{10}" maxlength="10" id="phoneNo" class="form-control" th:field="*{phoneNo}" th:value="${store != null ? store.phoneNo : ''}" required />
+                </div>
+                <div class="form-group">
+                    <label for="managerId">Manager ID:</label>
+                    <input type="number" step="1" id="managerId" class="form-control" th:field="*{managerId}" th:value="${store != null ? store.managerId : ''}" />
+                </div>
 
-            <label for="city">City</label>
-            <input type="text" id="city" th:field="*{city}" th:value="${store != null ? store.city : ''}" disabled="true"  />
-
-            <label for="state">State</label>
-            <input type="text" id="state" th:field="*{state}" th:value="${store != null ? store.state : ''}" disabled="true"  />
-
-            <label for="pincode">Pincode</label>
-            <input type="number" step="1" id="pincode" th:field="*{pincode}" th:value="${store != null ? store.pincode : ''}" disabled="true"  />
-
-            <label for="emailId">Email ID</label>
-            <input type="email" id="emailId" th:field="*{emailId}" th:value="${store != null ? store.emailId : ''}" disabled="true"  />
-
-            <label for="phoneNo">Phone No</label>
-            <input type="tel" pattern="\d{10}" maxlength="10"  id="phoneNo" th:field="*{phoneNo}" th:value="${store != null ? store.phoneNo : ''}" disabled="true" required />
-
-            <label for="managerId">Manager ID</label>
-            <input type="number" step="1" id="managerId" th:field="*{managerId}" th:value="${store != null ? store.managerId : ''}" disabled="true"  />
-
-            <button type="button" id="editButton" style="display:none;">Edit</button>
-            <button type="submit" id="submitButton" style="display:none;">Submit</button>
-            <button type="button" id="cancelButton" style="display:none;">Cancel</button>
-            <a class="button" th:href="@{/admin/stores}">Stores</a>
-        </form>
+                <div class="text-center">
+                    <button type="button" id="editButton" class="btn btn-warning btn-custom" style="display:none;">Edit</button>
+                    <button type="submit" id="submitButton" class="btn btn-success btn-custom" style="display:none;">Submit</button>
+                    <button type="button" id="cancelButton" class="btn btn-secondary btn-custom" style="display:none;">Cancel</button>
+                </div>
+                <a class="button btn btn-info btn-custom" th:href="@{/admin/stores}">View All Stores</a>
+            </form>
+        </div>
     </div>
 </body>
 </html>
