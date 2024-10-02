@@ -21,6 +21,7 @@ public class DiscountRepository {
         try {
             String sql="select * from discount";
             List<Discount> discounts=jdbcTemplate.query(sql,new BeanPropertyRowMapper<>(Discount.class));
+            
             for(Discount discount:discounts){
                 discount.setProductIds(productDiscountRepository.findByDiscountId(discount.getId()));
             }
@@ -57,7 +58,7 @@ public class DiscountRepository {
                 jdbcTemplate.update(sql, discount.getDescription(),discount.getDos(),discount.getDoe(),discount.getRate());
 
                 String sqll="select id from discount where description=? and dos=? and doe=? and rate=?";
-                List<Long> discountIds=jdbcTemplate.query(sqll, new BeanPropertyRowMapper<>(Long.class),discount.getDescription(),discount.getDos(),discount.getDoe(),discount.getRate());
+                List<Long> discountIds=jdbcTemplate.queryForList(sqll,Long.class,discount.getDescription(),discount.getDos(),discount.getDoe(),discount.getRate());
                 Long discountId=discountIds.get(0);
                 for(Long productId:discount.getProductIds()){
                     productDiscountRepository.save(discountId,productId);

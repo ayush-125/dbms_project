@@ -270,7 +270,6 @@ from products p left join productDiscount pd on p.id=pd.productId left join disc
 group by p.id;
 
 
-
 -- index for employees
 create index idx_storeId on employees(storeId);
 

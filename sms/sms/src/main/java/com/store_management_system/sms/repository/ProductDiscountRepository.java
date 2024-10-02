@@ -8,6 +8,7 @@ import org.springframework.stereotype.Repository;
 
 import com.store_management_system.sms.exception.CustomDatabaseException;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Repository
@@ -19,7 +20,8 @@ public class ProductDiscountRepository {
     public List<Long> findByDiscountId(Long discountId){
         try {
             String sql="select productId from productDiscount where discountId=?";
-            List<Long> productIds=jdbcTemplate.query(sql,new BeanPropertyRowMapper<>(Long.class),discountId);
+            List<Long> productIds=jdbcTemplate.queryForList(sql,Long.class,discountId);
+            
             return productIds;
         } catch (DataAccessException e) {
             System.err.println("Error querying productIds for a particular discount"+e.getMessage());
