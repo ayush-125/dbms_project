@@ -73,9 +73,10 @@ public class UserController {
     public String register(Model model,HttpServletRequest request, @AuthenticationPrincipal UserDetails userDetails) {
         try {
             User currentUser = userService.getUserByUsername(userDetails.getUsername());
+            model.addAttribute("currentUser", currentUser);
         if (currentUser.getRoles().stream().anyMatch(role -> role.getName().equals("ADMIN") )) {
             
-            model.addAttribute("currentUser", currentUser);
+            // model.addAttribute("currentUser", currentUser);
             model.addAttribute("user", new User());
             model.addAttribute("check", false);
             return "register";
@@ -93,9 +94,10 @@ public class UserController {
     public String registerWithEmployeeId(Model model,@PathVariable Long employeeId, @AuthenticationPrincipal UserDetails userDetails) {
         try {
             User currentUser = userService.getUserByUsername(userDetails.getUsername());
+            model.addAttribute("currentUser", currentUser);
         if (currentUser.getRoles().stream().anyMatch(role -> role.getName().equals("ADMIN") || role.getName().equals("MANAGER"))) {
             
-            model.addAttribute("currentUser", currentUser);
+            // model.addAttribute("currentUser", currentUser);
             User user=new User();
             user.setEmployeeId(employeeId);
             model.addAttribute("user", user);
@@ -114,6 +116,7 @@ public class UserController {
     @PostMapping("/register")
     public String processRegistration(Model model,@PathVariable(required = false) Long employeeId,HttpServletRequest request, @AuthenticationPrincipal UserDetails userDetails,@ModelAttribute("user") User user) {
         User currentUser = userService.getUserByUsername(userDetails.getUsername());
+        model.addAttribute("currentUser", currentUser);
         try {
             
             if (currentUser.getRoles().stream().anyMatch(role -> role.getName().equals("MANAGER"))) {
@@ -154,6 +157,7 @@ public class UserController {
     public String viewUserDetails(Model model,@AuthenticationPrincipal UserDetails userDetails,@PathVariable Long id) {
         try {
             User currentUser = userService.getUserByUsername(userDetails.getUsername());
+            model.addAttribute("currentUser", currentUser);
             User user =userService.getUserById(id);
                 if(user==null){
                     model.addAttribute("errorMessage", "This user does not exist...");
@@ -162,7 +166,7 @@ public class UserController {
             if((currentUser.getRoles().stream().anyMatch(role -> role.getName().equals("ADMIN"))) || ((currentUser.getRoles().stream().anyMatch(role -> role.getName().equals("MANAGER"))) && userService.checkBelongToSameStore(id,currentUser))){
                 
                 model.addAttribute("user", user);
-                model.addAttribute("currentUser", currentUser);
+                // model.addAttribute("currentUser", currentUser);
             }else{
                 return "error/403"; 
             }
@@ -197,6 +201,7 @@ public class UserController {
     @PostMapping("/delete/user/{id}")
     public String deleteUser(@AuthenticationPrincipal UserDetails userDetails,@PathVariable Long id, Model model){
         User currentUser = userService.getUserByUsername(userDetails.getUsername());
+        model.addAttribute("currentUser", currentUser);
         try {
             
             if((currentUser.getRoles().stream().anyMatch(role -> role.getName().equals("ADMIN"))) || ((currentUser.getRoles().stream().anyMatch(role -> role.getName().equals("MANAGER"))) && userService.checkBelongToSameStore(id,currentUser))){
@@ -225,7 +230,7 @@ public class UserController {
     public String deleteAdminUser(@AuthenticationPrincipal UserDetails userDetails,@PathVariable Long id, Model model){
         try {
             User currentUser = userService.getUserByUsername(userDetails.getUsername());
-            
+            model.addAttribute("currentUser", currentUser);
             if((currentUser.getRoles().stream().anyMatch(role -> role.getName().equals("ADMIN"))) ){
                 userService.deleteUserById(id);
             }else{

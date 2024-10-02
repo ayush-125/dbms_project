@@ -52,6 +52,7 @@ public class StoreController {
     public String createStoreForm(Model model,@AuthenticationPrincipal UserDetails userDetails) {
         try {
             User currentUser = userService.getUserByUsername(userDetails.getUsername());
+            model.addAttribute("currentUser", currentUser);
         if (!(currentUser.getRoles().stream().anyMatch(role -> role.getName().equals("ADMIN"))) ) {
             return "error/403"; 
         }
@@ -69,6 +70,7 @@ public class StoreController {
     public String createStore(@ModelAttribute Store store, Model model,@AuthenticationPrincipal UserDetails userDetails) {
         try {
             User currentUser = userService.getUserByUsername(userDetails.getUsername());
+            model.addAttribute("currentUser", currentUser);
         if (!(currentUser.getRoles().stream().anyMatch(role -> role.getName().equals("ADMIN"))) ) {
             return "error/403"; 
         }   
@@ -96,6 +98,7 @@ public class StoreController {
 public String viewStoreDetails(Model model, @AuthenticationPrincipal UserDetails userDetails, @PathVariable Long id) {
     try {
         User currentUser = userService.getUserByUsername(userDetails.getUsername());
+        model.addAttribute("currentUser", currentUser);
         if ((currentUser.getRoles().stream().anyMatch(role -> role.getName().equals("ADMIN"))) ) {
             
             Store store = storeService.getById(id);
@@ -104,7 +107,7 @@ public String viewStoreDetails(Model model, @AuthenticationPrincipal UserDetails
                 return "viewstore"; 
             }
             model.addAttribute("store", store);
-            model.addAttribute("currentUser", currentUser);
+            // model.addAttribute("currentUser", currentUser);
         } else if((currentUser.getRoles().stream().anyMatch(role -> role.getName().equals("MANAGER")))) {
             Long currStoreId=userService.getStoreIdById(currentUser.getId());
             if(!(id!=null && id.equals(currStoreId))){
@@ -128,6 +131,7 @@ public String updateStore(@AuthenticationPrincipal UserDetails userDetails, @Pat
                           @ModelAttribute Store store, Model model) {
     try {
         User currentUser = userService.getUserByUsername(userDetails.getUsername());
+        model.addAttribute("currentUser", currentUser);
         if (!(currentUser.getRoles().stream().anyMatch(role -> role.getName().equals("ADMIN"))) ) {
             return "error/403"; 
         }
@@ -154,6 +158,7 @@ public String updateStore(@AuthenticationPrincipal UserDetails userDetails, @Pat
 public String deleteStore(@AuthenticationPrincipal UserDetails userDetails, @PathVariable Long id, Model model) {
     try {
         User currentUser = userService.getUserByUsername(userDetails.getUsername());
+        model.addAttribute("currentUser", currentUser);
         if (!(currentUser.getRoles().stream().anyMatch(role -> role.getName().equals("ADMIN"))) ) {
             return "error/403"; 
         }

@@ -32,15 +32,16 @@ public class InventoryController {
     public String showInventoryManagement(Model model,@AuthenticationPrincipal UserDetails userDetails) {
         try {
             User currentUser = userService.getUserByUsername(userDetails.getUsername());
+            model.addAttribute("currentUser", currentUser);
             if(currentUser.getRoleId().equals(1L)){
                 List<Store> stores = storeService.findAllStores();
                 model.addAttribute("stores", stores);
-                model.addAttribute("currentUser", currentUser);
+                // model.addAttribute("currentUser", currentUser);
             }else{
                 Long storeId=userService.getStoreIdById(currentUser.getId());
                 List<Store> stores = storeService.findById(storeId);
                 model.addAttribute("stores", stores);
-                model.addAttribute("currentUser", currentUser);
+                // model.addAttribute("currentUser", currentUser);
                 return "storeinventorys";
             }
         
@@ -60,6 +61,7 @@ public class InventoryController {
     public String createInventory(@RequestParam("quantity") Long quantity,@RequestParam("storeId") Long storeId,@RequestParam("productId") Long productId ,Model model,@AuthenticationPrincipal UserDetails userDetails) {
         try {
             User currentUser = userService.getUserByUsername(userDetails.getUsername());
+            model.addAttribute("currentUser", currentUser);
             if(currentUser.getRoleId().equals(3L)){
                 return "error/403";
             }
@@ -81,6 +83,7 @@ public class InventoryController {
     public String updateInventory(@PathVariable("id") Integer id, @RequestParam("quantity") Long quantity,Model model, @AuthenticationPrincipal UserDetails userDetails) {
         try {
             User currentUser = userService.getUserByUsername(userDetails.getUsername());
+            model.addAttribute("currentUser", currentUser);
             if(currentUser.getRoleId().equals(3L)){
                 return "error/403";
             }
@@ -102,6 +105,7 @@ public class InventoryController {
     public String deleteInventory(@PathVariable("id") Integer id,Model model, @AuthenticationPrincipal UserDetails userDetails) {
         try {
             User currentUser = userService.getUserByUsername(userDetails.getUsername());
+            model.addAttribute("currentUser", currentUser);
             if(currentUser.getRoleId().equals(3L)){
                 return "error/403";
             }

@@ -107,6 +107,7 @@ public class CustomerController {
     public String postUpdateCustomer(Model model,@ModelAttribute Customer customer,@PathVariable Long id,@AuthenticationPrincipal UserDetails userDetails) {
         try {
             User currentUser = userService.getUserByUsername(userDetails.getUsername());
+            model.addAttribute("currentUser", currentUser);
             if(currentUser.getRoleId().equals(  1L) || currentUser.getRoleId().equals(2L)){
                 if(customer.getEmails()!=null){
                     customer.getEmails().removeIf(email -> email.getCustomerEmail() == null || email.getCustomerEmail().isEmpty());
@@ -129,6 +130,7 @@ public class CustomerController {
     @PostMapping("/delete/customer/{id}")
     public String deleteCustomer(@PathVariable Long id,@AuthenticationPrincipal UserDetails userDetails,Model model) {
         User currentUser = userService.getUserByUsername(userDetails.getUsername());
+        model.addAttribute("currentUser", currentUser);
     try {
         if (!(currentUser.getRoles().stream().anyMatch(role -> role.getName().equals("EMPLOYEE")))  ) {
             customerRepository.deleteById(id);
