@@ -81,6 +81,7 @@ public class InventoryController {
     public String updateInventory(@PathVariable("id") Integer id, @RequestParam("quantity") Long quantity,Model model, @AuthenticationPrincipal UserDetails userDetails) {
         try {
             User currentUser = userService.getUserByUsername(userDetails.getUsername());
+        model.addAttribute("currentUser", currentUser);
             if(currentUser.getRoleId().equals(3L)){
                 return "error/403";
             }
@@ -102,6 +103,8 @@ public class InventoryController {
     public String deleteInventory(@PathVariable("id") Integer id,Model model, @AuthenticationPrincipal UserDetails userDetails) {
         try {
             User currentUser = userService.getUserByUsername(userDetails.getUsername());
+        model.addAttribute("currentUser", currentUser);
+
             if(currentUser.getRoleId().equals(3L)){
                 return "error/403";
             }

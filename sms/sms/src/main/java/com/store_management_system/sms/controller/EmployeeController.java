@@ -32,6 +32,8 @@ public class EmployeeController {
 public String viewEmployeeDetails(Model model, @AuthenticationPrincipal UserDetails userDetails, @PathVariable Long id) {
     try {
         User currentUser = userService.getUserByUsername(userDetails.getUsername());
+        model.addAttribute("currentUser", currentUser);
+
         Employee employee = employeeService.getEmployeeById(id);
             if (employee == null) {
                 model.addAttribute("errorMessage", "This employee does not exist...");
@@ -63,6 +65,8 @@ public String updateEmployee(@AuthenticationPrincipal UserDetails userDetails, @
                              Model model) {
     try {
         User currentUser = userService.getUserByUsername(userDetails.getUsername());
+        model.addAttribute("currentUser", currentUser);
+
         if ((currentUser.getRoles().stream().anyMatch(role -> role.getName().equals("ADMIN"))) || 
             ((currentUser.getRoles().stream().anyMatch(role -> role.getName().equals("MANAGER"))) && employeeService.checkBelongToSameStoreById(id, currentUser.getEmployeeId()))) {
                 Long supervisor=employee.getSupervisor();
@@ -91,6 +95,8 @@ public String updateEmployee(@AuthenticationPrincipal UserDetails userDetails, @
 @PostMapping("/delete/employee/{id}")
 public String deleteEmployee(@AuthenticationPrincipal UserDetails userDetails, @PathVariable Long id,Model model) {
     User currentUser = userService.getUserByUsername(userDetails.getUsername());
+    model.addAttribute("currentUser", currentUser);
+
     try {
         if ((currentUser.getRoles().stream().anyMatch(role -> role.getName().equals("ADMIN"))) || 
             ((currentUser.getRoles().stream().anyMatch(role -> role.getName().equals("MANAGER"))) && employeeService.checkBelongToSameStoreById(id, currentUser.getEmployeeId()))) {
@@ -121,6 +127,8 @@ public String deleteEmployee(@AuthenticationPrincipal UserDetails userDetails, @
 public String createEmployee(@AuthenticationPrincipal UserDetails userDetails,@ModelAttribute("employee") Employee employee, Model model) {
     try {
         User currentUser = userService.getUserByUsername(userDetails.getUsername());
+        model.addAttribute("currentUser", currentUser);
+
         if ((currentUser.getRoles().stream().anyMatch(role -> role.getName().equals("ADMIN"))) || 
             ((currentUser.getRoles().stream().anyMatch(role -> role.getName().equals("MANAGER"))) && employeeService.checkBelongToSameStoreByStoreId(employee.getStoreId(), currentUser.getEmployeeId()))) {
                 Long supervisor=employee.getSupervisor();
@@ -157,6 +165,8 @@ public String showCreateEmployeeForStore(@AuthenticationPrincipal UserDetails us
         return "redirect:/home"; 
     }
     User currentUser = userService.getUserByUsername(userDetails.getUsername());
+    model.addAttribute("currentUser", currentUser);
+
         if ((currentUser.getRoles().stream().anyMatch(role -> role.getName().equals("EMPLOYEE"))) ) {
             return "error/403";
         }
@@ -177,6 +187,8 @@ public String showCreateEmployeeForStore(@AuthenticationPrincipal UserDetails us
     public String listEmployees(Model model,@ AuthenticationPrincipal UserDetails userDetails) {
         try{
             User currentUser = userService.getUserByUsername(userDetails.getUsername());
+        model.addAttribute("currentUser", currentUser);
+
             List<Employee>employees=new ArrayList<>();
             model.addAttribute("currentUser", currentUser);
             model.addAttribute("currentUserStoreId", userService.getStoreIdById(currentUser.getId()));

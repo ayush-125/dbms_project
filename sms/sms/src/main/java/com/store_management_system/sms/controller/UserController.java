@@ -61,6 +61,7 @@ public class UserController {
     public String getUsersByStoreId(Model model, @AuthenticationPrincipal UserDetails userDetails) {
         try{
             User user = userService.getUserByUsername(userDetails.getUsername());
+            model.addAttribute("currentUser", user);
             model.addAttribute("users", userService.getUsersWithSameStoreById(user.getId()));
         }catch(Exception e){
             model.addAttribute("errorMessage", e.getMessage());
@@ -73,6 +74,7 @@ public class UserController {
     public String register(Model model,HttpServletRequest request, @AuthenticationPrincipal UserDetails userDetails) {
         try {
             User currentUser = userService.getUserByUsername(userDetails.getUsername());
+            model.addAttribute("currentUser", currentUser);
         if (currentUser.getRoles().stream().anyMatch(role -> role.getName().equals("ADMIN") )) {
             
             model.addAttribute("currentUser", currentUser);
@@ -93,6 +95,7 @@ public class UserController {
     public String registerWithEmployeeId(Model model,@PathVariable Long employeeId, @AuthenticationPrincipal UserDetails userDetails) {
         try {
             User currentUser = userService.getUserByUsername(userDetails.getUsername());
+            model.addAttribute("currentUser", currentUser);
         if (currentUser.getRoles().stream().anyMatch(role -> role.getName().equals("ADMIN") || role.getName().equals("MANAGER"))) {
             
             model.addAttribute("currentUser", currentUser);
@@ -114,6 +117,7 @@ public class UserController {
     @PostMapping("/register")
     public String processRegistration(Model model,@PathVariable(required = false) Long employeeId,HttpServletRequest request, @AuthenticationPrincipal UserDetails userDetails,@ModelAttribute("user") User user) {
         User currentUser = userService.getUserByUsername(userDetails.getUsername());
+        model.addAttribute("currentUser", currentUser);
         try {
             
             if (currentUser.getRoles().stream().anyMatch(role -> role.getName().equals("MANAGER"))) {
@@ -154,6 +158,7 @@ public class UserController {
     public String viewUserDetails(Model model,@AuthenticationPrincipal UserDetails userDetails,@PathVariable Long id) {
         try {
             User currentUser = userService.getUserByUsername(userDetails.getUsername());
+            model.addAttribute("currentUser", currentUser);
             User user =userService.getUserById(id);
                 if(user==null){
                     model.addAttribute("errorMessage", "This user does not exist...");
@@ -197,6 +202,7 @@ public class UserController {
     @PostMapping("/delete/user/{id}")
     public String deleteUser(@AuthenticationPrincipal UserDetails userDetails,@PathVariable Long id, Model model){
         User currentUser = userService.getUserByUsername(userDetails.getUsername());
+        model.addAttribute("currentUser", currentUser);
         try {
             
             if((currentUser.getRoles().stream().anyMatch(role -> role.getName().equals("ADMIN"))) || ((currentUser.getRoles().stream().anyMatch(role -> role.getName().equals("MANAGER"))) && userService.checkBelongToSameStore(id,currentUser))){
@@ -225,6 +231,7 @@ public class UserController {
     public String deleteAdminUser(@AuthenticationPrincipal UserDetails userDetails,@PathVariable Long id, Model model){
         try {
             User currentUser = userService.getUserByUsername(userDetails.getUsername());
+            model.addAttribute("currentUser", currentUser);
             
             if((currentUser.getRoles().stream().anyMatch(role -> role.getName().equals("ADMIN"))) ){
                 userService.deleteUserById(id);
