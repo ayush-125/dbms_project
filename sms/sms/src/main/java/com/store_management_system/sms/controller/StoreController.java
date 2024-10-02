@@ -138,6 +138,7 @@ public class StoreController {
                 if (employee == null || employee.getDesignation() == null || !employee.getDesignation().equals("Manager")) {
                     // model.addAttribute("errorMessage", "Incorrect ManagerId");
                     redirectAttributes.addFlashAttribute("errorMessage", "Incorrect ManagerId");
+                    model.addAttribute("store", store);
                     return "viewstore";
                 }
             }
@@ -148,6 +149,7 @@ public class StoreController {
         } catch (Exception e) {
             // model.addAttribute("errorMessage", "Failed to update store: " + e.getMessage());
             redirectAttributes.addFlashAttribute("errorMessage", "Failed to update store: " + e.getMessage());
+            model.addAttribute("store", store);
             return "viewstore";
         }
     }
