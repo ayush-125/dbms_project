@@ -270,3 +270,31 @@ from products p left join productDiscount pd on p.id=pd.productId left join disc
 group by p.id;
 
 
+
+-- index for employees
+create index idx_storeId on employees(storeId);
+
+-- index for users
+create index idx_employeeId on users(employeeId);
+create index idx_username on users(username);
+
+-- index for inventory
+create index idx_storeId on inventory(storeId);
+
+-- index for suppliers
+create index idx_phoneNo on suppliers(phoneNo);
+
+-- index for buy
+create index idx_supplierId on buy(supplierId);
+
+-- index for customers
+create index idx_phoneNo on customers(phoneNo);
+
+-- index for orders
+create index idx_customerId on orders(customerId);
+
+-- index for returnproducts
+create index idx_orderId on returnproducts(orderId);
+
+-- index for feedbacks
+create index idx_orderId on feedbacks(orderId);
