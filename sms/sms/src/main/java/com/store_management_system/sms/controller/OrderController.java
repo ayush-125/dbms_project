@@ -55,7 +55,7 @@ public class OrderController {
     @PostMapping("/order/create")
     public String postCreateOrder(Model model,@AuthenticationPrincipal UserDetails userDetails,@ModelAttribute Order order) {
         User currentUser = userService.getUserByUsername(userDetails.getUsername());
-        model.addAttribute("currentUser", currentUser);
+        
         try {
             model.addAttribute("currentUser", currentUser);
             Long quantity=order.getQuantity();
@@ -67,7 +67,7 @@ public class OrderController {
             if(customerRepository.findById(customerId)==null || quantity==null || quantity>qmax){
                 model.addAttribute("errorMessage", "Incorrect Details..");
             model.addAttribute("order", order);
-            // model.addAttribute("currentUser", currentUser);
+            model.addAttribute("currentUser", currentUser);
            return "order";
             }
             inventory.setQuantity(qmax-quantity);
@@ -76,7 +76,7 @@ public class OrderController {
         } catch (Exception e) {
             model.addAttribute("errorMessage", "Incorrect Details.."+e.getMessage());
             model.addAttribute("order", order);
-            // model.addAttribute("currentUser", currentUser);
+            model.addAttribute("currentUser", currentUser);
            return "order";
         }
         

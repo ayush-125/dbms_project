@@ -34,6 +34,7 @@ public class BuyController {
     @GetMapping("/buy/{inventoryId}")
     public String createBuy(@PathVariable Long inventoryId,@AuthenticationPrincipal UserDetails userDetails,Model model) {
         User currentUser = userService.getUserByUsername(userDetails.getUsername());
+        
         model.addAttribute("currentUser", currentUser);
         try {
         Buy buy=new Buy();
@@ -54,7 +55,7 @@ public class BuyController {
     @PostMapping("/buy/create")
     public String postCreateBuy(Model model,@AuthenticationPrincipal UserDetails userDetails,@ModelAttribute Buy buy) {
         User currentUser = userService.getUserByUsername(userDetails.getUsername());
-        model.addAttribute("currentUser", currentUser);
+        
         try {
             model.addAttribute("currentUser", currentUser);
             Long quantity=buy.getQuantity();
@@ -66,7 +67,7 @@ public class BuyController {
             if(supplierRepository.findById(supplierId)==null ){
                 model.addAttribute("errorMessage", "Incorrect Details..");
             model.addAttribute("buy", buy);
-            // model.addAttribute("currentUser", currentUser);
+            model.addAttribute("currentUser", currentUser);
            return "buy";
             }
             inventory.setQuantity(qmax+quantity);
@@ -75,7 +76,7 @@ public class BuyController {
         } catch (Exception e) {
             model.addAttribute("errorMessage", "Incorrect Details.."+e.getMessage());
             model.addAttribute("buy", buy);
-            // model.addAttribute("currentUser", currentUser);
+            model.addAttribute("currentUser", currentUser);
            return "buy";
         }
         

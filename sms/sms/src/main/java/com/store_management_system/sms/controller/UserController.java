@@ -61,6 +61,7 @@ public class UserController {
     public String getUsersByStoreId(Model model, @AuthenticationPrincipal UserDetails userDetails) {
         try{
             User user = userService.getUserByUsername(userDetails.getUsername());
+            model.addAttribute("currentUser", user);
             model.addAttribute("users", userService.getUsersWithSameStoreById(user.getId()));
         }catch(Exception e){
             model.addAttribute("errorMessage", e.getMessage());
@@ -76,7 +77,7 @@ public class UserController {
             model.addAttribute("currentUser", currentUser);
         if (currentUser.getRoles().stream().anyMatch(role -> role.getName().equals("ADMIN") )) {
             
-            // model.addAttribute("currentUser", currentUser);
+            model.addAttribute("currentUser", currentUser);
             model.addAttribute("user", new User());
             model.addAttribute("check", false);
             return "register";
@@ -97,7 +98,7 @@ public class UserController {
             model.addAttribute("currentUser", currentUser);
         if (currentUser.getRoles().stream().anyMatch(role -> role.getName().equals("ADMIN") || role.getName().equals("MANAGER"))) {
             
-            // model.addAttribute("currentUser", currentUser);
+            model.addAttribute("currentUser", currentUser);
             User user=new User();
             user.setEmployeeId(employeeId);
             model.addAttribute("user", user);
@@ -166,7 +167,7 @@ public class UserController {
             if((currentUser.getRoles().stream().anyMatch(role -> role.getName().equals("ADMIN"))) || ((currentUser.getRoles().stream().anyMatch(role -> role.getName().equals("MANAGER"))) && userService.checkBelongToSameStore(id,currentUser))){
                 
                 model.addAttribute("user", user);
-                // model.addAttribute("currentUser", currentUser);
+                model.addAttribute("currentUser", currentUser);
             }else{
                 return "error/403"; 
             }
@@ -231,6 +232,7 @@ public class UserController {
         try {
             User currentUser = userService.getUserByUsername(userDetails.getUsername());
             model.addAttribute("currentUser", currentUser);
+            
             if((currentUser.getRoles().stream().anyMatch(role -> role.getName().equals("ADMIN"))) ){
                 userService.deleteUserById(id);
             }else{
