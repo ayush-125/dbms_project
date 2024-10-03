@@ -27,10 +27,22 @@
                         <a class="nav-link text-dark fw-bold" href="/admin/users">Admin Users</a>
                     </li>
                     <li class="nav-item" th:if="${currentUser.roles[0].name == 'MANAGER'}">
+                        <a class="nav-link text-dark fw-bold" href="/manager/users">My Store Users</a>
+                    </li>
+                    <li class="nav-item" th:if="${currentUser.roles[0].name == 'MANAGER'}">
                         <a class="nav-link text-dark fw-bold" href="/employees">All Employees</a>
                     </li>
                     <li class="nav-item" th:if="${currentUser.roles[0].name == 'MANAGER' || currentUser.roles[0].name=='ADMIN'}">
                         <a class="nav-link text-dark fw-bold" href="/suppliers">All Suppliers</a>
+                    </li>
+                    <li class="nav-item" th:if="${currentUser.roles[0].name == 'MANAGER' || currentUser.roles[0].name=='ADMIN'}">
+                        <a class="nav-link text-dark fw-bold" href="/products">All Products</a>
+                    </li>
+                    <li class="nav-item" th:if="${currentUser.roles[0].name == 'MANAGER' || currentUser.roles[0].name=='ADMIN'}">
+                        <a class="nav-link text-dark fw-bold" href="/discounts">All Discounts</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-dark fw-bold" href="/inventory">Inventory</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link text-dark fw-bold" href="/customers">Customers</a>
