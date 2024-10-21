@@ -8,6 +8,8 @@ import com.store_management_system.sms.service.UserService;
 
 import jakarta.servlet.http.HttpServletRequest;
 
+import java.security.Principal;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -45,18 +47,19 @@ public class UserController {
     }
 
     @GetMapping("/admin/users")
-    public String getAllUsers(Model model) {
-        try {
-            model.addAttribute("users", userService.getAllAdminUsers());
-            
-            return "users";
-        } catch (Exception e) {
-            model.addAttribute("errorMessage", e.getMessage());
-            return "users";
-        }
+public String getAllUsers(Model model, Principal principal) {
+    try {
+        String username = principal.getName(); // Get the current user's username
+        User currentUser = userService.getUserByUsername(username);
+        model.addAttribute("currentUser", currentUser);
+        model.addAttribute("users", userService.getAllAdminUsers());
         
+        return "users"; // Make sure the users.html exists in your templates
+    } catch (Exception e) {
+        model.addAttribute("errorMessage", e.getMessage());
+        return "users";
     }
-
+}
     @GetMapping("/manager/users")
     public String getUsersByStoreId(Model model, @AuthenticationPrincipal UserDetails userDetails) {
         try{
@@ -182,9 +185,10 @@ public class UserController {
     
 
     @PostMapping("/update/user/{id}")   
-    public String updateUser(@AuthenticationPrincipal UserDetails userDetails,@PathVariable Long id,@ModelAttribute User currentUser, @ModelAttribute User user, Model model) {
+    public String updateUser(@AuthenticationPrincipal UserDetails userDetails,@PathVariable Long id,@ModelAttribute User user, Model model) {
     try {
-            
+        User currentUser = userService.getUserByUsername(userDetails.getUsername());
+        model.addAttribute("currentUser", currentUser);
         if((currentUser.getRoles().stream().anyMatch(role -> role.getName().equals("ADMIN"))) || ((currentUser.getRoles().stream().anyMatch(role -> role.getName().equals("MANAGER"))) && userService.checkBelongToSameStore(id,currentUser))){
             userService.updateUser(user);
         }else{
@@ -198,6 +202,7 @@ public class UserController {
         return "viewuser";  
     }
 }
+
 
     @PostMapping("/delete/user/{id}")
     public String deleteUser(@AuthenticationPrincipal UserDetails userDetails,@PathVariable Long id, Model model){

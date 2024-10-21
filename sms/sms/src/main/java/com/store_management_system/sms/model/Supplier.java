@@ -14,6 +14,15 @@ public class Supplier {
     private List<Buy>buys;
 
     private List<SupplierMail>emails;
+    private List<SupplierPayment> payments;
+
+    public List<SupplierPayment> getPayments() {
+        return payments;
+    }
+
+    public void setPayments(List<SupplierPayment> payments) {
+        this.payments = payments;
+    }
     public List<SupplierMail> getEmails() {
         return emails;
     }

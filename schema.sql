@@ -297,3 +297,20 @@ create index idx_orderId on returnproducts(orderId);
 
 -- index for feedbacks
 create index idx_orderId on feedbacks(orderId);
+CREATE TABLE customer_payment (
+    id BIGINT PRIMARY KEY AUTO_INCREMENT,
+    customer_id BIGINT DEFAULT NULL,
+    payment_amount DECIMAL(15, 2) DEFAULT 0.00,
+    payment_date DATE default null,
+    FOREIGN KEY (customer_id) REFERENCES customers(id)
+        ON DELETE SET NULL
+);
+
+CREATE TABLE supplier_payment (
+    id BIGINT PRIMARY KEY AUTO_INCREMENT,
+    supplier_id BIGINT DEFAULT NULL,
+    payment_amount DECIMAL(15, 2) DEFAULT 0.00,
+    payment_date DATE default null,
+    FOREIGN KEY (supplier_id) REFERENCES suppliers(id)
+        ON DELETE SET NULL
+);

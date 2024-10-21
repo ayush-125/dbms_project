@@ -3,6 +3,8 @@ package com.store_management_system.sms.controller;
 import java.time.LocalDate;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -10,18 +12,20 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import com.store_management_system.sms.model.*;
-import com.store_management_system.sms.model.Customer;
-import com.store_management_system.sms.model.Inventory;
-import com.store_management_system.sms.model.Feedback;
 import com.store_management_system.sms.repository.FeedbackRepository;
+import com.store_management_system.sms.service.UserService;
 
 @Controller
 public class FeedbackController {
     @Autowired
     private FeedbackRepository feedbackRepository;
+    @Autowired
+    UserService userService;
 
     @GetMapping("/feedback/create/{id}")
-    public String createFeedback(Model model,@PathVariable Long id){
+    public String createFeedback(Model model,@PathVariable Long id, @AuthenticationPrincipal UserDetails userDetails){
+        User currentUser = userService.getUserByUsername(userDetails.getUsername());
+        model.addAttribute("currentUser", currentUser);
         try {
            Feedback feedback =new Feedback();
            feedback.setOrderId(id);
@@ -36,7 +40,9 @@ public class FeedbackController {
         
     }
     @PostMapping("/feedback/create")
-    public String postCreateFeedback(Model model,@ModelAttribute Feedback feedback){
+    public String postCreateFeedback(Model model,@ModelAttribute Feedback feedback, @AuthenticationPrincipal UserDetails userDetails){
+        User currentUser = userService.getUserByUsername(userDetails.getUsername());
+        model.addAttribute("currentUser", currentUser);
         try {
             feedbackRepository.save(feedback);
             return "redirect:/customers";
@@ -48,7 +54,9 @@ public class FeedbackController {
     }
 
     @GetMapping("/feedback/view/{id}")
-    public String viewFeedback(Model model,@PathVariable Long id){
+    public String viewFeedback(Model model,@PathVariable Long id, @AuthenticationPrincipal UserDetails userDetails){
+        User currentUser = userService.getUserByUsername(userDetails.getUsername());
+        model.addAttribute("currentUser", currentUser);
         try {
             Feedback feedback=feedbackRepository.findById(id);
             model.addAttribute("feedback", feedback);
@@ -61,7 +69,9 @@ public class FeedbackController {
     }
 
     @PostMapping("/update/feedback/{id}")
-    public String updateFeedback(Model model,@PathVariable Long id,@ModelAttribute Feedback feedback){
+    public String updateFeedback(Model model,@PathVariable Long id,@ModelAttribute Feedback feedback, @AuthenticationPrincipal UserDetails userDetails){
+        User currentUser = userService.getUserByUsername(userDetails.getUsername());
+        model.addAttribute("currentUser", currentUser);
         try {
             feedbackRepository.save(feedback);
             return "redirect:/customers";
@@ -73,7 +83,9 @@ public class FeedbackController {
     }
 
     @PostMapping("/delete/feedback/{id}")
-    public String deleteFeedback(Model model,@PathVariable Long id) {
+    public String deleteFeedback(Model model,@PathVariable Long id, @AuthenticationPrincipal UserDetails userDetails) {
+        User currentUser = userService.getUserByUsername(userDetails.getUsername());
+        model.addAttribute("currentUser", currentUser);
         try {
             feedbackRepository.deleteById(id);
         } catch (Exception e) {

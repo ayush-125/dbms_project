@@ -55,6 +55,8 @@ public class StoreController {
                 return "error/403";
             }
             model.addAttribute("store", new Store());
+            List<Employee> managers = employeeService.getAllManagers();
+            model.addAttribute("managers", managers);
             return "createStore";
         } catch (Exception e) {
             // model.addAttribute("errorMessage", "Error: " + e.getMessage());
@@ -72,6 +74,8 @@ public class StoreController {
             if (!(currentUser.getRoles().stream().anyMatch(role -> role.getName().equals("ADMIN")))) {
                 return "error/403";
             }
+            List<Employee> managers = employeeService.getAllManagers();
+            model.addAttribute("managers", managers);
 
             if (store.getManagerId() != null) {
                 Employee employee = employeeService.getEmployeeById(store.getManagerId());
@@ -107,6 +111,8 @@ public class StoreController {
             }
             model.addAttribute("store", store);
 
+            List<Employee> managers = employeeService.getAllManagers();
+            model.addAttribute("managers", managers);
             if (!(currentUser.getRoles().stream().anyMatch(role -> role.getName().equals("ADMIN"))) &&
                     !(currentUser.getRoles().stream().anyMatch(role -> role.getName().equals("MANAGER")) &&
                             userService.getStoreIdById(currentUser.getId()).equals(id))) {
@@ -132,7 +138,7 @@ public class StoreController {
             if (!(currentUser.getRoles().stream().anyMatch(role -> role.getName().equals("ADMIN")))) {
                 return "error/403";
             }
-
+            
             if (store.getManagerId() != null) {
                 Employee employee = employeeService.getEmployeeById(store.getManagerId());
                 if (employee == null || employee.getDesignation() == null || !employee.getDesignation().equals("Manager")) {
@@ -142,6 +148,9 @@ public class StoreController {
                     return "viewstore";
                 }
             }
+
+            List<Employee> managers = employeeService.getAllManagers();
+            model.addAttribute("managers", managers);
 
             storeService.updateStore(store);
             redirectAttributes.addFlashAttribute("successMessage", "Store updated successfully.");

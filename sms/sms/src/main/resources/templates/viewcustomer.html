@@ -3,7 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>customer Details</title>
+    <title>Customer Details</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link rel="stylesheet" href="/css/styles.css" />
     <script>
         document.addEventListener('DOMContentLoaded', function () {
@@ -60,100 +62,217 @@
             });
         });
     </script>
+    <style>
+        body {
+            background-color: #f8f9fa; /* Softer background */
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        .container {
+            margin-top: 50px;
+            max-width: 900px; /* Wider container to fit two columns */
+        }
+        .card {
+            padding: 40px;
+            border-radius: 12px;
+            background-color: #fff;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
+            max-height: 80vh; /* Set a max height for the card */
+            overflow-y: auto; /* Allow vertical scrolling if content exceeds max height */
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        .form-control {
+            border-radius: 8px;
+            padding: 10px 15px;
+            font-size: 16px;
+        }
+        .row {
+            margin-left: 0;
+            margin-right: 0;
+        }
+        .btn-custom {
+            background-color: #007bff;
+            color: white;
+            font-size: 16px;
+            padding: 10px 25px;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: background-color 0.3s ease, transform 0.3s ease;
+        }
+        .btn-cancel {
+            background-color: #ff0400;
+            color: white;
+            font-size: 16px;
+            padding: 6.5px 15px;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: background-color 0.3s ease, transform 0.3s ease;
+        }
+        .btn-custom:hover {
+            background-color: #0056b3;
+            transform: translateY(-2px);
+        }
+        label {
+            font-weight: 500;
+            color: #495057;
+        }
+    </style>
 </head>
 <body>
-    <div class="container">
-        <form id="customerForm" method="post" th:object="${customer}" th:action="@{/update/customer/{id}(id=${customer.id})}">
-            <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
-            <div id="errorMessageDiv" th:if="${errorMessage}" style="color: red; display:block ;">
-                <p th:text="${errorMessage}"></p>
-            </div>
-            <label for="firstName">First Name</label>
-            <input type="text" id="firstName" th:field="*{firstName}" th:value="${customer != null ? customer.firstName : ''}" disabled="true" required />
-            
-            <label for="middleName">Middle Name</label>
-            <input type="text" id="middleName" th:field="*{middleName}" th:value="${customer != null ? customer.middleName : ''}" disabled="true" />
-
-            <label for="lastName">Last Name</label>
-            <input type="text" id="lastName" th:field="*{lastName}" th:value="${customer != null ? customer.lastName : ''}" disabled="true"  />
-
-            <label for="houseNo">House No</label>
-            <input type="text" id="houseNo" th:field="*{houseNo}" th:value="${customer != null ? customer.houseNo : ''}" disabled="true"  />
-
-            <label for="city">City</label>
-            <input type="text" id="city" th:field="*{city}" th:value="${customer != null ? customer.city : ''}" disabled="true"  />
-
-            <label for="state">State</label>
-            <input type="text" id="state" th:field="*{state}" th:value="${customer != null ? customer.state : ''}" disabled="true"  />
-
-            <label for="pincode">Pincode</label>
-            <input type="number" step="1" id="pincode" th:field="*{pincode}" th:value="${customer != null ? customer.pincode : ''}" disabled="true"  />
-
-            <!-- <label for="designation">Designation</label>
-            <select id="designation" th:field="*{designation}" disabled="true" required>
-                <option value="Manager" th:selected="${customer != null && customer.designation == 'Manager'}">Manager</option>
-                <option value="Senior customer" th:selected="${customer != null && customer.designation == 'Senior customer'}">Senior customer</option>
-                <option value="customer" th:selected="${customer != null && customer.designation == 'customer'}">customer</option>
-            </select> -->
-
-            <label for="phoneNo">Phone No</label>
-            <input type="tel" pattern="\d{10}" maxlength="10"  id="phoneNo" th:field="*{phoneNo}" th:value="${customer != null ? customer.phoneNo : ''}" disabled="true" required/>
-
-            <div>
-                <label for="account">Account</label>
-                <input type="number"   id="account" th:field="*{account}" th:value="${customer != null ? customer.phoneNo : ''}" disabled="true"  required />
-            </div>
-            <!-- <label for="emailId">Email ID</label>
-            <input type="email" id="emailId" th:field="*{emailId}" th:value="${customer != null ? customer.emailId : ''}" disabled="true"  />
-
-            <label for="salary">Salary </label>
-            <input type="number"  id="salary" th:field="*{salary}" th:value="${customer != null ? customer.salary : ''}" disabled="true" required  />
-
-
-            <label for="storeId">Store ID</label>
-            <input type="number" step="1" id="storeId" th:field="*{storeId}" th:value="${customer != null ? customer.storeId : ''}" disabled="true" required readonly /> -->
-
-            <label for="dob">Date of Birth</label>
-            <input type="date" id="dob" th:field="*{dob}" th:value="${customer != null ? customer.dob : ''}" disabled="true" />
-            <!-- <input type="text" id="dobtext"  th:value="${customer != null ? customer.dob : ''}" disabled="true" readonly  /> -->
-
-            <label for="age">Age </label>
-            <input type="number"  id="age" th:field="*{age}" th:value="${customer != null ? customer.age +'years' : ''}" disabled="true" readonly   />
-
-
-            <label for="sex">Sex</label>
-            <select id="sex" th:field="*{sex}" disabled="true" required>
-                <option value="M" th:selected="${customer != null && customer.sex == 'M'}">Male</option>
-                <option value="F" th:selected="${customer != null && customer.sex == 'F'}">Female</option>
-                <option value="Other" th:selected="${customer != null && customer.sex == 'Other'}">Other</option>
-            </select>
-             
-            <div id="emailFields"></div>
+    <div th:replace="navbar :: navbar"></div>
+    <div class="container mt-3">
+        <div class="card">
+            <h2 class="text-info text-center">View Customers Details</h2>
+            <hr>
+            <form id="customerForm" method="post" th:object="${customer}" th:action="@{/update/customer/{id}(id=${customer.id})}">
+                <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
+                <div id="errorMessageDiv" th:if="${errorMessage}" style="color: red; display:block ;">
+                    <p th:text="${errorMessage}"></p>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="firstName">First Name:</label>
+                            <input type="text" id="firstName" th:field="*{firstName}" th:value="${customer != null ? customer.firstName : ''}" class="form-control" disabled="true" required />
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="middleName">Middle Name:</label>
+                            <input type="text" id="middleName" th:field="*{middleName}" th:value="${customer != null ? customer.middleName : ''}" class="form-control" disabled="true" />
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="lastName">Last Name:</label>
+                            <input type="text" id="lastName" th:field="*{lastName}" th:value="${customer != null ? customer.lastName : ''}" class="form-control" disabled="true" />
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="houseNo">House No:</label>
+                            <input type="text" id="houseNo" th:field="*{houseNo}" th:value="${customer != null ? customer.houseNo : ''}" class="form-control" disabled="true" />
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="city">City:</label>
+                            <input type="text" id="city" th:field="*{city}" th:value="${customer != null ? customer.city : ''}" class="form-control" disabled="true" />
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="state">State:</label>
+                            <input type="text" id="state" th:field="*{state}" th:value="${customer != null ? customer.state : ''}" class="form-control" disabled="true" />
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="pincode">Pincode:</label>
+                            <input type="number" step="1" id="pincode" th:field="*{pincode}" th:value="${customer != null ? customer.pincode : ''}" class="form-control" disabled="true" />
+                        </div>
+                        
+                        <!-- Commented out the Designation as per the original code -->
+                        <!--
+                        <div class="form-group">
+                            <label for="designation">Designation</label>
+                            <select id="designation" th:field="*{designation}" class="form-control" disabled="true" required>
+                                <option value="Manager" th:selected="${customer != null && customer.designation == 'Manager'}">Manager</option>
+                                <option value="Senior customer" th:selected="${customer != null && customer.designation == 'Senior customer'}">Senior customer</option>
+                                <option value="customer" th:selected="${customer != null && customer.designation == 'customer'}">customer</option>
+                            </select>
+                        </div>
+                        -->
+                        
+                        <div class="form-group">
+                            <label for="phoneNo">Phone No:</label>
+                            <input type="tel" pattern="\d{10}" maxlength="10" id="phoneNo" th:field="*{phoneNo}" th:value="${customer != null ? customer.phoneNo : ''}" class="form-control" disabled="true" required />
+                        </div>
+                        
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="account">Account:</label>
+                        <input type="number" id="account" th:field="*{account}" th:value="${customer != null ? customer.account : ''}" class="form-control" disabled="true" required />
+                    </div>
+                    
+                    <!-- Commented out as per the original code -->
+                    <!--
+                    <div class="form-group">
+                        <label for="emailId">Email ID</label>
+                        <input type="email" id="emailId" th:field="*{emailId}" th:value="${customer != null ? customer.emailId : ''}" class="form-control" disabled="true" />
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="salary">Salary</label>
+                        <input type="number" id="salary" th:field="*{salary}" th:value="${customer != null ? customer.salary : ''}" class="form-control" disabled="true" required />
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="storeId">Store ID</label>
+                        <input type="number" step="1" id="storeId" th:field="*{storeId}" th:value="${customer != null ? customer.storeId : ''}" class="form-control" disabled="true" required readonly />
+                    </div>
+                    -->
+                    
+                    <div class="form-group">
+                        <label for="dob">Date of Birth:</label>
+                        <input type="date" id="dob" th:field="*{dob}" th:value="${customer != null ? customer.dob : ''}" class="form-control" disabled="true" />
+                    </div>
+                    
+                    <!-- Commented out alternate DOB field as per original code -->
+                    <!--
+                    <input type="text" id="dobtext" th:value="${customer != null ? customer.dob : ''}" class="form-control" disabled="true" readonly />
+                    -->
+                    
+                    <div class="form-group">
+                        <label for="age">Age:</label>
+                        <input type="number" id="age" th:field="*{age}" th:value="${customer != null ? customer.age : ''}" class="form-control" disabled="true" readonly />
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="sex">Sex:</label>
+                        <select id="sex" th:field="*{sex}" class="form-control" disabled="true" required>
+                            <option value="M" th:selected="${customer != null && customer.sex == 'M'}">Male</option>
+                            <option value="F" th:selected="${customer != null && customer.sex == 'F'}">Female</option>
+                            <option value="Other" th:selected="${customer != null && customer.sex == 'Other'}">Other</option>
+                        </select>
+                    </div>
+                <div class="form-group" id="emailFields">
                 <!-- Loop through existing emails -->
-                <div th:each="mail, iterStat : ${customer.emails}">
+                    <label for="email">Email:</label>
+                    <div th:each="mail, iterStat : ${customer.emails}">
                     <!-- Bind userId field from the parent user -->
                     <input type="hidden" th:field="*{emails[__${iterStat.index}__].customerId}" th:value="*{id}" />
-        
                     <!-- email input field -->
-                    <input type="email" th:field="*{emails[__${iterStat.index}__].customerEmail}" placeholder="Email" disabled="true"/>
+                    <input type="email" th:field="*{emails[__${iterStat.index}__].customerEmail}" class="form-control" style="margin:10px;" placeholder="Email" disabled="true"/>
+                    </div>
                 </div>
-                <!-- Predefined additional email fields -->
-            <!-- <div th:each="i : ${#numbers.sequence(0, 4)}">
-                <input type="hidden" th:field="*{emails[__${user.emails.size() + i}__].customerId}" th:value="*{id}" />
-                <input type="email" th:field="*{emails[__${user.emails.size() + i}__].customerEmail}" placeholder="Email" />
-            </div> -->
+                    <!-- Predefined additional email fields -->
+                <!-- <div th:each="i : ${#numbers.sequence(0, 4)}">
+                    <input type="hidden" th:field="{emails[${user.emails.size() + i}].customerId}" th:value="{id}" />
+                    <input type="email" th:field="*{emails[${user.emails.size() + i}].customerEmail}" placeholder="Email" />
+                </div> -->
+                </div>
             </div>
-
-            <!-- <div id="storeIdField" style="display: block;">
-                <label for="storeId">Store ID</label>
-                <input type="text" id="storeId" th:field="*{storeId}" th:value="${customer != null ? customer.storeId : ''}" disabled="true" required />
-            </div> -->
-
-            <button type="button" id="editButton" style="display:none;">Edit</button>
-            <button type="submit" id="submitButton" style="display:none;">Submit</button>
-            <button type="button" id="cancelButton" style="display:none;">Cancel</button>
-            <a class="button" th:href="@{/home}">home</a>
-        </form>
+                <!-- <div id="storeIdField" style="display: block;">
+                    <label for="storeId">Store ID</label>
+                    <input type="text" id="storeId" th:field="*{storeId}" th:value="${customer != null ? customer.storeId : ''}" disabled="true" required />
+                </div> -->
+                <div class="row mt-2">
+                    <div class="col text-left">
+                        <a class="button" th:href="@{/home}">Home</a>
+                    </div>
+                    <div class="text-left">
+                        <button type="button" class="btn btn-link btn-outline-info" id="editButton" style="display:none; float:right;">Edit</button>
+                    </div>
+                    <div >
+                        <button type="button" class="btn btn-outline-secondary" id="cancelButton" style="display:none; margin-right:5px;">Cancel</button>
+                    </div>
+                    <div >
+                        <button type="submit" class="btn btn-outline-success" id="submitButton" style="display:none;">Submit</button>
+                    </div>
+                </div>
+            </form>
+            </div>
     </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

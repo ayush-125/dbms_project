@@ -5,6 +5,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 
+import com.store_management_system.sms.repository.SupplierPaymentRepository;
 import com.store_management_system.sms.repository.SupplierRepository;
 import com.store_management_system.sms.service.UserService;
 
@@ -17,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import com.fasterxml.jackson.annotation.JsonCreator.Mode;
 import com.store_management_system.sms.model.*;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -26,6 +28,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 public class SupplierController {
     @Autowired
     SupplierRepository supplierRepository;
+    @Autowired
+    SupplierPaymentRepository supplierPaymentRepository;
     @Autowired
     UserService userService;
 
@@ -161,6 +165,67 @@ public class SupplierController {
             return "redirect:/suppliers";
         }
     
+    }
+    @PostMapping("/supplier/{id}/pay")
+    public String postSupplierPayment(@PathVariable Long id, @RequestParam Double paymentAmount, Model model, @AuthenticationPrincipal UserDetails userDetails) {
+        User currentUser = userService.getUserByUsername(userDetails.getUsername());
+        model.addAttribute("currentUser", currentUser);
+
+        try {
+        // Fetch the supplier by ID
+            Supplier supplier = supplierRepository.findById(id);
+            if (supplier == null) {
+                model.addAttribute("errorMessage", "Supplier not found");
+                return "redirect:/suppliers"; // Redirect back to suppliers list with an error
+            }
+
+        // Record the payment in the supplier_payment table
+            SupplierPayment supplierPayment = new SupplierPayment();
+            supplierPayment.setSupplierId(id); // Associate payment with supplier
+            supplierPayment.setPaymentAmount(paymentAmount); // Set payment amount
+            supplierPayment.setPaymentDate(LocalDate.now()); // Set current date as payment date
+
+        // Save payment record in supplier_payment table
+            supplierPaymentRepository.save(supplierPayment);
+
+        // Update the supplier's account balance
+            Double currentBalance = supplier.getAccount();
+            Double updatedBalance = currentBalance - paymentAmount;
+            supplier.setAccount(updatedBalance);
+
+        // Save the updated supplier account balance in the database
+            supplierRepository.updateSupplierAccount(supplier.getId(), updatedBalance);
+
+            // Redirect to the mainvsuppliers list page (or wherever you want)
+            return "redirect:/suppliers"; // Redirect back to the suppliers list
+        } catch (Exception e) {
+            model.addAttribute("errorMessage", "Failed to process payment: " + e.getMessage());
+            return "redirect:/suppliers"; // Redirect back to suppliers list with an error
+        }
+    }
+    @GetMapping("/supplier/payment/{id}")
+    public String viewPaymentHistory(@PathVariable Long id, Model model, @AuthenticationPrincipal UserDetails userDetails) {
+        User currentUser = userService.getUserByUsername(userDetails.getUsername());
+        model.addAttribute("currentUser", currentUser);
+        // Fetch the supplier by ID
+        try {
+            Supplier supplier = supplierRepository.findById(id);
+            if (supplier == null) {
+                model.addAttribute("error", "Supplier not found");
+                return "redirect:/suppliers";
+            }
+            List<SupplierPayment> payments = supplierPaymentRepository.findPaymentsBySupplierId(id);
+            model.addAttribute("supplier", supplier);
+            model.addAttribute("payments", payments);
+
+        // Return the payment-history Thymeleaf view
+            return "supplierPayment"; 
+        }
+        catch (Exception e)
+        {
+            model.addAttribute("errorMessage", "Failed to show payment details: " + e.getMessage());
+            return "redirect:/suppliers"; 
+        }
     }
     // @GetMapping("/search/supplier/{phoneNo}")
     // public String getMethodName(@PathVariable String firstName) {
