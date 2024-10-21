@@ -1,4 +1,5 @@
 package com.store_management_system.sms.service;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -135,5 +136,23 @@ public class EmployeeService {
             throw new CustomServiceException(e.getMessage(), e);
         }
         
+    }
+    public List<Employee> getAllManagers() {
+        try {
+            List<Employee> employees = employeeRepository.findAll();
+            List<Employee> managers = new ArrayList<>();
+            
+            for (Employee employee : employees) {
+                // Convert designation to lowercase for case-insensitive comparison
+                if ("manager".equals(employee.getDesignation().toLowerCase())) {
+                    List<User> users = userRepository.findByEmployeeId(employee.getId());
+                    employee.setUsers(users);
+                    managers.add(employee);
+                }
+            }
+            return managers;
+        } catch (Exception e) {
+            throw new CustomServiceException(e.getMessage(), e);
+        }
     }
 }

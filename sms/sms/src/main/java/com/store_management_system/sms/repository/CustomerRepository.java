@@ -105,6 +105,10 @@ public class CustomerRepository {
             throw new CustomDatabaseException("Error finding count of Customers  "+e.getMessage(),e);
         }
     }
+    public int updateCustomerAccount(Long customerId, Double newAccountBalance) {
+        String sql = "UPDATE customers SET account = ? WHERE id = ?";
+        return jdbcTemplate.update(sql, newAccountBalance, customerId);
+    }
     public void deleteById(Long id){
         try {
             String sql="delete from customers where id=?";

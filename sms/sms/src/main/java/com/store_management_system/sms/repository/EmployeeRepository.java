@@ -125,4 +125,17 @@ public class EmployeeRepository {
             // return null;
         }
     }
+    public List<Employee> findAllManagers() {
+        try {
+            // SQL query with case-insensitivity and trimming of spaces for the designation field
+            String sql = "SELECT * FROM employees WHERE TRIM(LOWER(designation)) = 'manager'";
+            
+            List<Employee> managers = jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(Employee.class));
+            
+            return managers;
+        } catch (DataAccessException e) {
+            System.err.println("Error querying managers: " + e.getMessage());
+            throw new CustomDatabaseException("Error querying all employees with designation 'manager'.", e);
+        }
+    }
 }

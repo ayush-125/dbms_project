@@ -112,6 +112,10 @@ public class SupplierRepository {
         
         }
     }
+    public int updateSupplierAccount(Long supplierId, Double newAccountBalance) {
+        String sql = "UPDATE suppliers SET account = ? WHERE id = ?";
+        return jdbcTemplate.update(sql, newAccountBalance, supplierId);
+    }
     public void deleteById(Long id) {
         try {
             String sql = "DELETE FROM suppliers WHERE id = ?";

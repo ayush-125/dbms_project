@@ -19,7 +19,7 @@ import org.springframework.ui.Model;
 import com.store_management_system.sms.service.UserService;
 import org.springframework.web.bind.annotation.RequestBody;
 
-
+import java.util.List;
 
 @Controller
 public class OrderController {
@@ -33,22 +33,27 @@ public class OrderController {
     private OrderRepository orderRepository;
 
     @GetMapping("/order/{inventoryId}")
-    public String createOrder(@PathVariable Long inventoryId,@AuthenticationPrincipal UserDetails userDetails,Model model) {
+    public String createOrder(@PathVariable Long inventoryId, @AuthenticationPrincipal UserDetails userDetails, Model model) {
         User currentUser = userService.getUserByUsername(userDetails.getUsername());
         model.addAttribute("currentUser", currentUser);
+        
         try {
-        Order order=new Order();
-        order.setEmployeeId(currentUser.getEmployeeId());
-        order.setInventoryId((long)inventoryId);
-        order.setOdate(LocalDate.now());
-        order.setPrice(inventoryRepository.getPriceById(inventoryId));
-        model.addAttribute("order", order);
+            Order order = new Order();
+            order.setEmployeeId(currentUser.getEmployeeId());
+            order.setInventoryId(inventoryId);
+            order.setOdate(LocalDate.now());
+            order.setPrice(inventoryRepository.getPriceById(inventoryId));
+    
+            // Fetch all customer details and add to model
+            List<Customer> customers = customerRepository.findAll();
+            model.addAttribute("customers", customers);
+    
+            model.addAttribute("order", order);
             return "order";
         } catch (Exception e) {
             model.addAttribute("errorMessage", e.getMessage());
-            // model.addAttribute("order", order);
             model.addAttribute("currentUser", currentUser);
-           return "order";
+            return "order";
         }
     }
 

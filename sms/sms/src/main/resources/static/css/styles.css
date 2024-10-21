@@ -38,3 +38,31 @@
 .error {
     color: red;
 }
+
+.form-group {
+    margin-bottom: 1.5rem;
+}
+
+.form-control {
+    font-size: 1rem;
+    padding: 0.75rem 1.25rem;
+    border-radius: 0.5rem; /* Rounded corners */
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1); /* Subtle shadow for input fields */
+    border: 1px solid #ddd;
+}
+
+.form-control:focus {
+    border-color: #007bff; /* Primary color border on focus */
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+}
+
+/* Search input icon */
+.form-control::placeholder {
+    color: #999;
+    font-size: 0.9rem;
+}
+.form-control:focus::placeholder {
+    color: #cccccc; /* Slightly visible on focus for accessibility */
+    /* Smooth transition for focus effect */
+    transition: color 0.3s ease; 
+}

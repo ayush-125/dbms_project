@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Employee Details</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link rel="stylesheet" href="/css/styles.css" />
     <script>
         document.addEventListener('DOMContentLoaded', function () {
@@ -60,82 +62,189 @@
             });
         });
     </script>
+    <style>
+        body {
+            background-color: #f8f9fa; /* Softer background */
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        .container {
+            margin-top: 50px;
+            max-width: 900px; /* Wider container to fit two columns */
+        }
+        .card {
+            padding: 40px;
+            border-radius: 12px;
+            background-color: #fff;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
+            max-height: 80vh; /* Set a max height for the card */
+            overflow-y: auto; /* Allow vertical scrolling if content exceeds max height */
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        .form-control {
+            border-radius: 8px;
+            padding: 10px 15px;
+            font-size: 16px;
+        }
+        .row {
+            margin-left: 0;
+            margin-right: 0;
+        }
+        .btn-custom {
+            background-color: #007bff;
+            color: white;
+            font-size: 16px;
+            padding: 10px 25px;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: background-color 0.3s ease, transform 0.3s ease;
+        }
+        .btn-cancel {
+            background-color: #ff0400;
+            color: white;
+            font-size: 16px;
+            padding: 6.5px 15px;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: background-color 0.3s ease, transform 0.3s ease;
+        }
+        .btn-custom:hover {
+            background-color: #0056b3;
+            transform: translateY(-2px);
+        }
+        label {
+            font-weight: 500;
+            color: #495057;
+        }
+    </style>
 </head>
 <body>
-    <div class="container">
-        <form id="employeeForm" method="post" th:object="${employee}" th:action="@{/update/employee/{id}(id=${employee.id})}">
-            <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
-            <div id="errorMessageDiv" th:if="${errorMessage}" style="color: red; display:block ;">
-                <p th:text="${errorMessage}"></p>
-            </div>
-            <label for="firstName">First Name</label>
-            <input type="text" id="firstName" th:field="*{firstName}" th:value="${employee != null ? employee.firstName : ''}" disabled="true" required />
-            
-            <label for="middleName">Middle Name</label>
-            <input type="text" id="middleName" th:field="*{middleName}" th:value="${employee != null ? employee.middleName : ''}" disabled="true" />
+    <div th:replace="navbar :: navbar"></div>
+    <div class="container mt-3">
+        <div class="card">
+            <h2 class="text-center text-info">View Employee Details</h2>
+            <hr>
+            <form id="employeeForm" method="post" th:object="${employee}" th:action="@{/update/employee/{id}(id=${employee.id})}">
+                <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
+                <div id="errorMessageDiv" th:if="${errorMessage}" style="color: red; display:block ;">
+                    <p th:text="${errorMessage}"></p>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="firstName">First Name</label>
+                            <input type="text" id="firstName" th:field="*{firstName}" th:value="${employee != null ? employee.firstName : ''}" class="form-control" disabled="true" required />
+                        </div>
 
-            <label for="lastName">Last Name</label>
-            <input type="text" id="lastName" th:field="*{lastName}" th:value="${employee != null ? employee.lastName : ''}" disabled="true"  />
-
-            <label for="houseNo">House No</label>
-            <input type="text" id="houseNo" th:field="*{houseNo}" th:value="${employee != null ? employee.houseNo : ''}" disabled="true"  />
-
-            <label for="city">City</label>
-            <input type="text" id="city" th:field="*{city}" th:value="${employee != null ? employee.city : ''}" disabled="true"  />
-
-            <label for="state">State</label>
-            <input type="text" id="state" th:field="*{state}" th:value="${employee != null ? employee.state : ''}" disabled="true"  />
-
-            <label for="pincode">Pincode</label>
-            <input type="number" step="1" id="pincode" th:field="*{pincode}" th:value="${employee != null ? employee.pincode : ''}" disabled="true"  />
-            <div>
-                <label for="supervisor">supervisor</label>
-                <input type="number" step="1" id="supervisor" th:field="*{supervisor}" th:value="${employee!=null ? employee.supervisor : ''}" disabled="true"/>
-            </div>
-            <label for="designation">Designation</label>
-            <select id="designation" th:field="*{designation}" disabled="true" required>
-                <option value="Manager" th:selected="${employee != null && employee.designation == 'Manager'}">Manager</option>
-                <option value="Senior Employee" th:selected="${employee != null && employee.designation == 'Senior Employee'}">Senior Employee</option>
-                <option value="Employee" th:selected="${employee != null && employee.designation == 'Employee'}">Employee</option>
-            </select>
-
-            <label for="phoneNo">Phone No</label>
-            <input type="tel" pattern="\d{10}" maxlength="10"  id="phoneNo" th:field="*{phoneNo}" th:value="${employee != null ? employee.phoneNo : ''}" disabled="true" required/>
-
-            <label for="emailId">Email ID</label>
-            <input type="email" id="emailId" th:field="*{emailId}" th:value="${employee != null ? employee.emailId : ''}" disabled="true"  />
-
-            <label for="salary">Salary </label>
-            <input type="number"  id="salary" th:field="*{salary}" th:value="${employee != null ? employee.salary : ''}" disabled="true" required  />
-
-
-            <label for="storeId">Store ID</label>
-            <input type="number" step="1" id="storeId" th:field="*{storeId}" th:value="${employee != null ? employee.storeId : ''}" disabled="true" required readonly />
-
-            <label for="dob">Date of Birth</label>
-            <input type="date" id="dob" th:field="*{dob}" th:value="${employee != null ? employee.dob : ''}" disabled="true" required />
-            <!-- <input type="text" id="dobtext"  th:value="${employee != null ? employee.dob : ''}" disabled="true" readonly required /> -->
-
-            <label for="age">Age </label>
-            <input type="number"  id="age" th:field="*{age}" th:value="${employee != null ? employee.age +'years' : ''}" disabled="true" readonly   />
-
-
-            <label for="sex">Sex</label>
-            <select id="sex" th:field="*{sex}" disabled="true" required>
-                <option value="M" th:selected="${employee != null && employee.sex == 'M'}">Male</option>
-                <option value="F" th:selected="${employee != null && employee.sex == 'F'}">Female</option>
-            </select>
-             
-            <!-- <div id="storeIdField" style="display: block;">
-                <label for="storeId">Store ID</label>
-                <input type="text" id="storeId" th:field="*{storeId}" th:value="${employee != null ? employee.storeId : ''}" disabled="true" required />
-            </div> -->
-
-            <button type="button" id="editButton" style="display:none;">Edit</button>
-            <button type="submit" id="submitButton" style="display:none;">Submit</button>
-            <button type="button" id="cancelButton" style="display:none;">Cancel</button>
-            <a class="button" th:href="@{/home}">home</a>
-        </form>
+                        <div class="form-group">
+                            <label for="middleName">Middle Name</label>
+                            <input type="text" id="middleName" th:field="*{middleName}" th:value="${employee != null ? employee.middleName : ''}" class="form-control" disabled="true" />
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="lastName">Last Name</label>
+                            <input type="text" id="lastName" th:field="*{lastName}" th:value="${employee != null ? employee.lastName : ''}" class="form-control" disabled="true" />
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="houseNo">House No</label>
+                            <input type="text" id="houseNo" th:field="*{houseNo}" th:value="${employee != null ? employee.houseNo : ''}" class="form-control" disabled="true" />
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="city">City</label>
+                            <input type="text" id="city" th:field="*{city}" th:value="${employee != null ? employee.city : ''}" class="form-control" disabled="true" />
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="state">State</label>
+                            <input type="text" id="state" th:field="*{state}" th:value="${employee != null ? employee.state : ''}" class="form-control" disabled="true" />
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="pincode">Pincode</label>
+                            <input type="number" step="1" id="pincode" th:field="*{pincode}" th:value="${employee != null ? employee.pincode : ''}" class="form-control" disabled="true" />
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="supervisor">Supervisor</label>
+                            <input type="number" step="1" id="supervisor" th:field="*{supervisor}" th:value="${employee != null ? employee.supervisor : ''}" class="form-control" disabled="true" />
+                        </div>
+                        
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="designation">Designation</label>
+                            <select id="designation" th:field="*{designation}" class="form-control" disabled="true" required>
+                                <option value="Manager" th:selected="${employee != null && employee.designation == 'Manager'}">Manager</option>
+                                <option value="Senior Employee" th:selected="${employee != null && employee.designation == 'Senior Employee'}">Senior Employee</option>
+                                <option value="Employee" th:selected="${employee != null && employee.designation == 'Employee'}">Employee</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="phoneNo">Phone No</label>
+                            <input type="tel" pattern="\d{10}" maxlength="10" id="phoneNo" th:field="*{phoneNo}" th:value="${employee != null ? employee.phoneNo : ''}" class="form-control" disabled="true" required />
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="emailId">Email ID</label>
+                            <input type="email" id="emailId" th:field="*{emailId}" th:value="${employee != null ? employee.emailId : ''}" class="form-control" disabled="true" />
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="salary">Salary</label>
+                            <input type="number" id="salary" th:field="*{salary}" th:value="${employee != null ? employee.salary : ''}" class="form-control" disabled="true" required />
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="storeId">Store ID</label>
+                            <input type="number" step="1" id="storeId" th:field="*{storeId}" th:value="${employee != null ? employee.storeId : ''}" class="form-control" disabled="true" required readonly />
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="dob">Date of Birth</label>
+                            <input type="date" id="dob" th:field="*{dob}" th:value="${employee != null ? employee.dob : ''}" class="form-control" disabled="true" required />
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="age">Age</label>
+                            <input type="number" id="age" th:field="*{age}" th:value="${employee != null ? employee.age + ' years' : ''}" class="form-control" disabled="true" readonly />
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="sex">Sex</label>
+                            <select id="sex" th:field="*{sex}" class="form-control" disabled="true" required>
+                                <option value="M" th:selected="${employee != null && employee.sex == 'M'}">Male</option>
+                                <option value="F" th:selected="${employee != null && employee.sex == 'F'}">Female</option>
+                            </select>
+                        </div>
+                        
+                    </div>
+                    <!-- <div id="storeIdField" style="display: block;">
+                        <label for="storeId">Store ID</label>
+                        <input type="text" id="storeId" th:field="*{storeId}" th:value="${employee != null ? employee.storeId : ''}" disabled="true" required />
+                    </div> -->    
+                </div>
+                
+                    <div class="col">
+                        <a class="button btn-secondary" style="float:left;"th:href="@{/home}">Home</a>
+                    </div>
+                <div class="col">
+                    <button type="button" class="btn btn-link btn-outline-info" id="editButton" style="display:none; float:right;">Edit</button>
+                </div>
+                <div class="col">
+                    <button type="submit" class="btn btn-outline-success" id="submitButton" style="display:none; float:right; margin-left:10px;">Submit</button>
+                </div>
+                <div class="col">
+                    <button type="button" class="btn btn-outline-secondary" id="cancelButton" style="display:none; float:right;">Cancel</button>
+                </div>
+            </form>
+        </div>
     </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
