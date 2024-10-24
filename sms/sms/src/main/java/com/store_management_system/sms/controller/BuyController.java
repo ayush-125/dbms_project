@@ -1,5 +1,7 @@
 package com.store_management_system.sms.controller;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -34,7 +36,6 @@ public class BuyController {
     @GetMapping("/buy/{inventoryId}")
     public String createBuy(@PathVariable Long inventoryId,@AuthenticationPrincipal UserDetails userDetails,Model model) {
         User currentUser = userService.getUserByUsername(userDetails.getUsername());
-        
         model.addAttribute("currentUser", currentUser);
         try {
         Buy buy=new Buy();
@@ -42,6 +43,8 @@ public class BuyController {
         buy.setInventoryId((long)inventoryId);
         
         buy.setPrice(inventoryRepository.getPriceById(inventoryId));
+        List<Supplier> suppliers = supplierRepository.findAll();
+        model.addAttribute("suppliers", suppliers);
         model.addAttribute("buy", buy);
             return "buy";
         } catch (Exception e) {

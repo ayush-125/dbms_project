@@ -69,6 +69,110 @@
             font-weight: 500;
             color: #495057;
         }
+
+        .supplier-list {
+            max-height: 300px; /* Set max height for the supplier list */
+            overflow-y: auto; /* Allow vertical scrolling */
+        }
+        .supplier-item {
+            padding: 8px;
+            cursor: pointer;
+        }
+        .supplier-item:hover {
+            background-color: #f1f1f1; /* Highlight on hover */
+        }
+        .modal-dialog {
+            max-width: 600px; /* Increase modal width for a more spacious look */
+        }
+    
+        .modal-header {
+            color: white;
+            padding: 1rem 2rem;
+            border-bottom: none;
+        }
+    
+        .modal-title {
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+    
+        .modal-header .close {
+            color: white;
+            font-size: 1.5rem;
+        }
+    
+        .modal-body {
+            padding: 2rem;
+            background-color: #f8f9fa; /* Light gray background for the body */
+        }
+    
+        .modal-body .form-group {
+            margin-bottom: 1.5rem;
+        }
+    
+        .modal-body .form-control {
+            font-size: 1rem;
+            padding: 0.75rem 1.25rem;
+            border-radius: 0.5rem; /* Rounded corners */
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1); /* Subtle shadow for input fields */
+            border: 1px solid #ddd;
+        }
+    
+        .modal-body .form-control:focus {
+            border-color: #007bff; /* Primary color border on focus */
+            box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+        }
+    
+        .modal-footer {
+            padding: 1.5rem;
+            border-top: none;
+            background-color: #f8f9fa;
+        }
+    
+        /* Styling supplier list */
+        .supplier-list {
+            padding: 1rem;
+            background-color: white;
+            border-radius: 0.5rem;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            max-height: 250px;
+            overflow-y: auto;
+            margin-top: 1rem;
+        }
+    
+        .supplier-item {
+            padding: 0.5rem 0;
+            border-bottom: 1px solid #eaeaea;
+            cursor: pointer;
+        }
+    
+        .supplier-item:hover {
+            background-color: #f1f1f1;
+        }
+    
+        .supplier-item span {
+            font-size: 1rem;
+            color: #333;
+        }
+    
+        /* Search input icon */
+        .form-control::placeholder {
+            color: #999;
+            font-size: 0.9rem;
+        }
+    
+        /* Media query for mobile responsiveness */
+        @media (max-width: 576px) {
+            .modal-dialog {
+                max-width: 100%;
+                margin: 1rem;
+            }
+    
+            .modal-body {
+                padding: 1rem;
+            }
+        }
+
     </style>
 </head>
 <body>
@@ -96,8 +200,17 @@
             <input type="number" hidden step="1" id="inventoryId" th:field="*{inventoryId}" class="form-control" readonly required />
             
             <div class="form-group">
-                <label for="supplierId">Supplier ID:</label>
-                <input type="number" step="1" id="supplierId" th:field="*{supplierId}" class="form-control" required />
+
+                <label for="supplierId">Supplier ID<span class="required-asterisk">*</span></label>
+                <input type="number" step="1" id="supplierId" th:field="*{supplierId}" class="form-control" required readonly/>
+            
+                <div class="d-flex justify-content-between align-items-center mt-2">
+                    <!-- 'Select Existing Supplier' button with smaller text size -->
+                    <button type="button" class="btn btn-link p-0" data-toggle="modal" data-target="#supplierModal" style="font-size: 0.875rem;">Select Existing Supplier</button>
+                    <!-- 'Create Supplier' button -->
+                    <a th:href="@{/create/supplier}" class="btn text-primary"style="padding:0px;">Create Supplier</a>
+                </div>
+
             </div>
             
             <div class="form-group">
@@ -128,8 +241,137 @@
         </form>
     </div>
     </div>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+
+    <div class="modal fade" id="supplierModal" tabindex="-1" role="dialog" aria-labelledby="supplierModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title text-center text-info" id="supplierModalLabel">Find Supplier</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close" style="color:black;">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body" style="padding-top:0px;">
+                    <div class="container">
+                        <div class="row">
+                            <!-- Column 1: First Name, Middle Name, Last Name -->
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="name">Name</label>
+                                    <input type="text" id="searchBar1" class="form-control mb-3" onkeyup="filterSuppliers1()" placeholder="🔍 Search by name...">
+                                </div>
+                                <div class="form-group">
+                                    <label for="street">Street</label>
+                                    <input type="text" id="searchBar3" class="form-control mb-3" onkeyup="filterSuppliers2()" placeholder="🔍 Search by street...">
+                                </div>
+                            </div>
+                            <!-- Column 2: Phone Number, City -->
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="phoneNo">Phone Number</label>
+                                    <input type="text" maxlength="10" id="searchBar" class="form-control mb-3" onkeyup="filterSuppliers()" placeholder="🔍 Search by phone number...">
+                                </div>
+                                <div class="form-group">
+                                    <label for="city">City</label>
+                                    <input type="text" id="searchBar4" class="form-control mb-3" onkeyup="filterSuppliers4()" placeholder="🔍 Search by city...">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="supplier-list mt-4" id="supplierList">
+                        <strong>Supplier List</strong>
+                        <div th:each="supplier : ${suppliers}" class="supplier-item" th:data-id="${supplier.id}" th:data-phone="${supplier.phoneNo}" th:data-name="${supplier.name}" th:data-street="${supplier.street}" th:data-city="${supplier.city}">
+                            <span th:text="${supplier.name} + ' ' + ${supplier.street} + ' - ' + ${supplier.city} + ' ' + ${supplier.phoneNo}"></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script>
+        function filterSuppliers() {
+            const input = document.getElementById('searchBar').value.toLowerCase();
+            const supplierItems = document.getElementsByClassName('supplier-item'); // Select all supplier items
+        
+            // Loop through each supplier item and check if the phone number matches the input
+            for (let i = 0; i < supplierItems.length; i++) {
+                const phoneNo = supplierItems[i].getAttribute('data-phone').toLowerCase(); // Get the phone number from data attribute
+                if (phoneNo.includes(input)) {
+                    supplierItems[i].style.display = "block"; // Show the matching supplier
+                } else {
+                    supplierItems[i].style.display = "none"; // Hide non-matching suppliers
+                }
+            }
+        }
+        function filterSuppliers1() {
+            const input = document.getElementById('searchBar1').value.toLowerCase();
+            const supplierItems = document.getElementsByClassName('supplier-item'); // Select all supplier items
+        
+            // Loop through each supplier item and check if the phone number matches the input
+            for (let i = 0; i < supplierItems.length; i++) {
+                const name = supplierItems[i].getAttribute('data-name').toLowerCase(); // Get the phone number from data attribute
+                if (name.includes(input)) {
+                    supplierItems[i].style.display = "block"; // Show the matching supplier
+                } else {
+                    supplierItems[i].style.display = "none"; // Hide non-matching suppliers
+                }
+            }
+        }
+        function filterSuppliers2() {
+            const input = document.getElementById('searchBar2').value.toLowerCase();
+            const supplierItems = document.getElementsByClassName('supplier-item'); // Select all supplier items
+        
+            // Loop through each supplier item and check if the phone number matches the input
+            for (let i = 0; i < supplierItems.length; i++) {
+                const street = supplierItems[i].getAttribute('data-street').toLowerCase(); // Get the phone number from data attribute
+                if (street.includes(input)) {
+                    supplierItems[i].style.display = "block"; // Show the matching supplier
+                } else {
+                    supplierItems[i].style.display = "none"; // Hide non-matching suppliers
+                }
+            }
+        }
+        function filterSuppliers4() {
+            const input = document.getElementById('searchBar4').value.toLowerCase();
+            const supplierItems = document.getElementsByClassName('supplier-item'); // Select all supplier items
+        
+            // Loop through each supplier item and check if the phone number matches the input
+            for (let i = 0; i < supplierItems.length; i++) {
+                const city = supplierItems[i].getAttribute('data-city').toLowerCase(); // Get the phone number from data attribute
+                if (city.includes(input)) {
+                    supplierItems[i].style.display = "block"; // Show the matching supplier
+                } else {
+                    supplierItems[i].style.display = "none"; // Hide non-matching suppliers
+                }
+            }
+        }
+        
+        $(document).ready(function() {
+            $('#filterButton').on('click', function() {
+                const filter = $('#supplierPhone').val().toLowerCase(); // Get the value from the input field and convert to lowercase
+                $('.supplier-item').each(function() {
+                    const phone = $(this).data('phone').toLowerCase(); // Get the phone number of each supplier and convert to lowercase
+                    if (phone.includes(filter)) {
+                        $(this).show(); // Show if phone includes the filter
+                    } else {
+                        $(this).hide(); // Hide if it doesn't
+                    }
+                });
+            });
+
+            $('.supplier-item').on('click', function() {
+                const supplierId = $(this).data('id');
+                $('#supplierId').val(supplierId);
+                $('#supplierModal').modal('hide');
+            });
+        });
+    </script>
+
 </body>
 </html>
