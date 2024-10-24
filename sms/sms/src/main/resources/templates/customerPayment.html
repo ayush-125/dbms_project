@@ -65,6 +65,14 @@
             margin-left: 0;
             margin-right: 0;
         }
+        .blue-text {
+            color: rgb(34, 143, 47);
+        }
+
+        .red-text {
+            color: red;
+        }
+
     </style>
     
 </head>
@@ -89,8 +97,10 @@
                         <!-- Loop through each payment entry for the customer -->
                         <tr th:each="payment : ${payments}">
                             <td><span class="payment-date" th:text="${payment.paymentDate}"></span></td>
-                            <td>₹ <span th:text="${payment.paymentAmount}"></span></td>
+                            <td>₹ <span th:text="${payment.paymentAmount}"
+                                    th:class="${payment.paymentAmount > 0} ? 'blue-text' : 'red-text'"></span></td>
                         </tr>
+
                     </tbody>
                 </table>
             </div>

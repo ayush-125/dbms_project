@@ -314,3 +314,6 @@ CREATE TABLE supplier_payment (
     FOREIGN KEY (supplier_id) REFERENCES suppliers(id)
         ON DELETE SET NULL
 );
+
+create index idx_supplier_id on supplier_payment(supplier_id);
+create index idx_customer_id on customer_payment(customer_id);
