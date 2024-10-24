@@ -69,6 +69,7 @@
             font-weight: 500;
             color: #495057;
         }
+
         .supplier-list {
             max-height: 300px; /* Set max height for the supplier list */
             overflow-y: auto; /* Allow vertical scrolling */
@@ -171,6 +172,7 @@
                 padding: 1rem;
             }
         }
+
     </style>
 </head>
 <body>
@@ -198,6 +200,7 @@
             <input type="number" hidden step="1" id="inventoryId" th:field="*{inventoryId}" class="form-control" readonly required />
             
             <div class="form-group">
+
                 <label for="supplierId">Supplier ID<span class="required-asterisk">*</span></label>
                 <input type="number" step="1" id="supplierId" th:field="*{supplierId}" class="form-control" required readonly/>
             
@@ -207,6 +210,7 @@
                     <!-- 'Create Supplier' button -->
                     <a th:href="@{/create/supplier}" class="btn text-primary"style="padding:0px;">Create Supplier</a>
                 </div>
+
             </div>
             
             <div class="form-group">
@@ -237,6 +241,7 @@
         </form>
     </div>
     </div>
+
     <div class="modal fade" id="supplierModal" tabindex="-1" role="dialog" aria-labelledby="supplierModalLabel" aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
@@ -367,5 +372,6 @@
             });
         });
     </script>
+
 </body>
 </html>
