@@ -28,7 +28,6 @@ public class CustomerRepository {
             for (Customer customer :customers){
                 customer.setEmails(customerMailRepository.findByCustomerId(customer.getId()));
                 customer.setOrders(orderRepository.findByCustomerId((long)customer.getId()));
-                
             }
             return customers;
         } catch (DataAccessException  e) {

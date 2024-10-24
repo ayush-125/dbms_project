@@ -61,7 +61,7 @@ public class ReturnController {
             Customer customer=customerRepository.findById(order.getCustomerId());
             inventory.setQuantity(inventory.getQuantity()+q);
             inventoryRepository.save(inventory);
-            customer.setAccount(customer.getAccount()-(oldprice-newprice)*q);
+            customer.setAccount(customer.getAccount()-(oldprice)*q+newprice);
             customerRepository.save(customer);
 
             returnRepository.save(return1);
@@ -95,6 +95,7 @@ public class ReturnController {
             Long qnew=return1.getQuantity();
             Double newprice=return1.getPrice();
             Order order=orderRepository.findById(return1.getOrderId());
+            Double orderprice=order.getPrice();
             if(order.getQuantity()<qnew){
                 model.addAttribute("errorMessage", "incorrect quantity..");
                 model.addAttribute("return1", return1);
@@ -104,7 +105,7 @@ public class ReturnController {
             Customer customer=customerRepository.findById(order.getCustomerId());
             inventory.setQuantity(inventory.getQuantity()-qold+qnew);
             inventoryRepository.save(inventory);
-            customer.setAccount(customer.getAccount()+(oldprice*qold)-(newprice*qnew));
+            customer.setAccount(customer.getAccount()+(orderprice*qold)-(orderprice*qnew)+(newprice-oldprice));
             customerRepository.save(customer);
 
             returnRepository.save(return1);
@@ -125,7 +126,7 @@ public class ReturnController {
             Customer customer=customerRepository.findById(order.getCustomerId());
             inventory.setQuantity(inventory.getQuantity()-return1.getQuantity());
             inventoryRepository.save(inventory);
-            customer.setAccount(customer.getAccount()+(return1.getPrice()*return1.getQuantity()));
+            customer.setAccount(customer.getAccount()+(-return1.getPrice()+order.getPrice()*return1.getQuantity()));
             customerRepository.save(customer);
 
             returnRepository.deleteById(id);
