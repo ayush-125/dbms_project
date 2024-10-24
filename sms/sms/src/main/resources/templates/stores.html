@@ -11,34 +11,53 @@
             font-weight: bold;
             margin-right: 5px;
         }
+    
         .nested {
             list-style-type: none;
             padding-left: 20px;
             display: none; /* Hidden by default */
         }
+    
         .caret-down::before {
             content: "\25BC"; /* Down caret */
             padding-right: 5px;
         }
+    
+        /* Store icon for store caret */
         .caret::before {
-            content: "\25B6"; /* Right caret */
+            content: "\f54e"; /* Store icon from Font Awesome */
+            font-family: "Font Awesome 5 Free"; /* Ensure the font is Font Awesome */
+            font-weight: 900; /* Use the solid version of the icon */
             padding-right: 5px;
         }
+    
+        /* User icon for employee caret */
+        .employee-caret::before {
+            content: "\f007"; /* User icon from Font Awesome */
+            font-family: "Font Awesome 5 Free";
+            font-weight: 900;
+            padding-right: 5px;
+        }
+    
         .active {
             display: block; /* Show when active */
         }
+    
         .error {
             color: red;
             font-weight: bold;
         }
+    
         .button {
             margin: 5px 0;
         }
+    
         .btn-custom {
             font-weight: bold;
             padding: 5px 15px;
             text-transform: uppercase;
         }
+    
         .container {
             position: relative;
             margin-top: 20px;
@@ -79,7 +98,10 @@
                         <h6 class="text-primary mt-3">Employees in this Store:</h6>
                         <li class="list-group-item" th:each="employee : ${store.employees}">
                             <div class="d-flex justify-content-between align-items-center">
-                                <span class="caret" th:text="${employee.firstName} + ' ' + ${employee.lastName}"></span> 
+                                <span class="caret">
+                                    <i class="fas fa-user"></i> <!-- Added user icon here -->
+                                    <span th:text="${employee.firstName} + ' ' + ${employee.lastName}"></span>
+                                </span>
                                 <span>(Employee ID:<span th:text="${employee.id}"></span>)</span>
                                 <div>
                                     <a class="btn btn-outline-primary btn-sm" th:href="@{/register/{employeeId}(employeeId=${employee.id})}">Create User</a>
