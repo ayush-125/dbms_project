@@ -58,7 +58,7 @@ public class FeedbackController {
         User currentUser = userService.getUserByUsername(userDetails.getUsername());
         model.addAttribute("currentUser", currentUser);
         try {
-            Feedback feedback=feedbackRepository.findById(id);
+            Feedback feedback=feedbackRepository.findByOrderId(id);
             model.addAttribute("feedback", feedback);
 
             return "viewfeedback";
@@ -87,7 +87,7 @@ public class FeedbackController {
         User currentUser = userService.getUserByUsername(userDetails.getUsername());
         model.addAttribute("currentUser", currentUser);
         try {
-            feedbackRepository.deleteById(id);
+            feedbackRepository.deleteByOrderId(id);
         } catch (Exception e) {
             model.addAttribute("errorMessage", "Unable to delete."+e.getMessage());
         

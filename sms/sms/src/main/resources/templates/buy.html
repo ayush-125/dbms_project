@@ -197,8 +197,10 @@
                 <input type="number" step="1" id="quantity" th:field="*{quantity}" class="form-control" required />
             </div>
             
-            <input type="number" hidden step="1" id="inventoryId" th:field="*{inventoryId}" class="form-control" readonly required />
-            
+            <!-- <input type="number" hidden step="1" id="inventoryId" th:field="*{inventoryId}" class="form-control" readonly required />
+             -->
+             <input type="number" hidden step="1" id="productId" th:field="*{productId}" class="form-control" readonly />
+             <input type="number" hidden step="1" id="storeId" th:field="*{storeId}" class="form-control" readonly />
             <div class="form-group">
 
                 <label for="supplierId">Supplier ID<span class="required-asterisk">*</span></label>

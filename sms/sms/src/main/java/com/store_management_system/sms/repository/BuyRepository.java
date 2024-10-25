@@ -58,11 +58,11 @@ public class BuyRepository {
     public void save(Buy buy) {
         try {
             if (buy.getId() == null) {
-                String sql = "insert into buy(dop,price,quantity,paymentMethod,payment,supplierId,inventoryId) values(?,?,?,?,?,?,?) ";
-                jdbcTemplate.update(sql,buy.getDop(),buy.getPrice(),buy.getQuantity(),buy.getPaymentMethod(),buy.getPayment(),buy.getSupplierId(),buy.getInventoryId());
+                String sql = "insert into buy(dop,price,quantity,paymentMethod,payment,supplierId,productId,storeId) values(?,?,?,?,?,?,?,?) ";
+                jdbcTemplate.update(sql,buy.getDop(),buy.getPrice(),buy.getQuantity(),buy.getPaymentMethod(),buy.getPayment(),buy.getSupplierId(),buy.getProductId(),buy.getStoreId());
             } else {
-                String sql = "UPDATE buy set dop=?,price=?,quantity=?,paymentMethod=?,payment=?,supplierId=?,inventoryId=? where id=?";
-                jdbcTemplate.update(sql,buy.getDop(),buy.getPrice(),buy.getQuantity(),buy.getPaymentMethod(),buy.getPayment(),buy.getSupplierId(),buy.getInventoryId(),buy.getId());
+                String sql = "UPDATE buy set dop=?,price=?,quantity=?,paymentMethod=?,payment=?,supplierId=?,productId=?,storeId=? where id=?";
+                jdbcTemplate.update(sql,buy.getDop(),buy.getPrice(),buy.getQuantity(),buy.getPaymentMethod(),buy.getPayment(),buy.getSupplierId(),buy.getProductId(),buy.getStoreId(),buy.getId());
             }
         } catch (DataAccessException e) {
             System.err.println("Error saving or updating Buy  "+ e.getMessage());

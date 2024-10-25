@@ -32,17 +32,19 @@ public class OrderController {
     @Autowired
     private OrderRepository orderRepository;
 
-    @GetMapping("/order/{inventoryId}")
-    public String createOrder(@PathVariable Long inventoryId, @AuthenticationPrincipal UserDetails userDetails, Model model) {
+    @GetMapping("/order/{productId}/{storeId}")
+    public String createOrder(@PathVariable Integer productId,@PathVariable Integer storeId, @AuthenticationPrincipal UserDetails userDetails, Model model) {
         User currentUser = userService.getUserByUsername(userDetails.getUsername());
         model.addAttribute("currentUser", currentUser);
         
         try {
             Order order = new Order();
             order.setEmployeeId(currentUser.getEmployeeId());
-            order.setInventoryId(inventoryId);
+            order.setProductId((long)productId);
+            order.setStoreId((long)storeId);
+            // System.err.println(order.getProductId()+"aaaaa"+order.getStoreId()+"aaaaa"+order.getEmployeeId());
             order.setOdate(LocalDate.now());
-            order.setPrice(inventoryRepository.getPriceById(inventoryId));
+            order.setPrice(inventoryRepository.getPriceByProductId((long)productId));
     
             // Fetch all customer details and add to model
             List<Customer> customers = customerRepository.findAll();
@@ -65,18 +67,29 @@ public class OrderController {
             model.addAttribute("currentUser", currentUser);
             Long quantity=order.getQuantity();
             Long customerId=order.getCustomerId();
-            Long inventoryId=order.getInventoryId();
-            Inventory inventory=inventoryRepository.findById(inventoryId);
+            // Long inventoryId=order.getInventoryId();
+            // System.err.println(order.getProductId()+"bbbbb"+order.getStoreId()+"bbbbbb"+order.getEmployeeId());
+            List<Inventory> inventories=inventoryRepository.findByProductAndStoreId(order.getProductId(),order.getStoreId());
+            if(inventories.size()==0){
+                model.addAttribute("errorMessage", "Incorrect Details3.."+order.getProductId()+order.getStoreId());
+                
+            model.addAttribute("order", order);
+            model.addAttribute("currentUser", currentUser);
+           return "order";
+            }
+            Inventory inventory=inventories.get(0);
             Long qmax=inventory.getQuantity();
 
             if(customerRepository.findById(customerId)==null || quantity==null || quantity>qmax){
+                
                 model.addAttribute("errorMessage", "Incorrect Details..");
+                
             model.addAttribute("order", order);
             model.addAttribute("currentUser", currentUser);
            return "order";
             }
             inventory.setQuantity(qmax-quantity);
-            inventoryRepository.save(inventory);
+            inventoryRepository.update(inventory);
             orderRepository.save(order);
         } catch (Exception e) {
             model.addAttribute("errorMessage", "Incorrect Details.."+e.getMessage());
@@ -92,7 +105,7 @@ public class OrderController {
     public String deleteOrder(Model model,@PathVariable Long id) {
         try {
             Order order=orderRepository.findById(id);
-            Inventory inventory=inventoryRepository.findById(order.getInventoryId());
+            Inventory inventory=inventoryRepository.findByProductAndStoreId(order.getProductId(),order.getStoreId()).get(0);
             Customer customer=customerRepository.findById(order.getCustomerId());
             Double customerAccount=customer.getAccount();
             
@@ -101,7 +114,7 @@ public class OrderController {
             Long q=inventory.getQuantity();
             inventory.setQuantity(q+order.getQuantity());
             customerRepository.save(customer);
-            inventoryRepository.save(inventory);
+            inventoryRepository.update(inventory);
             orderRepository.deleteById(id);
         } catch (Exception e) {
             model.addAttribute("errorMessage", "Unable to delete."+e.getMessage());

@@ -29,21 +29,21 @@ public class FeedbackRepository {
         }
     }
 
-    public Feedback findById(Long id) {
-        try {
-            String sql = "SELECT * FROM feedbacks WHERE id = ?";
-            List<Feedback> feedbacks = jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(Feedback.class), id);
-            if (feedbacks.isEmpty()) {
-                return null;
-            }
-            Feedback feedback = feedbacks.get(0);
+    // public Feedback findById(Long id) {
+    //     try {
+    //         String sql = "SELECT * FROM feedbacks WHERE orderId = ?";
+    //         List<Feedback> feedbacks = jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(Feedback.class), id);
+    //         if (feedbacks.isEmpty()) {
+    //             return null;
+    //         }
+    //         Feedback feedback = feedbacks.get(0);
             
-            return feedback;
-        } catch (DataAccessException e) {
-            System.err.println("Error querying feedback : " + e.getMessage());
-            throw new CustomDatabaseException("Error querying feedback: ",e);
-        }
-    }
+    //         return feedback;
+    //     } catch (DataAccessException e) {
+    //         System.err.println("Error querying feedback : " + e.getMessage());
+    //         throw new CustomDatabaseException("Error querying feedback: ",e);
+    //     }
+    // }
 
     public Feedback findByOrderId(Long id) {
         try {
@@ -63,12 +63,13 @@ public class FeedbackRepository {
 
     public void save(Feedback feedback) {
         try {
-            if (feedback.getId() == null) {
+            Feedback chk=findByOrderId(feedback.getOrderId());
+            if (chk == null) {
                 String sql = "INSERT INTO feedbacks (fdate, rating, comments, orderId) VALUES (?,?, ?, ?)";
                 jdbcTemplate.update(sql,feedback.getFdate(),feedback.getRating(),feedback.getComments(), feedback.getOrderId());
             } else {
-                String sql = "UPDATE feedbacks SET fdate=?,rating=?,comments=?,orderId = ? WHERE id = ?";
-                jdbcTemplate.update(sql,feedback.getFdate(),feedback.getRating(),feedback.getComments(), feedback.getOrderId(), feedback.getId());
+                String sql = "UPDATE feedbacks SET fdate=?,rating=?,comments=? WHERE orderId = ?";
+                jdbcTemplate.update(sql,feedback.getFdate(),feedback.getRating(),feedback.getComments(), feedback.getOrderId());
             }
         } catch (DataAccessException e) {
             System.err.println("Error saving or updating feedback: " + e.getMessage());
@@ -76,9 +77,9 @@ public class FeedbackRepository {
         }
     }
 
-    public void deleteById(Long id) {
+    public void deleteByOrderId(Long id) {
         try {
-            String sql = "DELETE FROM feedbacks WHERE id = ?";
+            String sql = "DELETE FROM feedbacks WHERE orderId = ?";
             jdbcTemplate.update(sql, id);
         } catch (DataAccessException e) {
             System.err.println("Error deleting feedback: " + e.getMessage());

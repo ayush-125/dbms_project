@@ -63,7 +63,7 @@
 </head>
 <body>
     <div class="container">
-        <form id="returnForm" method="post" th:object="${return1}" th:action="@{/update/return/{id}(id=${return1.id})}">
+        <form id="returnForm" method="post" th:object="${return1}" th:action="@{/update/return/{id}(id=${return1.orderId})}">
             <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
             <div id="errorMessageDiv" th:if="${errorMessage}" style="color: red; display:block ;">
                 <p th:text="${errorMessage}"></p>

@@ -115,10 +115,10 @@
                         <h4>Inventories for this Product</h4>
                         <li th:each="inventory : ${product.inventories}">
 
-                            (Inventory ID: <span th:text="${inventory.id}"></span>)
+                            <!-- (Inventory ID: <span th:text="${inventory.id}"></span>) -->
                             Quantity: <span th:text="${inventory.quantity}"></span>
-                            <a th:href="@{/order/{inventoryId}(inventoryId=${inventory.id})}">Place Order</a>
-                            <a th:href="@{/buy/{inventoryId}(inventoryId=${inventory.id})}" th:if="${currentUser.roles[0].name == 'MANAGER' || currentUser.roles[0].name == 'ADMIN'}">Buy</a>
+                            <a th:href="@{/order/{productId}/{storeId}(productId=${inventory.productId},storeId=${inventory.storeId})}">Place Order</a>
+                            <a th:href="@{/buy/{productId}/{storeId}(productId=${inventory.productId},storeId=${inventory.storeId})}" th:if="${currentUser.roles[0].name == 'MANAGER' || currentUser.roles[0].name == 'ADMIN'}">Buy</a>
                             <button type="button" th:if="${currentUser.roles[0].name == 'MANAGER' || currentUser.roles[0].name == 'ADMIN'}"
                                     class="editButton" 
                                     onclick="editInventory(this)">Edit</button>
@@ -126,14 +126,14 @@
                                     class="cancelButton" 
                                     onclick="cancelEdit(this)" style="display: none;">Cancel</button>
 
-                            <form th:action="@{/update/inventory/{id}(id=${inventory.id})}"  method="post" onsubmit="return confirm('Are you sure you want to update this inventory?');" class="updateForm" style="display: none;">
+                            <form th:action="@{/update/inventory/{productId}/{storeId}(productId=${inventory.productId},storeId=${inventory.storeId})}"  method="post" onsubmit="return confirm('Are you sure you want to update this inventory?');" class="updateForm" style="display: none;">
                                 <input type="hidden" name="_method" value="update" />
                                 <label for="quantity">Quantity</label>
                                 <input id="quantity" name="quantity" type="text" required>
                                 <button type="submit" class="updateButton">Update Inventory</button>
                             </form>
 
-                            <form th:action="@{/delete/inventory/{id}(id=${inventory.id})}" method="post" onsubmit="return confirm('Are you sure you want to delete this inventory?');">
+                            <form th:action="@{/delete/inventory/{productId}/{storeId}(productId=${inventory.productId},storeId=${inventory.storeId})}" method="post" onsubmit="return confirm('Are you sure you want to delete this inventory?');">
                                 <input type="hidden" name="_method" value="delete" />
                                 <button th:if="${currentUser.roles[0].name == 'MANAGER' || currentUser.roles[0].name == 'ADMIN'}" type="submit">Delete Inventory</button>
                             </form>

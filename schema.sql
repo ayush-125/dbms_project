@@ -1,9 +1,9 @@
 show databases;
 
--- drop database project2;
+drop database project2;
 create database project2;
 use project2;
-
+show tables;
 create table if not exists roles(
 	id bigint  primary key,
     name varchar(25) not null unique
@@ -50,7 +50,7 @@ alter table employees add constraint fk_store
 foreign key(storeId) references stores(id)
  on update cascade on delete restrict;
 
-
+-- users table is not in 3NF
 create table if not exists users(
 	id bigint auto_increment primary key,
     username varchar(255) not null unique,
@@ -113,15 +113,15 @@ create table products(
     size varchar(10) ,
     color varchar(20) ,
     price double not null default 0);
-
+-- inventory is not in 3NF 
 create table inventory(
-	id bigint auto_increment ,
+	-- id bigint auto_increment ,
     productId bigint not null,
     storeId bigint not null,
     quantity bigint not null default 0,
     foreign key (storeId) references stores(id) on delete cascade on update cascade,
     foreign key (productId) references products(id) on delete cascade on update cascade,
-    primary key (id));
+    primary key (productId,storeId));
 
 create table suppliers(
 	id bigint auto_increment primary key ,
@@ -149,9 +149,11 @@ create table buy (
         paymentMethod varchar(20),
     payment double not null default 0,
     supplierId bigint not null,
-    inventoryId bigint not null,
+    -- inventoryId bigint not null,
+    productId bigint not null,
+    storeId bigint not null,
     foreign key (supplierId) references suppliers(id) on delete cascade on update cascade,
-	foreign key (inventoryId) references inventory(id) on delete cascade on update cascade
+	foreign key (productId,storeId) references inventory(productId,storeId) on delete cascade on update cascade
     );
 
 delimiter //
@@ -207,9 +209,10 @@ create table orders (
     payment double not null default 0,
     employeeId bigint ,
     customerId bigint not null,
-    inventoryId bigint not null,
+    productId bigint not null,
+    storeId bigint not null,
     foreign key (customerId) references customers(id) on delete cascade on update cascade,
-    foreign key (inventoryId) references inventory(id) on delete cascade on update cascade,
+    foreign key (productId,storeId) references inventory(productId,storeId) on delete cascade on update cascade,
     foreign key (employeeId) references employees(id) on delete cascade on update cascade);
 
 delimiter //
@@ -226,23 +229,26 @@ begin
 	update customers set account=account+(old.payment-new.payment) where id=old.customerId;
 end //
 delimiter ;
-
+-- returnproducts is not in 3NF
 create table returnproducts(
-	id bigint auto_increment primary key ,
+	-- id bigint auto_increment primary key ,
     rdate date not null,
     reason varchar(200),
     amount double not null default 0,
-    orderId bigint not null,
+    orderId bigint unique not null,
+    primary key(orderId),
     foreign key (orderId) references orders(id) on delete cascade on update cascade);
     alter table returnproducts add quantity bigint not null default 0; 
     alter table returnproducts rename column amount to price;
    
+-- feedbacks is not in 3NF
 create table feedbacks(
-	id bigint auto_increment primary key ,
+	-- id bigint auto_increment primary key ,
     fdate date not null,
     rating decimal,
     comments varchar(200),
     orderId bigint not null,
+    primary key(orderId),
     foreign key (orderId) references orders(id) on delete cascade on update cascade);
 
 insert into roles values(1,"ADMIN");
@@ -314,6 +320,3 @@ CREATE TABLE supplier_payment (
     FOREIGN KEY (supplier_id) REFERENCES suppliers(id)
         ON DELETE SET NULL
 );
-
-create index idx_supplier_id on supplier_payment(supplier_id);
-create index idx_customer_id on customer_payment(customer_id);

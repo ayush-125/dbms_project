@@ -28,10 +28,10 @@ public class OrderRepository {
                 Return return1=returnRepository.findByOrderId(order.getId());
                 Feedback feedback=feedbackRepository.findByOrderId(order.getId());
                 if(return1!=null){
-                    order.setReturnId(return1.getId());
+                    order.setReturn(return1);
                 }
                 if(feedback!=null){
-                    order.setFeedbackId(feedback.getId());
+                    order.setFeedback(feedback);
                 
                 }
             }
@@ -53,12 +53,13 @@ public class OrderRepository {
             Return return1=returnRepository.findByOrderId(order.getId());
                 Feedback feedback=feedbackRepository.findByOrderId(order.getId());
                 if(return1!=null){
-                    order.setReturnId(return1.getId());
+                    order.setReturn(return1);
                 }
                 if(feedback!=null){
-                    order.setFeedbackId(feedback.getId());
+                    order.setFeedback(feedback);
                 
                 }
+                
             return order;
         } catch (DataAccessException  e) {
             System.err.println("Error querying order " + e.getMessage());
@@ -76,14 +77,13 @@ public class OrderRepository {
             for(Order order:orders){
                 Return return1=returnRepository.findByOrderId(order.getId());
                 Feedback feedback=feedbackRepository.findByOrderId(order.getId());
-                if(return1!=null){
-                    order.setReturnId(return1.getId());
+                if(return1!=null && !return1.isEmpty()){
+                    order.setReturn(return1);
                 }
-                if(feedback!=null){
-                    order.setFeedbackId(feedback.getId());
+                if(feedback!=null && !feedback.isEmpty()){
+                    order.setFeedback(feedback);
                 
                 }
-                
                 
             }
             return orders;
@@ -97,11 +97,11 @@ public class OrderRepository {
     public void save(Order order) {
         try {
             if (order.getId() == null) {
-                String sql = "insert into orders(price, quantity,  inventoryId, odate, houseNo, street, city, state, pincode, paymentMethod, payment, employeeId, customerId) values(?,?,?,?,?,?,?,?,?,?,?,?,?)";
-                jdbcTemplate.update(sql,order.getPrice(),order.getQuantity(),order.getInventoryId(), order.getOdate(), order.getHouseNo(), order.getStreet(), order.getCity(), order.getState(), order.getPincode(), order.getPaymentMethod(), order.getPayment(), order.getEmployeeId(), order.getCustomerId());
+                String sql = "insert into orders(price, quantity,  productId,storeId, odate, houseNo, street, city, state, pincode, paymentMethod, payment, employeeId, customerId) values(?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+                jdbcTemplate.update(sql,order.getPrice(),order.getQuantity(),order.getProductId(),order.getStoreId(), order.getOdate(), order.getHouseNo(), order.getStreet(), order.getCity(), order.getState(), order.getPincode(), order.getPaymentMethod(), order.getPayment(), order.getEmployeeId(), order.getCustomerId());
             } else {
-                String sql = "UPDATE orders set  inventoryId=?, quantity=?, price=?, odate=?, houseNo=?, street=?, city=?, state=?, pincode=?, paymentMethod=?, payment=?, employeeId=?, customerId=? where id=? ";
-                jdbcTemplate.update(sql, order.getInventoryId(),order.getQuantity(),order.getPrice(),  order.getOdate(), order.getHouseNo(), order.getStreet(), order.getCity(), order.getState(), order.getPincode(), order.getPaymentMethod(), order.getPayment(), order.getEmployeeId(), order.getCustomerId(), order.getId());
+                String sql = "UPDATE orders set  productId=?,storeId=?, quantity=?, price=?, odate=?, houseNo=?, street=?, city=?, state=?, pincode=?, paymentMethod=?, payment=?, employeeId=?, customerId=? where id=? ";
+                jdbcTemplate.update(sql, order.getProductId(),order.getStoreId(),order.getQuantity(),order.getPrice(),  order.getOdate(), order.getHouseNo(), order.getStreet(), order.getCity(), order.getState(), order.getPincode(), order.getPaymentMethod(), order.getPayment(), order.getEmployeeId(), order.getCustomerId(), order.getId());
             }
         } catch (DataAccessException e) {
             System.err.println("Error saving or updating order "+ e.getMessage());

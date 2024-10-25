@@ -137,7 +137,7 @@
         <div class="card">
             <h2 class="text-center text-info" style="margin:0px; font-size:35px;">Feedback Details</h2>
             <hr>
-        <form id="feedbackForm" method="post" th:object="${feedback}" th:action="@{/update/feedback/{id}(id=${feedback.id})}">
+        <form id="feedbackForm" method="post" th:object="${feedback}" th:action="@{/update/feedback/{id}(id=${feedback.orderId})}">
             <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
             <div id="errorMessageDiv" th:if="${errorMessage}" style="color: red; display:block ;">
                 <p th:text="${errorMessage}"></p>

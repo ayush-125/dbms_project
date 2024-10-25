@@ -57,10 +57,10 @@ public class ReturnController {
             return "createReturn";
             }
             Double oldprice=order.getPrice();
-            Inventory inventory=inventoryRepository.findById(order.getInventoryId());
+            Inventory inventory=inventoryRepository.findByProductAndStoreId(order.getProductId(),order.getStoreId()).get(0);
             Customer customer=customerRepository.findById(order.getCustomerId());
             inventory.setQuantity(inventory.getQuantity()+q);
-            inventoryRepository.save(inventory);
+            inventoryRepository.update(inventory);
             customer.setAccount(customer.getAccount()-(oldprice)*q+newprice);
             customerRepository.save(customer);
 
@@ -76,7 +76,7 @@ public class ReturnController {
     @GetMapping("return/view/{id}")
     public String viewReturn(Model model,@PathVariable Long id){
         try {
-            Return return1=returnRepository.findById(id);
+            Return return1=returnRepository.findByOrderId(id);
             model.addAttribute("return1", return1);
 
             return "viewreturn";
@@ -89,7 +89,7 @@ public class ReturnController {
     @PostMapping("update/return/{id}")
     public String updateReturn(Model model,@PathVariable Long id,@ModelAttribute Return return1){
         try {
-            Return returnold=returnRepository.findById(return1.getId());
+            Return returnold=returnRepository.findByOrderId(return1.getOrderId());
             Long qold=returnold.getQuantity();
             Double oldprice=returnold.getPrice();
             Long qnew=return1.getQuantity();
@@ -101,10 +101,10 @@ public class ReturnController {
                 model.addAttribute("return1", return1);
             return "createReturn";
             }
-            Inventory inventory=inventoryRepository.findById(order.getInventoryId());
+            Inventory inventory=inventoryRepository.findByProductAndStoreId(order.getProductId(),order.getStoreId()).get(0);
             Customer customer=customerRepository.findById(order.getCustomerId());
             inventory.setQuantity(inventory.getQuantity()-qold+qnew);
-            inventoryRepository.save(inventory);
+            inventoryRepository.update(inventory);
             customer.setAccount(customer.getAccount()+(orderprice*qold)-(orderprice*qnew)+(newprice-oldprice));
             customerRepository.save(customer);
 
@@ -120,16 +120,16 @@ public class ReturnController {
     @PostMapping("/delete/return/{id}")
     public String deleteReturn(Model model,@PathVariable Long id) {
         try {
-            Return return1=returnRepository.findById(id);
+            Return return1=returnRepository.findByOrderId(id);
             Order order=orderRepository.findById(return1.getOrderId());
-            Inventory inventory=inventoryRepository.findById(order.getInventoryId());
+            Inventory inventory=inventoryRepository.findByProductAndStoreId(order.getProductId(),order.getStoreId()).get(0);
             Customer customer=customerRepository.findById(order.getCustomerId());
             inventory.setQuantity(inventory.getQuantity()-return1.getQuantity());
-            inventoryRepository.save(inventory);
+            inventoryRepository.update(inventory);
             customer.setAccount(customer.getAccount()+(-return1.getPrice()+order.getPrice()*return1.getQuantity()));
             customerRepository.save(customer);
 
-            returnRepository.deleteById(id);
+            returnRepository.deleteByOrderId(id);
         } catch (Exception e) {
             model.addAttribute("errorMessage", "Unable to delete."+e.getMessage());
         
