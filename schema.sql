@@ -3,6 +3,9 @@ show databases;
 drop database project2;
 create database project2;
 use project2;
+
+
+
 show tables;
 create table if not exists roles(
 	id bigint  primary key,
@@ -52,8 +55,8 @@ foreign key(storeId) references stores(id)
 
 -- users table is not in 3NF
 create table if not exists users(
-	id bigint auto_increment primary key,
-    username varchar(255) not null unique,
+	-- id bigint auto_increment primary key,
+    username varchar(255) not null unique primary key,
     password varchar(255) not null,
     roleId bigint not null default 3,
     employeeId bigint,
@@ -320,3 +323,9 @@ CREATE TABLE supplier_payment (
     FOREIGN KEY (supplier_id) REFERENCES suppliers(id)
         ON DELETE SET NULL
 );
+
+-- index for supplier_payment
+create index idx_supplier_id on supplier_payment(supplier_id);
+
+-- index for customer_payment
+create index idx_customer_id on customer_payment(customer_id);

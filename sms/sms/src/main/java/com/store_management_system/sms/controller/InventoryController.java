@@ -37,7 +37,7 @@ public class InventoryController {
                 model.addAttribute("stores", stores);
                 model.addAttribute("currentUser", currentUser);
             }else{
-                Long storeId=userService.getStoreIdById(currentUser.getId());
+                Long storeId=userService.getStoreIdByUsername(currentUser.getUsername());
                 List<Store> stores = storeService.findById(storeId);
                 model.addAttribute("stores", stores);
                 model.addAttribute("currentUser", currentUser);

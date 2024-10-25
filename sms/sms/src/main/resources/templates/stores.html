@@ -120,10 +120,10 @@
                                 <li class="list-group-item" th:each="user : ${employee.users}">
                                     <div class="d-flex justify-content-between align-items-center">
                                         <span th:text="${user.username}"></span> 
-                                        <span>(User ID: <span th:text="${user.id}"></span>)</span>
+                                        <!-- <span>(User ID: <span th:text="${user.id}"></span>)</span> -->
                                         <div>
-                                            <a class="btn btn-outline-info btn-sm" th:href="@{/view/user/{id}(id=${user.id})}">View User</a>
-                                            <form th:action="@{/delete/user/{id}(id=${user.id})}" method="post" class="d-inline" onsubmit="return confirm('Are you sure you want to delete this user?');">
+                                            <a class="btn btn-outline-info btn-sm" th:href="@{/view/user/{id}(id=${user.username})}">View User</a>
+                                            <form th:action="@{/delete/user/{id}(id=${user.username})}" method="post" class="d-inline" onsubmit="return confirm('Are you sure you want to delete this user?');">
                                                 <input type="hidden" name="_method" value="delete" />
                                                 <button type="submit" class="btn btn-outline-danger btn-sm">Delete</button>
                                             </form>

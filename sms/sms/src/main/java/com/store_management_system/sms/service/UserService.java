@@ -36,9 +36,9 @@ public class UserService {
         
     }
 
-    public List<User> getUsersWithSameStoreById(Long id) {
+    public List<User> getUsersWithSameStoreByUsername(String id) {
         try {
-            return userRepository.findUsersWithSameStoreById(id);
+            return userRepository.findUsersWithSameStoreByUsername(id);
         } catch (Exception e) {
             
             throw new CustomServiceException(e.getMessage(), e);
@@ -47,15 +47,15 @@ public class UserService {
         
     }
 
-    public User getUserById(Long id) {
-        try {
-            return userRepository.findById(id);
-        } catch (Exception e) {
+    // public User getUserById(Long id) {
+    //     try {
+    //         return userRepository.findById(id);
+    //     } catch (Exception e) {
             
-            throw new CustomServiceException(e.getMessage(), e);
-        }
+    //         throw new CustomServiceException(e.getMessage(), e);
+    //     }
         
-    }
+    // }
     
     @Autowired
     private PasswordEncoder passwordEncoder;
@@ -71,7 +71,8 @@ public class UserService {
     }
     public void updateUser(User user) {
         try {
-            
+            user.setPassword(passwordEncoder.encode(user.getPassword()));
+        
         userRepository.save(user);
         } catch (Exception e) {
             
@@ -80,10 +81,10 @@ public class UserService {
         
     }
     
-    public boolean checkBelongToSameStore(Long id,User currentUser){
+    public boolean checkBelongToSameStore(String id,User currentUser){
         try {
-            Long storeId1=userRepository.getStoreIdById(id);
-            Long storeId2=userRepository.getStoreIdById(currentUser.getId());
+            Long storeId1=userRepository.getStoreIdByUsername(id);
+            Long storeId2=userRepository.getStoreIdByUsername(currentUser.getUsername());
             if(storeId1!=null && storeId2!=null && storeId1.equals(storeId2)){
                 return true;
             }else{
@@ -95,9 +96,9 @@ public class UserService {
         }
     }
 
-    public void deleteUserById(Long id) {
+    public void deleteUserByUsername(String id) {
         try {
-            userRepository.deleteById(id);
+            userRepository.deleteByUsername(id);
         } catch (Exception e) {
             
             throw new CustomServiceException(e.getMessage(), e);
@@ -123,9 +124,9 @@ public class UserService {
         }
         
     }
-    public Long getStoreIdById(Long id){
+    public Long getStoreIdByUsername(String id){
         try {
-            return userRepository.getStoreIdById(id);
+            return userRepository.getStoreIdByUsername(id);
         } catch (Exception e) {
             throw new CustomServiceException(e.getMessage(), e);
         }
