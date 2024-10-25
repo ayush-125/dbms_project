@@ -24,7 +24,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestParam;
-
+import java.util.List;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 @Controller
 public class UserController {
@@ -32,7 +33,9 @@ public class UserController {
     private UserService userService;
     @Autowired
     private EmployeeService employeeService;
-
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+    
     @GetMapping("/home")
     public String home(Model model, @AuthenticationPrincipal UserDetails userDetails) {
         try {
@@ -65,7 +68,9 @@ public String getAllUsers(Model model, Principal principal) {
         try{
             User user = userService.getUserByUsername(userDetails.getUsername());
             model.addAttribute("currentUser", user);
-            model.addAttribute("users", userService.getUsersWithSameStoreById(user.getId()));
+            List<User>users=userService.getUsersWithSameStoreByUsername(user.getUsername());
+            
+            model.addAttribute("users", users);
         }catch(Exception e){
             model.addAttribute("errorMessage", e.getMessage());
         }
@@ -158,16 +163,16 @@ public String getAllUsers(Model model, Principal principal) {
     }
 
     @GetMapping("/view/user/{id}")
-    public String viewUserDetails(Model model,@AuthenticationPrincipal UserDetails userDetails,@PathVariable Long id) {
+    public String viewUserDetails(Model model,@AuthenticationPrincipal UserDetails userDetails,@PathVariable String id) {
         try {
             User currentUser = userService.getUserByUsername(userDetails.getUsername());
             model.addAttribute("currentUser", currentUser);
-            User user =userService.getUserById(id);
+            User user =userService.getUserByUsername(id);
                 if(user==null){
                     model.addAttribute("errorMessage", "This user does not exist...");
                     return "viewuser";
                 }
-            if((currentUser.getRoles().stream().anyMatch(role -> role.getName().equals("ADMIN"))) || ((currentUser.getRoles().stream().anyMatch(role -> role.getName().equals("MANAGER"))) && userService.checkBelongToSameStore(id,currentUser))){
+            if((currentUser.getRoles().stream().anyMatch(role -> role.getName().equals("ADMIN"))) || ((currentUser.getRoles().stream().anyMatch(role -> role.getName().equals("MANAGER"))) && userService.checkBelongToSameStore(user.getUsername(),currentUser))){
                 
                 model.addAttribute("user", user);
                 model.addAttribute("currentUser", currentUser);
@@ -185,11 +190,11 @@ public String getAllUsers(Model model, Principal principal) {
     
 
     @PostMapping("/update/user/{id}")   
-    public String updateUser(@AuthenticationPrincipal UserDetails userDetails,@PathVariable Long id,@ModelAttribute User user, Model model) {
+    public String updateUser(@AuthenticationPrincipal UserDetails userDetails,@PathVariable String id,@ModelAttribute User user, Model model) {
     try {
         User currentUser = userService.getUserByUsername(userDetails.getUsername());
         model.addAttribute("currentUser", currentUser);
-        if((currentUser.getRoles().stream().anyMatch(role -> role.getName().equals("ADMIN"))) || ((currentUser.getRoles().stream().anyMatch(role -> role.getName().equals("MANAGER"))) && userService.checkBelongToSameStore(id,currentUser))){
+        if((currentUser.getRoles().stream().anyMatch(role -> role.getName().equals("ADMIN"))) || ((currentUser.getRoles().stream().anyMatch(role -> role.getName().equals("MANAGER"))) && userService.checkBelongToSameStore(user.getUsername(),currentUser))){
             userService.updateUser(user);
         }else{
             return "error/403"; 
@@ -205,13 +210,13 @@ public String getAllUsers(Model model, Principal principal) {
 
 
     @PostMapping("/delete/user/{id}")
-    public String deleteUser(@AuthenticationPrincipal UserDetails userDetails,@PathVariable Long id, Model model){
+    public String deleteUser(@AuthenticationPrincipal UserDetails userDetails,@PathVariable String id, Model model){
         User currentUser = userService.getUserByUsername(userDetails.getUsername());
         model.addAttribute("currentUser", currentUser);
         try {
             
             if((currentUser.getRoles().stream().anyMatch(role -> role.getName().equals("ADMIN"))) || ((currentUser.getRoles().stream().anyMatch(role -> role.getName().equals("MANAGER"))) && userService.checkBelongToSameStore(id,currentUser))){
-                userService.deleteUserById(id);
+                userService.deleteUserByUsername(id);
             }else{
                 return "error/403"; 
             }
@@ -233,13 +238,13 @@ public String getAllUsers(Model model, Principal principal) {
     }
 
     @PostMapping("/delete/admin/user/{id}")
-    public String deleteAdminUser(@AuthenticationPrincipal UserDetails userDetails,@PathVariable Long id, Model model){
+    public String deleteAdminUser(@AuthenticationPrincipal UserDetails userDetails,@PathVariable String id, Model model){
         try {
             User currentUser = userService.getUserByUsername(userDetails.getUsername());
             model.addAttribute("currentUser", currentUser);
             
             if((currentUser.getRoles().stream().anyMatch(role -> role.getName().equals("ADMIN"))) ){
-                userService.deleteUserById(id);
+                userService.deleteUserByUsername(id);
             }else{
                 return "error/403"; 
             }

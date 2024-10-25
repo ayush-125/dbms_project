@@ -191,7 +191,7 @@ public String showCreateEmployeeForStore(@AuthenticationPrincipal UserDetails us
 
             List<Employee>employees=new ArrayList<>();
             model.addAttribute("currentUser", currentUser);
-            model.addAttribute("currentUserStoreId", userService.getStoreIdById(currentUser.getId()));
+            model.addAttribute("currentUserStoreId", userService.getStoreIdByUsername(currentUser.getUsername()));
             if (currentUser.getRoles().stream().anyMatch(role -> role.getName().equals("ADMIN") )) {
                 employees = employeeService.getAllEmployees();
             }else if(currentUser.getRoles().stream().anyMatch(role -> role.getName().equals("MANAGER")) ){

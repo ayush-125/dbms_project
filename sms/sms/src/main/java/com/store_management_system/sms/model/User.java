@@ -4,7 +4,7 @@ package com.store_management_system.sms.model;
 import java.util.List;
 
 public class User {
-    private Long id;
+    // private Long id;
     private String username;
     private String password;
     private Long roleId;
@@ -12,14 +12,14 @@ public class User {
 
     private transient List<Role>roles;
     public boolean isEmpty(){
-        return (id==null &&  roleId==null && employeeId==null &&(username==null || username.isEmpty()) &&( password==null || password.isEmpty()));
+        return (  roleId==null && employeeId==null &&(username==null || username.isEmpty()) &&( password==null || password.isEmpty()));
     }
-    public Long getId(){
-        return id;
-    }
-    public void setId(Long id){
-        this.id=id;
-    }
+    // public Long getId(){
+    //     return id;
+    // }
+    // public void setId(Long id){
+    //     this.id=id;
+    // }
     public String getUsername(){
         return username;
     }

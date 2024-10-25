@@ -181,7 +181,7 @@
     <div class="container mt-3" >
         <h2 class="text-center text-info" style>User Details</h2>
         <hr>
-        <form id="userForm" method="post" th:object="${user}" th:action="@{/update/user/{id}(id=${user.id })}">
+        <form id="userForm" method="post" th:object="${user}" th:action="@{/update/user/{id}(id=${user.username })}">
             <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
             <div id="errorMessageDiv" th:if="${errorMessage}">
                 <p th:text="${errorMessage}"></p>

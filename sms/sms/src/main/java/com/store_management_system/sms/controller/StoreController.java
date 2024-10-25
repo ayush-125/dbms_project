@@ -115,7 +115,7 @@ public class StoreController {
             model.addAttribute("managers", managers);
             if (!(currentUser.getRoles().stream().anyMatch(role -> role.getName().equals("ADMIN"))) &&
                     !(currentUser.getRoles().stream().anyMatch(role -> role.getName().equals("MANAGER")) &&
-                            userService.getStoreIdById(currentUser.getId()).equals(id))) {
+                            userService.getStoreIdByUsername(currentUser.getUsername()).equals(id))) {
                 return "error/403";
             }
 
