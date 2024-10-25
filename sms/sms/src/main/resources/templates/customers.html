@@ -161,7 +161,11 @@
                                                             </p>
                                                             <p class="mb-1">
                                                                 <i class="fas fa-warehouse text-warning"></i>
-                                                                <strong>Inventory ID:</strong> <span th:text="${order.inventoryId}"></span>
+                                                                <strong>Product ID:</strong> <span th:text="${order.productId}"></span>
+                                                            </p>
+                                                            <p class="mb-1">
+                                                                <i class="fas fa-warehouse text-warning"></i>
+                                                                <strong>Store ID:</strong> <span th:text="${order.storeId}"></span>
                                                             </p>
                                                             <p class="mb-1">
                                                                 <i class="fas fa-calendar text-secondary"></i>
@@ -212,24 +216,24 @@
                                                                 </button>
                                                             </form>
                                                             
-                                                            <a th:if="${order.feedbackId == null}" th:href="@{/feedback/create/{id}(id=${order.id})}" class="btn btn-outline-primary btn-sm d-inline-block ml-2">
+                                                            <a th:if="${order.feedback == null}" th:href="@{/feedback/create/{id}(id=${order.id})}" class="btn btn-outline-primary btn-sm d-inline-block ml-2">
                                                                 <i class="fas fa-comment-alt"></i> Give Feedback
                                                             </a>
-                                                            <a th:if="${order.feedbackId != null}" th:href="@{/feedback/view/{id}(id=${order.feedbackId})}" class="btn btn-outline-info btn-sm d-inline-block ml-2">
+                                                            <a th:if="${order.feedback != null}" th:href="@{/feedback/view/{id}(id=${order.id})}" class="btn btn-outline-info btn-sm d-inline-block ml-2">
                                                                 <i class="fas fa-comment-alt"></i> View Feedback
                                                             </a>
                                                         </div>
                                         
                                                         <!-- Return Buttons -->
                                                         <div>
-                                                            <a th:if="${order.returnId == null}" th:href="@{/return/create/{id}(id=${order.id})}" class="btn btn-outline-warning btn-sm">
+                                                            <a th:if="${order.return == null}" th:href="@{/return/create/{id}(id=${order.id})}" class="btn btn-outline-warning btn-sm">
                                                                 <i class="fas fa-undo-alt"></i> Return
                                                             </a>
-                                                            <a th:if="${order.returnId != null}" th:href="@{/return/view/{id}(id=${order.returnId})}" class="btn btn-outline-info btn-sm">
+                                                            <a th:if="${order.return != null}" th:href="@{/return/view/{id}(id=${order.id})}" class="btn btn-outline-info btn-sm">
                                                                 <i class="fas fa-undo-alt"></i> View Return
                                                             </a>
                                                             <!-- Delete Return Button -->
-                                                            <form th:if="${order.returnId != null}" th:action="@{/delete/return/{id}(id=${order.returnId})}" method="post"
+                                                            <form th:if="${order.return != null}" th:action="@{/delete/return/{id}(id=${order.id})}" method="post"
                                                                   onsubmit="return confirm('Are you sure you want to delete this return statement?');">
                                                                 <input type="hidden" name="_method" value="delete" />
                                                                 <button type="submit" class="btn btn-outline-danger btn-sm mt-2">
@@ -324,6 +328,15 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+
+
+    // <!-- Include jQuery first, then Bootstrap (without duplicates) -->
+<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.bundle.min.js"></script>
+<script src="/js/style.js"></script>
+
 </body>
 </html>
 

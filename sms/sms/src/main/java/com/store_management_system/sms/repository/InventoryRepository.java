@@ -27,23 +27,23 @@ public class InventoryRepository {
         }   
     }
 
-    public Inventory findById(Long id){
+    // public Inventory findById(Long id){
+    //     try {
+    //         String sql="select * from inventory where id=? ";
+    //         List<Inventory> inventorys = jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(Inventory.class),id);
+    //         if(inventorys.isEmpty()){
+    //             return null;
+    //         }
+    //         Inventory inventory=inventorys.get(0);
+    //         return inventory;
+    //     } catch (DataAccessException  e) {
+    //         System.err.println("Error querying inventory " + e.getMessage());
+    //         throw new CustomDatabaseException("Error querying inventory "+e.getMessage(),e);
+    //     }
+    // }
+    public Double getPriceByProductId(Long id){
         try {
-            String sql="select * from inventory where id=? ";
-            List<Inventory> inventorys = jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(Inventory.class),id);
-            if(inventorys.isEmpty()){
-                return null;
-            }
-            Inventory inventory=inventorys.get(0);
-            return inventory;
-        } catch (DataAccessException  e) {
-            System.err.println("Error querying inventory " + e.getMessage());
-            throw new CustomDatabaseException("Error querying inventory "+e.getMessage(),e);
-        }
-    }
-    public Double getPriceById(Long id){
-        try {
-            String sql="select price from productD where id=any(select productId from inventory where id=?) ";
+            String sql="select price from productD where id=? ";
             Double price = jdbcTemplate.queryForObject(sql, Double.class,id);
             
             return price;
@@ -65,16 +65,27 @@ public class InventoryRepository {
 
     public void save(Inventory inventory) {
         try {
-            if (inventory.getId() == null) {
+            // if (inventory.getId() == null) {
                 String sql = "insert into inventory(productId,storeId,quantity) values(?,?,?)";
                 jdbcTemplate.update(sql,inventory.getProductId(),inventory.getStoreId(), inventory.getQuantity());
-            } else {
-                String sql = "UPDATE inventory set productId=?,storeId=?,quantity=? where id=? ";
-                jdbcTemplate.update(sql,inventory.getProductId(),inventory.getStoreId(), inventory.getQuantity(),inventory.getId());
-            }
+            // } else {
+            //     String sql = "UPDATE inventory set productId=?,storeId=?,quantity=? where id=? ";
+            //     jdbcTemplate.update(sql,inventory.getProductId(),inventory.getStoreId(), inventory.getQuantity(),inventory.getId());
+            // }
         } catch (DataAccessException e) {
             System.err.println("Error saving or updating inventory "+ e.getMessage());
             throw new CustomDatabaseException("Error saving or updating inventory  "+e.getMessage(),e);
+        }
+    }
+    public void update(Inventory inventory){
+        try {
+            String sql = "UPDATE inventory set quantity=? where productId=? and storeId=? ";
+                jdbcTemplate.update(sql,inventory.getQuantity(),inventory.getProductId(),inventory.getStoreId());
+            
+        } catch (DataAccessException e) {
+            System.err.println("Error saving or updating inventory "+ e.getMessage());
+            throw new CustomDatabaseException("Error saving or updating inventory  "+e.getMessage(),e);
+        
         }
     }
 
@@ -88,10 +99,10 @@ public class InventoryRepository {
         }
     }
 
-    public void deleteById(Long id){
+    public void deleteById(Long productId,Long storeId){
         try {
-            String sql="delete from inventory where id=?";
-            jdbcTemplate.update(sql, id);
+            String sql="delete from inventory where productId=? and storeId=?";
+            jdbcTemplate.update(sql, productId,storeId);
         } catch (DataAccessException e) {
             System.err.println("Error deleting inventory: " + e.getMessage());
             throw new CustomDatabaseException("Error deleting inventory "+e.getMessage(),e);

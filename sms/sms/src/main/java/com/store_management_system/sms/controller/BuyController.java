@@ -33,16 +33,17 @@ public class BuyController {
     @Autowired
     private BuyRepository buyRepository;
 
-    @GetMapping("/buy/{inventoryId}")
-    public String createBuy(@PathVariable Long inventoryId,@AuthenticationPrincipal UserDetails userDetails,Model model) {
+    @GetMapping("/buy/{productId}/{storeId}")
+    public String createBuy(@PathVariable Long productId,@PathVariable Long storeId,@AuthenticationPrincipal UserDetails userDetails,Model model) {
         User currentUser = userService.getUserByUsername(userDetails.getUsername());
         model.addAttribute("currentUser", currentUser);
         try {
         Buy buy=new Buy();
         // buy.setEmployeeId(currentUser.getEmployeeId());
-        buy.setInventoryId((long)inventoryId);
+        buy.setProductId(productId);
+        buy.setStoreId(storeId);
         
-        buy.setPrice(inventoryRepository.getPriceById(inventoryId));
+        buy.setPrice(inventoryRepository.getPriceByProductId(productId));
         List<Supplier> suppliers = supplierRepository.findAll();
         model.addAttribute("suppliers", suppliers);
         model.addAttribute("buy", buy);
@@ -63,8 +64,8 @@ public class BuyController {
             model.addAttribute("currentUser", currentUser);
             Long quantity=buy.getQuantity();
             Long supplierId=buy.getSupplierId();
-            Long inventoryId=buy.getInventoryId();
-            Inventory inventory=inventoryRepository.findById(inventoryId);
+            // Long inventoryId=buy.getInventoryId();
+            Inventory inventory=inventoryRepository.findByProductAndStoreId(buy.getProductId(),buy.getStoreId()).get(0);
             Long qmax=inventory.getQuantity();
 
             if(supplierRepository.findById(supplierId)==null ){
@@ -74,7 +75,7 @@ public class BuyController {
            return "buy";
             }
             inventory.setQuantity(qmax+quantity);
-            inventoryRepository.save(inventory);
+            inventoryRepository.update(inventory);
             buyRepository.save(buy);
         } catch (Exception e) {
             model.addAttribute("errorMessage", "Incorrect Details.."+e.getMessage());
@@ -90,7 +91,7 @@ public class BuyController {
     public String deleteBuy(Model model,@PathVariable Long id) {
         try {
             Buy buy=buyRepository.findById(id);
-            Inventory inventory=inventoryRepository.findById(buy.getInventoryId());
+            Inventory inventory=inventoryRepository.findByProductAndStoreId(buy.getProductId(),buy.getStoreId()).get(0);
             Supplier supplier=supplierRepository.findById(buy.getSupplierId());
             Double supplierAccount=supplier.getAccount();
             
@@ -99,7 +100,7 @@ public class BuyController {
             Long q=inventory.getQuantity();
             inventory.setQuantity(q-buy.getQuantity());
             supplierRepository.save(supplier);
-            inventoryRepository.save(inventory);
+            inventoryRepository.update(inventory);
             buyRepository.deleteById(id);
         } catch (Exception e) {
             model.addAttribute("errorMessage", "Unable to delete."+e.getMessage());

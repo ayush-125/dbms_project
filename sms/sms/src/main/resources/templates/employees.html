@@ -27,9 +27,9 @@
                     <h3>Users for this Employee</h3>
                     <li th:each="user : ${employee.users}">
                         <span th:text="${user.username}"></span> 
-                        (ID: <span th:text="${user.id}"></span>)
-                        <a class="button" th:href="@{/view/user/{id}(id=${user.id})}">View User</a>
-                        <form th:action="@{/delete/user/{id}(id=${user.id})}" method="post" onsubmit="return confirm('Are you sure you want to delete this user?');">
+                        <!-- (ID: <span th:text="${user.id}"></span>) -->
+                        <a class="button" th:href="@{/view/user/{id}(id=${user.username})}">View User</a>
+                        <form th:action="@{/delete/user/{id}(id=${user.username})}" method="post" onsubmit="return confirm('Are you sure you want to delete this user?');">
                             <input type="hidden" name="_method" value="delete" />
                             <button type="submit">Delete User</button>
                         </form>
@@ -56,6 +56,14 @@
     </script>
 
     <a class="button" th:href="@{/home}">Home</a>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+
+
+    // <!-- Include jQuery first, then Bootstrap (without duplicates) -->
+<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.bundle.min.js"></script>
+<script src="/js/style.js"></script>
 
 </body>
 </html>

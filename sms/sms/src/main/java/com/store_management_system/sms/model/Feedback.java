@@ -3,23 +3,23 @@ package com.store_management_system.sms.model;
 import java.time.LocalDate;
 
 public class Feedback {
-    private Long id;
+    // private Long id;
     private LocalDate fdate;
     private Double rating;
     private String comments;
     private Long orderId;
 
     public boolean isEmpty(){
-        return (id==null && fdate==null && rating==null && orderId==null&&(comments==null ||comments.isEmpty()));
+        return ( fdate==null && rating==null && orderId==null&&(comments==null ||comments.isEmpty()));
     }
 
-    public Long getId() {
-        return id;
-    }
+    // public Long getId() {
+    //     return id;
+    // }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
+    // public void setId(Long id) {
+    //     this.id = id;
+    // }
 
     public LocalDate getFdate() {
         return fdate;

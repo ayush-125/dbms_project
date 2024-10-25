@@ -3,23 +3,23 @@ package com.store_management_system.sms.model;
 
 
 public class Inventory {
-    private Long id;
+    // private Long id;
     private Long productId;
     private Long storeId;
     private Long quantity;
 
     public boolean isEmpty(){
-        return(id==null && productId==null && storeId==null && storeId==null && quantity==null);
+        return( productId==null && storeId==null && storeId==null && quantity==null);
 
     }
 
-    public Long getId() {
-        return id;
-    }
+    // // public Long getId() {
+    // //     return id;
+    // // }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
+    // public void setId(Long id) {
+    //     this.id = id;
+    // }
 
     public Long getProductId() {
         return productId;

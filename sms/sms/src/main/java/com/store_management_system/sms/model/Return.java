@@ -1,7 +1,7 @@
 package com.store_management_system.sms.model;
 import java.time.LocalDate;
 public class Return {
-    private Long id;
+    // private Long id;
     private LocalDate rdate;
     private String reason;
     private Long quantity;
@@ -18,16 +18,16 @@ public class Return {
         return totalAmount;
     }
     public boolean isEmpty(){
-        return (id==null && rdate==null && quantity==null && price==null && orderId==null &&(reason==null || reason.isEmpty()));
+        return ( rdate==null && quantity==null && price==null && orderId==null &&(reason==null || reason.isEmpty()));
     }
 
-    public Long getId() {
-        return id;
-    }
+    // public Long getId() {
+    //     return id;
+    // }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
+    // public void setId(Long id) {
+    //     this.id = id;
+    // }
 
     public LocalDate getRdate() {
         return rdate;

@@ -37,7 +37,7 @@ public class InventoryController {
                 model.addAttribute("stores", stores);
                 model.addAttribute("currentUser", currentUser);
             }else{
-                Long storeId=userService.getStoreIdById(currentUser.getId());
+                Long storeId=userService.getStoreIdByUsername(currentUser.getUsername());
                 List<Store> stores = storeService.findById(storeId);
                 model.addAttribute("stores", stores);
                 model.addAttribute("currentUser", currentUser);
@@ -77,8 +77,8 @@ public class InventoryController {
     }
 
     // Update an existing inventory
-    @PostMapping("/update/inventory/{id}")
-    public String updateInventory(@PathVariable("id") Integer id, @RequestParam("quantity") Long quantity,Model model, @AuthenticationPrincipal UserDetails userDetails) {
+    @PostMapping("/update/inventory/{productId}/{storeId}")
+    public String updateInventory(@PathVariable("productId") Integer productId,@PathVariable("storeId") Integer storeId, @RequestParam("quantity") Long quantity,Model model, @AuthenticationPrincipal UserDetails userDetails) {
         try {
             User currentUser = userService.getUserByUsername(userDetails.getUsername());
         model.addAttribute("currentUser", currentUser);
@@ -86,10 +86,10 @@ public class InventoryController {
                 return "error/403";
             }
             Inventory inventory=new Inventory();
-            inventory=inventoryRepository.findById((long)id);
+            inventory=inventoryRepository.findByProductAndStoreId((long)productId,(long)storeId).get(0);
             inventory.setQuantity(quantity);
             // inventory.setId((long)id); // Set the ID to ensure it updates the correct record
-        inventoryRepository.save(inventory);
+        inventoryRepository.update(inventory);
         return "redirect:/inventory"; 
         } catch (Exception e) {
             model.addAttribute("errorMessage", e.getMessage());
@@ -99,8 +99,8 @@ public class InventoryController {
     }
 
     // Delete an inventory
-    @PostMapping("/delete/inventory/{id}")
-    public String deleteInventory(@PathVariable("id") Integer id,Model model, @AuthenticationPrincipal UserDetails userDetails) {
+    @PostMapping("/delete/inventory/{productId}/{storeId}")
+    public String deleteInventory(@PathVariable("productId") Integer productId,@PathVariable("storeId") Integer storeId,Model model, @AuthenticationPrincipal UserDetails userDetails) {
         try {
             User currentUser = userService.getUserByUsername(userDetails.getUsername());
         model.addAttribute("currentUser", currentUser);
@@ -108,7 +108,7 @@ public class InventoryController {
             if(currentUser.getRoleId().equals(3L)){
                 return "error/403";
             }
-            inventoryRepository.deleteById((long)id);
+            inventoryRepository.deleteById((long)productId,(long)storeId);
         return "redirect:/inventory"; 
         } catch (Exception e) {
             model.addAttribute("errorMessage", e.getMessage());

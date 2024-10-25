@@ -8,7 +8,7 @@ import com.store_management_system.sms.service.UserService;
 import com.store_management_system.sms.repository.RoleRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
-
+import org.springframework.security.crypto.password.PasswordEncoder; 
 import org.springframework.stereotype.Component;
 
 import java.util.Collections;
@@ -21,7 +21,8 @@ public class AdminInitializer implements CommandLineRunner {
     
     @Autowired
     private RoleRepository roleRepository;
-
+    @Autowired
+    private PasswordEncoder passwordEncoder;
    
 
     @Override
@@ -57,6 +58,7 @@ public class AdminInitializer implements CommandLineRunner {
             adminUser.setPassword("admin123");  // Encoding the password
             adminUser.setRoles(Collections.singletonList(adminRole));
             adminUser.setRoleId((long)1);
+            // adminUser.setPassword(passwordEncoder.encode(adminUser.getPassword()));
             userService.saveUser(adminUser);
 
             System.out.println("Admin user created with username: admin and password: admin123");

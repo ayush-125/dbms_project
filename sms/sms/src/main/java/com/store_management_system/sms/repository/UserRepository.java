@@ -72,9 +72,9 @@ public class UserRepository {
         
     }
 
-    public Long getStoreIdById(Long id){
+    public Long getStoreIdByUsername(String id){
         try {
-            String sql="(select employees.storeId from users,employees where users.employeeId=employees.id and users.id=?)";
+            String sql="(select employees.storeId from users,employees where users.employeeId=employees.id and users.username=?)";
             
             List<Long> storeIds = jdbcTemplate.query(sql, (rs, rowNum) -> rs.getLong("storeId"), id);
             // Assuming you expect only one result
@@ -103,24 +103,24 @@ public class UserRepository {
             // return null;
         }
     }
-    public User findById(Long id) {
-        try {
-            String sql = "SELECT * FROM users WHERE id = ?";
-            List<User> users = jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(User.class), id);
-            if (users.isEmpty()) {
-                return null;
-            }
-            User user = users.get(0);
-            Role role = roleRepository.findById(user.getRoleId());
-            user.setRoles(Collections.singletonList(role)); // Set the roles in the user object
-            return user;
-        } catch (DataAccessException e) {
-            System.err.println("Error querying user by id: " + e.getMessage());
-            throw new CustomDatabaseException("Error querying user by id:"+id,e); 
+    // public User findById(Long id) {
+    //     try {
+    //         String sql = "SELECT * FROM users WHERE id = ?";
+    //         List<User> users = jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(User.class), id);
+    //         if (users.isEmpty()) {
+    //             return null;
+    //         }
+    //         User user = users.get(0);
+    //         Role role = roleRepository.findById(user.getRoleId());
+    //         user.setRoles(Collections.singletonList(role)); // Set the roles in the user object
+    //         return user;
+    //     } catch (DataAccessException e) {
+    //         System.err.println("Error querying user by id: " + e.getMessage());
+    //         throw new CustomDatabaseException("Error querying user by id:"+id,e); 
             
-            // return null;
-        }
-    }
+    //         // return null;
+    //     }
+    // }
     public Long countUsers(){
         try {
             String sql="select count(*) from users";
@@ -138,12 +138,13 @@ public class UserRepository {
             if(user.getRoleId()==null){
                 user.setRoleId((long)3);
             }
-            if (user.getId() == null) {
+            User chk=findByUsername(user.getUsername());
+            if (chk == null) {
                 String sql = "INSERT INTO users (username, password, employeeId, roleId) VALUES (?, ?, ?, ?)";
                 jdbcTemplate.update(sql, user.getUsername(), user.getPassword(), user.getEmployeeId(), user.getRoleId());
             } else {
-                String sql = "UPDATE users SET username = ?, password = ?, employeeId = ?, roleId = ? WHERE id = ?";
-                jdbcTemplate.update(sql, user.getUsername(), user.getPassword(), user.getEmployeeId(), user.getRoleId(), user.getId());
+                String sql = "UPDATE users SET  password = ?, employeeId = ?, roleId = ? WHERE username = ?";
+                jdbcTemplate.update(sql,  user.getPassword(), user.getEmployeeId(), user.getRoleId(), user.getUsername());
             }
         } catch (DataAccessException   e) {
             System.err.println("Error saving user: " + e.getMessage());
@@ -152,9 +153,9 @@ public class UserRepository {
         }
     }
 
-    public void deleteById(Long id) {
+    public void deleteByUsername(String id) {
         try {
-            String sql = "DELETE FROM users WHERE id = ?";
+            String sql = "DELETE FROM users WHERE username = ?";
             jdbcTemplate.update(sql, id);
         } catch (DataAccessException e) {
             System.err.println("Error deleting user: " + e.getMessage());
@@ -164,16 +165,17 @@ public class UserRepository {
     }
 
     //find users belonging to the same store
-    public List<User> findUsersWithSameStoreById(Long id){
-        try{String sql="Select users.id,users.username,users.password,users.roleId,users.employeeId"
+    public List<User> findUsersWithSameStoreByUsername(String id){
+        try{String sql="Select users.username as username,users.password as password,users.roleId as roleId,users.employeeId as employeeId"
         +" from users,employees where users.employeeId=employees.id and employees.storeId in("
-        +" select employees.storeId from users,employees where users.employeeId=employees.id and users.id=?"
+        +" select employees.storeId from users,employees where users.employeeId=employees.id and users.username=?"
         +")";
         List<User> users = jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(User.class), id);
         for (User user : users) {
             Role role = roleRepository.findById(user.getRoleId());
             user.setRoles(Collections.singletonList(role)); // Set the roles in the user object
         }
+        
         return users;
     }catch(DataAccessException e){
         System.err.println("Error querying users: " + e.getMessage());

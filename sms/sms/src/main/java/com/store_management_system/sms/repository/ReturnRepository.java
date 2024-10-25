@@ -27,20 +27,20 @@ public class ReturnRepository {
         }   
     }
 
-    public Return findById(Long id){
-        try {
-            String sql="select * from returnproducts where id=? ";
-            List<Return> returns = jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(Return.class),id);
-            if(returns.isEmpty()){
-                return null;
-            }
-            Return return1=returns.get(0);
-            return return1;
-        } catch (DataAccessException  e) {
-            System.err.println("Error querying return " + e.getMessage());
-            throw new CustomDatabaseException("Error querying return "+e.getMessage(),e);
-        }
-    }
+    // public Return findById(Long id){
+    //     try {
+    //         String sql="select * from returnproducts where id=? ";
+    //         List<Return> returns = jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(Return.class),id);
+    //         if(returns.isEmpty()){
+    //             return null;
+    //         }
+    //         Return return1=returns.get(0);
+    //         return return1;
+    //     } catch (DataAccessException  e) {
+    //         System.err.println("Error querying return " + e.getMessage());
+    //         throw new CustomDatabaseException("Error querying return "+e.getMessage(),e);
+    //     }
+    // }
     public Return findByOrderId(Long id){
         try {
             String sql="select * from returnproducts where orderId=? ";
@@ -58,12 +58,13 @@ public class ReturnRepository {
 
     public void save(Return return1) {
         try {
-            if (return1.getId() == null) {
+            Return chk=findByOrderId(return1.getOrderId());
+            if (chk == null) {
                 String sql = "insert into returnproducts(rdate,reason,quantity,price,orderId) values(?,?,?,?,?)";
                 jdbcTemplate.update(sql,return1.getRdate(),return1.getReason(), return1.getQuantity(), return1.getPrice(), return1.getOrderId());
             } else {
-                String sql = "UPDATE returnproducts set rdate=?,reason=?,quantity=?,price=?,orderId=? where id=? ";
-                jdbcTemplate.update(sql,return1.getRdate(),return1.getReason(), return1.getQuantity(), return1.getPrice(), return1.getOrderId(),return1.getId());
+                String sql = "UPDATE returnproducts set rdate=?,reason=?,quantity=?,price=? where orderId=? ";
+                jdbcTemplate.update(sql,return1.getRdate(),return1.getReason(), return1.getQuantity(), return1.getPrice(),return1.getOrderId());
             }
         } catch (DataAccessException e) {
             System.err.println("Error saving or updating return "+ e.getMessage());
@@ -81,9 +82,9 @@ public class ReturnRepository {
         }
     }
 
-    public void deleteById(Long id){
+    public void deleteByOrderId(Long id){
         try {
-            String sql="delete from returnproducts where id=?";
+            String sql="delete from returnproducts where orderId=?";
             jdbcTemplate.update(sql, id);
         } catch (DataAccessException e) {
             System.err.println("Error deleting return: " + e.getMessage());

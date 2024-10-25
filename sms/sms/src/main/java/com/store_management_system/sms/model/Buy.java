@@ -4,20 +4,21 @@ import java.time.LocalDate;
 
 
 public class Buy {
-    private Long id;
+    private Long productId;
+    private Long storeId;
     private LocalDate dop;
     private  Double price;
     private Long quantity;
     private Long supplierId;
-    private Long inventoryId;
+    private Long id;
     private String paymentMethod;
     private Double payment;
 
     private Double totalAmount;
 
     public boolean isEmpty(){
-        return ((dop==null && id==null && price==null && quantity==null)
-                &&(supplierId==null && inventoryId==null)
+        return ((dop==null && productId==null && storeId==null && price==null && quantity==null)
+                &&(supplierId==null && id==null)
         );
     }
     public Double getPayment() {
@@ -32,14 +33,18 @@ public class Buy {
     public void setPaymentMethod(String paymentMethod) {
         this.paymentMethod = paymentMethod;
     }
-    public Long getId() {
-        return id;
+    public Long getProductId() {
+        return productId;
     }
-
-    public void setId(Long id) {
-        this.id = id;
+    public Long getStoreId() {
+        return storeId;
     }
-
+    public void setStoreId(Long id) {
+        this.storeId = id;
+    }
+    public void setProductId(Long id) {
+        this.productId = id;
+    }
     public LocalDate getDop() {
         return dop;
     }
@@ -74,12 +79,12 @@ public class Buy {
         this.supplierId = supplierId;
     }
 
-    public Long getInventoryId() {
-        return inventoryId;
+    public Long getId() {
+        return id;
     }
 
-    public void setInventoryId(Long inventoryId) {
-        this.inventoryId = inventoryId;
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public Double getTotalAmount() {
