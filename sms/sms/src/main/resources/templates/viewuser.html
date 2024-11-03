@@ -125,20 +125,20 @@
                 formElements.forEach(element => element.disabled = false);
             }
     
-            if (url.includes('/view/')) {
+            // if (url.includes('/view/')) {
                 disableFields(); 
                 editButton.style.display = 'inline'; 
-            }
+            // }
     
-            if (url.includes('/edit/')) {
-                enableFields(); 
-                submitButton.style.display = 'inline'; 
-                cancelButton.style.display = 'inline'; 
-            }
+            // if (url.includes('/edit/')) {
+            //     enableFields(); 
+            //     submitButton.style.display = 'inline'; 
+            //     cancelButton.style.display = 'inline'; 
+            // }
     
             editButton.addEventListener('click', function () {
-                const newUrl = url.replace('/view/', '/edit/');
-                window.history.pushState(null, null, newUrl); 
+                // const newUrl = url.replace('/view/', '/edit/');
+                // window.history.pushState(null, null, newUrl); 
                 enableFields(); 
                 editButton.style.display = 'none'; 
                 submitButton.style.display = 'inline'; 
@@ -146,8 +146,8 @@
             });
     
             cancelButton.addEventListener('click', function () {
-                const newUrl = url.replace('/edit/', '/view/');
-                window.history.pushState(null, null, newUrl); 
+                // const newUrl = url.replace('/edit/', '/view/');
+                // window.history.pushState(null, null, newUrl); 
                 disableFields(); 
                 submitButton.style.display = 'none'; 
                 cancelButton.style.display = 'none'; 
