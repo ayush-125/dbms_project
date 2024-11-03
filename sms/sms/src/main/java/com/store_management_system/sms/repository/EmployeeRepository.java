@@ -138,4 +138,24 @@ public class EmployeeRepository {
             throw new CustomDatabaseException("Error querying all employees with designation 'manager'.", e);
         }
     }
+    public List<Employee> getManagersByStoreId(Long storeId) {
+        try {
+            // Get the store ID for the provided username
+            // Long storeId = getStoreIdByUsername(username);
+            
+            // if (storeId == null) {
+            //     throw new CustomDatabaseException("Store ID not found for username: " + username);
+            // }
+            
+            // SQL query to find managers for the given store ID, with case-insensitivity and trimming for the designation field
+            String sql = "SELECT * FROM employees WHERE TRIM(LOWER(designation)) = 'manager' AND storeId = ?";
+            
+            List<Employee> managers = jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(Employee.class), storeId);
+            
+            return managers;
+        } catch (DataAccessException e) {
+            System.err.println("Error querying managers by store ID: " + e.getMessage());
+            throw new CustomDatabaseException("Error querying managers for store ID: " + storeId, e);
+        }
+    }
 }

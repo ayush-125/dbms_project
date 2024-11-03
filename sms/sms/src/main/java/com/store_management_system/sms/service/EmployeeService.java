@@ -3,8 +3,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
+import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.stereotype.Service;
 
+import com.store_management_system.sms.exception.CustomDatabaseException;
 import com.store_management_system.sms.exception.CustomServiceException;
 import com.store_management_system.sms.model.Employee;
 import com.store_management_system.sms.model.User;
@@ -18,6 +21,8 @@ public class EmployeeService {
     private EmployeeRepository employeeRepository;
     @Autowired 
     private UserRepository userRepository;
+    @Autowired
+    private UserService userService;
     
     public List<Employee> getAllEmployees() {
         try {

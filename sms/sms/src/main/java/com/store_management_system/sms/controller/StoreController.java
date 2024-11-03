@@ -2,6 +2,7 @@ package com.store_management_system.sms.controller;
 
 import com.store_management_system.sms.exception.CustomServiceException;
 import com.store_management_system.sms.model.*;
+import com.store_management_system.sms.repository.EmployeeRepository;
 import com.store_management_system.sms.service.*;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +26,9 @@ public class StoreController {
 
     @Autowired
     private EmployeeService employeeService;
+
+    @Autowired
+    private EmployeeRepository employeeRepository;
 
     @Autowired
     private UserService userService;
@@ -55,7 +59,7 @@ public class StoreController {
                 return "error/403";
             }
             model.addAttribute("store", new Store());
-            List<Employee> managers = employeeService.getAllManagers();
+            List<Employee> managers = employeeRepository.getManagersByStoreId(userService.getStoreIdByUsername(currentUser.getUsername()));
             model.addAttribute("managers", managers);
             return "createStore";
         } catch (Exception e) {
@@ -111,7 +115,7 @@ public class StoreController {
             }
             model.addAttribute("store", store);
 
-            List<Employee> managers = employeeService.getAllManagers();
+            List<Employee> managers = employeeRepository.getManagersByStoreId(id);
             model.addAttribute("managers", managers);
             if (!(currentUser.getRoles().stream().anyMatch(role -> role.getName().equals("ADMIN"))) &&
                     !(currentUser.getRoles().stream().anyMatch(role -> role.getName().equals("MANAGER")) &&
