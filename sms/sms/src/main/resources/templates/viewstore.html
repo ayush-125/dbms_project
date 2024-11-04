@@ -194,7 +194,7 @@
     <script>
         document.addEventListener('DOMContentLoaded', function () {
             const url = window.location.pathname;
-            const formElements = document.querySelectorAll('#storeForm input, #storeForm select, #submitButton');
+            const formElements = document.querySelectorAll('#storeForm input, #storeForm select, #submitButton, #selectManager');
             const editButton = document.getElementById('editButton');
             const submitButton = document.getElementById('submitButton');
             const cancelButton = document.getElementById('cancelButton');
@@ -207,20 +207,20 @@
                 formElements.forEach(element => element.disabled = false);
             }
     
-            if (url.includes('/view/')) {
+            // if (url.includes('/view/')) {
                 disableFields();
                 editButton.style.display = 'inline';
-            }
+            // }
     
-            if (url.includes('/edit/')) {
-                enableFields();
-                submitButton.style.display = 'inline';
-                cancelButton.style.display = 'inline';
-            }
+            // if (url.includes('/edit/')) {
+            //     enableFields();
+            //     submitButton.style.display = 'inline';
+            //     cancelButton.style.display = 'inline';
+            // }
     
             editButton.addEventListener('click', function () {
-                const newUrl = url.replace('/view/', '/edit/');
-                window.history.pushState(null, null, newUrl);
+                // const newUrl = url.replace('/view/', '/edit/');
+                // window.history.pushState(null, null, newUrl);
                 enableFields();
                 editButton.style.display = 'none';
                 submitButton.style.display = 'inline';
@@ -228,8 +228,8 @@
             });
     
             cancelButton.addEventListener('click', function () {
-                const newUrl = url.replace('/edit/', '/view/');
-                window.history.pushState(null, null, newUrl);
+                // const newUrl = url.replace('/edit/', '/view/');
+                // window.history.pushState(null, null, newUrl);
                 disableFields();
                 submitButton.style.display = 'none';
                 cancelButton.style.display = 'none';
@@ -281,7 +281,7 @@
                 <div class="form-group">
                     <label for="managerId">Manager ID:</label>
                     <input type="number" step="1" id="managerId" name="managerId" th:field="*{managerId}" class="form-control" placeholder="Enter manager ID"/>
-                    <button type="button" class="btn btn-link" data-toggle="modal" data-target="#managerModal">Select manager</button>
+                    <button type="button" id="selectManager" class="btn btn-link" data-toggle="modal" data-target="#managerModal">Select manager</button>
                 </div>
 
                 <div class="text-center">
