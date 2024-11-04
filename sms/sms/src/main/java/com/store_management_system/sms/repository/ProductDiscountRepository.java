@@ -7,16 +7,30 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
 import com.store_management_system.sms.exception.CustomDatabaseException;
+import com.store_management_system.sms.model.Discount;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.time.LocalDate;
 
 @Repository
 public class ProductDiscountRepository {
     @Autowired
     private JdbcTemplate jdbcTemplate;
 
+    public List<Discount> findByProductId(Long productId) {
+        try {
+            String sql = "SELECT * FROM discount WHERE productId = ? ";
+            LocalDate currentDate = LocalDate.now();
 
+            // Query for discounts that are valid for the current date
+            List<Discount> discounts = jdbcTemplate.query(sql,new BeanPropertyRowMapper<>(Discount.class));
+            return discounts;
+        } catch (DataAccessException e) {
+            System.err.println("Error querying discounts for product ID: " + e.getMessage());
+            throw new CustomDatabaseException("Error querying discounts for product", e);
+        }
+    }
     public List<Long> findByDiscountId(Long discountId){
         try {
             String sql="select productId from productDiscount where discountId=?";

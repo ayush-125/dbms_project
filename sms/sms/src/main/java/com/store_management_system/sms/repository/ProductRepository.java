@@ -9,22 +9,45 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
 import com.store_management_system.sms.exception.CustomDatabaseException;
+import com.store_management_system.sms.model.Discount;
 import com.store_management_system.sms.model.Product;
+
+import java.time.LocalDate;
 @Repository
 public class ProductRepository {
     @Autowired
     private JdbcTemplate jdbcTemplate;
 
-    public List<Product> findAll(){
+    public List<Product> findAll() {
         try {
-            String sql="select * from productD";
+            String sql = "SELECT * FROM products";
             List<Product> products = jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(Product.class));
-            
+    
+            // Current date to match discounts
+            LocalDate currentDate = LocalDate.now();
+    
+            // Loop through products to set the discount attribute
+            for (Product product : products) {
+                // SQL to join productDiscount and discount tables to get active discounts
+                String discountSql = "SELECT d.* FROM productdiscount pd JOIN discount d ON pd.discountid = d.id " +
+                                     "WHERE pd.productid = ? AND d.dos <= ? AND d.doe >= ?";
+                
+                List<Discount> activeDiscounts = jdbcTemplate.query(
+                    discountSql,
+                    new BeanPropertyRowMapper<>(Discount.class),
+                    product.getId(), currentDate, currentDate
+                );
+    
+                // Set the discount attribute if there's an active discount
+                // if (!activeDiscounts.isEmpty()) {
+                    product.setDiscount(activeDiscounts); // Assuming one active discount at a time
+                // }
+            }
             return products;
-        } catch (DataAccessException  e) {
+        } catch (DataAccessException e) {
             System.err.println("Error querying products: " + e.getMessage());
-            throw new CustomDatabaseException("Error querying products "+e.getMessage(),e);
-        }   
+            throw new CustomDatabaseException("Error querying products " + e.getMessage(), e);
+        }
     }
 
     public List<Product> findByStoreId(Long storeId){
