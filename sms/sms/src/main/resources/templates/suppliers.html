@@ -107,90 +107,21 @@
                                 </div>
                             </div>
                         </form>
+                    </div>
+                    <div class="mt-2 d-flex align-items-center">
                         <form th:action="@{/supplier/payment/{id}(id=${supplier.id})}" class="d-inline ml-2">
                             <div class="input-group-append">
                                 <button type="submit" class="btn btn-outline-info btn-sm">Payment History</button>
                             </div>
                         </form>
-                        
+                        <form th:action="@{/supplier/buys/{id}(id=${supplier.id})}" class="d-inline ml-2">
+                        <div >
+                            <button type="submit" class="btn btn-outline-success btn-sm">Supplier Buys</button>
+                        </div>
+
+                    </form>
                     </div>
                     <!-- Buys Section in Independent Accordion -->
-                    <div class="accordion mt-3" id="buysAccordion-[[${supplier.id}]]">
-                        <div class="accordion-item">
-                            <h2 class="accordion-header">
-                                <button class="accordion-button collapsed" type="button" onclick="toggleAccordion(event)">
-                                    <i class="fas fa-truck"></i> <span style="margin-right:9px;">Supplier Buys</span>
-                                </button>
-                            </h2>
-                            <div class="accordion-collapse collapse">
-                                <div class="accordion-body">
-                                    <ul th:each="buy : ${supplier.buys}" class="list-group">
-                                        <li class="list-group-item">
-                                            <div class="card mb-4 shadow-sm border-0">
-                                                <div class="card-body">
-                                                    <h5 class="card-title text-primary d-flex align-items-center">
-                                                        <i class="fas fa-receipt mr-2"></i> Buy ID: <span th:text="${buy.id}" class="ml-2"></span>
-                                                    </h5>
-                                                    <hr>
-                                                    <div class="row">
-                                                        <!-- Order Details -->
-                                                        <div class="col-md-6 mb-3">
-                                                            <p class="mb-1">
-                                                                <i class="fas fa-box-open text-success"></i> 
-                                                                <strong>Quantity:</strong> <span th:text="${buy.quantity}"></span>
-                                                            </p>
-                                                            <p class="mb-1">
-                                                                <i class="fas fa-rupee-sign text-info"></i>
-                                                                <strong>Price:</strong> ₹<span th:text="${buy.price}"></span>
-                                                            </p>
-                                                            <p class="mb-1">
-                                                                <i class="fas fa-warehouse text-warning"></i>
-                                                                <strong>Product ID:</strong> <span th:text="${buy.productId}"></span>
-                                                            </p>
-                                                            <p class="mb-1">
-                                                                <i class="fas fa-warehouse text-warning"></i>
-                                                                <strong>Store ID:</strong> <span th:text="${buy.storeId}"></span>
-                                                            </p>
-                                                            <p class="mb-1">
-                                                                <i class="fas fa-calendar text-info"></i>
-                                                                <strong>Buy Date:</strong> <span th:text="${buy.dop}"></span>
-                                                            </p>
-                                                        </div>
-                                        
-                                                        <div class="col-md-6 mb-3">
-                                                            <p class="mb-1">
-                                                                <i class="fas fa-credit-card text-primary"></i>
-                                                                <strong>Payment Method:</strong> <span th:text="${buy.paymentMethod}"></span>
-                                                            </p>
-                                                            <p class="mb-1">
-                                                                <i class="fas fa-money-bill-wave text-success"></i>
-                                                                <strong>Payment:</strong> ₹<span th:text="${buy.payment}"></span>
-                                                            </p>
-                                                        </div>
-                                                    </div>
-                                                    <div class="d-flex justify-content-between mt-4">
-                                                        <!-- Order Management Buttons -->
-                                                        <div>
-                                                            <form th:action="@{/delete/buy/{id}(id=${buy.id})}" method="post" class="d-inline-block"
-                                                                  onsubmit="return confirm('Are you sure you want to delete this buy?');">
-                                                                <input type="hidden" name="_method" value="delete" />
-                                                                <button type="submit" class="btn btn-outline-danger btn-sm">
-                                                                    <i class="fas fa-trash-alt"></i> Delete Buy
-                                                                </button>
-                                                            </form>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </li>
-                                    </ul>
-                                    <span th:if="${supplier==null || supplier.buys==null || supplier.buys.size()==0}">
-                                        No buys for this supplier
-                                    </span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
                     <div class="d-flex justify-content-end mt-3">
                         <a class="btn btn-outline-primary me-2" th:href="@{/view/supplier/{id}(id=${supplier.id})}" style="margin-right:5px;">View Supplier</a>
                         <form th:action="@{/delete/supplier/{id}(id=${supplier.id})}" method="post"

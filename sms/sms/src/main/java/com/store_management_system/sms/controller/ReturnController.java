@@ -10,9 +10,6 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import com.store_management_system.sms.model.*;
-import com.store_management_system.sms.model.Customer;
-import com.store_management_system.sms.model.Inventory;
-import com.store_management_system.sms.model.Return;
 import com.store_management_system.sms.repository.CustomerRepository;
 import com.store_management_system.sms.repository.InventoryRepository;
 import com.store_management_system.sms.repository.OrderRepository;
@@ -40,7 +37,8 @@ public class ReturnController {
             return "createReturn";
         } catch (Exception e) {
             model.addAttribute("errorMessage", "Unable to get create return statement page."+e.getMessage());
-            return "redirect:/customers";
+            Order order=orderRepository.findById(id);
+            return "redirect:/customer/orders/" + order.getCustomerId();
         }
         
     }
@@ -52,7 +50,7 @@ public class ReturnController {
             Double newprice=return1.getPrice();
             Order order=orderRepository.findById(return1.getOrderId());
             if(order.getQuantity()<q){
-                model.addAttribute("errorMessage", "incorrect quantity..");
+                model.addAttribute("errorMessage", "Incorrect quantity..");
                 model.addAttribute("return1", return1);
             return "createReturn";
             }
@@ -65,7 +63,7 @@ public class ReturnController {
             customerRepository.save(customer);
 
             returnRepository.save(return1);
-            return "redirect:/customers";
+            return "redirect:/customer/orders/" + order.getCustomerId();
         } catch (Exception e) {
             model.addAttribute("errorMessage", "Unable to create return statement "+e.getMessage());
             model.addAttribute("return1", return1);
@@ -81,8 +79,9 @@ public class ReturnController {
 
             return "viewreturn";
         } catch (Exception e) {
-            model.addAttribute("errorMessage", "Unable to get  return statement page."+e.getMessage());
-            return "redirect:/customers";
+            model.addAttribute("errorMessage", "Unable to get return statement page."+e.getMessage());
+            Order order=orderRepository.findById(id);
+            return "redirect:/customer/orders/" + order.getCustomerId();
         }
     }
 
@@ -97,7 +96,7 @@ public class ReturnController {
             Order order=orderRepository.findById(return1.getOrderId());
             Double orderprice=order.getPrice();
             if(order.getQuantity()<qnew){
-                model.addAttribute("errorMessage", "incorrect quantity..");
+                model.addAttribute("errorMessage", "Incorrect quantity..");
                 model.addAttribute("return1", return1);
             return "createReturn";
             }
@@ -109,7 +108,7 @@ public class ReturnController {
             customerRepository.save(customer);
 
             returnRepository.save(return1);
-            return "redirect:/customers";
+            return "redirect:/customer/orders/" + order.getCustomerId();
         } catch (Exception e) {
             model.addAttribute("errorMessage", "Unable to update return statement page."+e.getMessage());
             model.addAttribute("return1",return1);
@@ -135,6 +134,7 @@ public class ReturnController {
         
         }
         
-        return "redirect:/customers";
+        Order order=orderRepository.findById(id);
+        return "redirect:/customer/orders/" + order.getCustomerId();
     }
 }
