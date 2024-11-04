@@ -60,7 +60,7 @@ public class StoreController {
             return "createStore";
         } catch (Exception e) {
             // model.addAttribute("errorMessage", "Error: " + e.getMessage());
-            redirectAttributes.addFlashAttribute("errorMessage", "Error" + e.getMessage());
+            redirectAttributes.addFlashAttribute("errorMessage", "Something went wrong." + e.getMessage());
 
             return "createStore";
         }

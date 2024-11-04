@@ -1,6 +1,7 @@
 package com.store_management_system.sms.controller;
 
 import java.time.LocalDate;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -13,6 +14,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import com.store_management_system.sms.model.*;
 import com.store_management_system.sms.repository.FeedbackRepository;
+import com.store_management_system.sms.repository.OrderRepository;
+import com.store_management_system.sms.repository.CustomerRepository;
 import com.store_management_system.sms.service.UserService;
 
 @Controller
@@ -21,21 +24,26 @@ public class FeedbackController {
     private FeedbackRepository feedbackRepository;
     @Autowired
     UserService userService;
+    @Autowired
+    OrderRepository orderRepository;
+    @Autowired
+    CustomerRepository customerRepository;
 
-    @GetMapping("/feedback/create/{id}")
-    public String createFeedback(Model model,@PathVariable Long id, @AuthenticationPrincipal UserDetails userDetails){
+    @GetMapping("/feedback/create/{orderId}")
+    public String createFeedback(Model model,@PathVariable Long orderId, @AuthenticationPrincipal UserDetails userDetails){
         User currentUser = userService.getUserByUsername(userDetails.getUsername());
         model.addAttribute("currentUser", currentUser);
         try {
-           Feedback feedback =new Feedback();
-           feedback.setOrderId(id);
-           LocalDate currdate=LocalDate.now();
-           feedback.setFdate(currdate);
+            Feedback feedback =new Feedback();
+            feedback.setOrderId(orderId);
+            LocalDate currdate=LocalDate.now();
+            feedback.setFdate(currdate);
             model.addAttribute("feedback", feedback);
             return "createFeedback";
         } catch (Exception e) {
             model.addAttribute("errorMessage", "Unable to get create feedback page."+e.getMessage());
-            return "redirect:/customers";
+            Order order=orderRepository.findById(orderId);
+            return "redirect:/customer/orders/" + order.getCustomerId();
         }
         
     }
@@ -45,7 +53,8 @@ public class FeedbackController {
         model.addAttribute("currentUser", currentUser);
         try {
             feedbackRepository.save(feedback);
-            return "redirect:/customers";
+            Order order=orderRepository.findById(feedback.getOrderId());
+            return "redirect:/customer/orders/" + order.getCustomerId();
         } catch (Exception e) {
             model.addAttribute("errorMessage", "Unable to create Feedback "+e.getMessage());
             model.addAttribute("feedback", feedback);
@@ -53,18 +62,18 @@ public class FeedbackController {
         }
     }
 
-    @GetMapping("/feedback/view/{id}")
-    public String viewFeedback(Model model,@PathVariable Long id, @AuthenticationPrincipal UserDetails userDetails){
+    @GetMapping("/feedback/view/{orderId}")
+    public String viewFeedback(Model model,@PathVariable Long orderId, @AuthenticationPrincipal UserDetails userDetails){
         User currentUser = userService.getUserByUsername(userDetails.getUsername());
         model.addAttribute("currentUser", currentUser);
         try {
-            Feedback feedback=feedbackRepository.findByOrderId(id);
+            Feedback feedback=feedbackRepository.findByOrderId(orderId);
             model.addAttribute("feedback", feedback);
-
             return "viewfeedback";
         } catch (Exception e) {
             model.addAttribute("errorMessage", "Unable to get feedback page."+e.getMessage());
-            return "redirect:/customers";
+            Order order=orderRepository.findById(orderId);
+            return "redirect:/customer/orders/" + order.getCustomerId();
         }
     }
 
@@ -73,8 +82,9 @@ public class FeedbackController {
         User currentUser = userService.getUserByUsername(userDetails.getUsername());
         model.addAttribute("currentUser", currentUser);
         try {
+            Order order=orderRepository.findById(id);
             feedbackRepository.save(feedback);
-            return "redirect:/customers";
+            return "redirect:/customer/orders/" + order.getCustomerId();
         } catch (Exception e) {
             model.addAttribute("errorMessage", "Unable to update feedback page."+e.getMessage());
             model.addAttribute("feedback",feedback);
@@ -90,9 +100,8 @@ public class FeedbackController {
             feedbackRepository.deleteByOrderId(id);
         } catch (Exception e) {
             model.addAttribute("errorMessage", "Unable to delete."+e.getMessage());
-        
         }
-        
-        return "redirect:/customers";
+        Order order=orderRepository.findById(id);
+        return "redirect:/customer/orders/" + order.getCustomerId();
     }
 }

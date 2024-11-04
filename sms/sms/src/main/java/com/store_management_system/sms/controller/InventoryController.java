@@ -54,7 +54,21 @@ public class InventoryController {
         }
         
     }
-
+    @GetMapping("/storeinventory/{storeId}")
+    public String showStoreInventory(Model model,@PathVariable Long storeId, @AuthenticationPrincipal UserDetails userDetails) {
+        User currentUser = userService.getUserByUsername(userDetails.getUsername());
+        model.addAttribute("currentUser", currentUser);
+        try {
+            List<Store> stores = storeService.findById(storeId);
+            model.addAttribute("stores", stores);
+            return "storeInventory";
+        }
+        catch (Exception e) {
+            model.addAttribute("errorMessage", e.getMessage());
+            return "inventorys"; 
+        }
+        
+    }
     // Create a new inventory
     @PostMapping("/create/inventory")
     public String createInventory(@RequestParam("quantity") Long quantity,@RequestParam("storeId") Long storeId,@RequestParam("productId") Long productId ,Model model,@AuthenticationPrincipal UserDetails userDetails) {
@@ -68,10 +82,10 @@ public class InventoryController {
             inventory.setProductId(productId);
             inventory.setStoreId(storeId);
             inventoryRepository.save(inventory);
-            return "redirect:/inventory";
+            return "redirect:/storeinventory/" + storeId;
         } catch (Exception e) {
             model.addAttribute("errorMessage", e.getMessage());
-            return "inventorys";
+            return "redirect:/storeinventory/" + storeId;
         }
          
     }
@@ -90,10 +104,10 @@ public class InventoryController {
             inventory.setQuantity(quantity);
             // inventory.setId((long)id); // Set the ID to ensure it updates the correct record
         inventoryRepository.update(inventory);
-        return "redirect:/inventory"; 
+        return "redirect:/storeinventory/" + storeId; 
         } catch (Exception e) {
             model.addAttribute("errorMessage", e.getMessage());
-            return "inventorys";
+            return "redirect:/storeinventory/" + storeId;
         }
         
     }
@@ -109,10 +123,10 @@ public class InventoryController {
                 return "error/403";
             }
             inventoryRepository.deleteById((long)productId,(long)storeId);
-        return "redirect:/inventory"; 
+            return "redirect:/storeinventory/" + storeId;
         } catch (Exception e) {
             model.addAttribute("errorMessage", e.getMessage());
-            return "inventorys";
+            return "redirect:/storeinventory/" + storeId;
         }
         
         

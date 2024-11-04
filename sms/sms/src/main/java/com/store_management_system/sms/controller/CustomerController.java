@@ -8,6 +8,8 @@ import org.springframework.stereotype.Controller;
 
 import com.store_management_system.sms.repository.CustomerRepository;
 import com.store_management_system.sms.repository.CustomerPaymentRepository;
+import com.store_management_system.sms.repository.OrderRepository;
+
 import com.store_management_system.sms.service.UserService;
 
 import org.springframework.web.bind.annotation.GetMapping;
@@ -34,6 +36,8 @@ public class CustomerController {
 
     @Autowired
     CustomerPaymentRepository customerPaymentRepository;
+    @Autowired
+    OrderRepository orderRepository;
 
     @GetMapping("/customers")
     public String getCustomers(Model model, @AuthenticationPrincipal UserDetails userDetails) {
@@ -70,7 +74,7 @@ public class CustomerController {
             model.addAttribute("customer",customer);
             return "createCustomer";
         } catch (Exception e) {
-            model.addAttribute("errorMessage", e.getMessage());
+            model.addAttribute("errorMessage", "Failed to create Customers. "+e.getMessage());
             return "createCustomer";
         }
         
@@ -86,7 +90,7 @@ public class CustomerController {
             customerRepository.save(customer);
             return "redirect:/customers";
         } catch (Exception e) {
-            model.addAttribute("errorMessage", e.getMessage());
+            model.addAttribute("errorMessage", "Failed to create Customers. "+e.getMessage());
             return "createCustomer";
         }
     }
@@ -135,7 +139,7 @@ public class CustomerController {
             
             return "redirect:/view/customer/{id}";
         } catch (Exception e) {
-            model.addAttribute("errorMessage", "Failed to update customer details.."+e.getMessage());
+            model.addAttribute("errorMessage", "Failed to update customer details.. "+e.getMessage());
             model.addAttribute("customer", customer);
             return "viewcustomer";
         }
@@ -207,7 +211,7 @@ public class CustomerController {
         try {
             Customer customer = customerRepository.findById(id);
             if (customer == null) {
-                model.addAttribute("error", "Customer not found");
+                model.addAttribute("errorMessage", "Customer not found");
                 return "redirect:/customers";
             }
             List<CustomerPayment> payments = customerPaymentRepository.findPaymentsByCustomerId(id);
@@ -220,6 +224,27 @@ public class CustomerController {
         catch (Exception e)
         {
             model.addAttribute("errorMessage", "Failed to show payment details: " + e.getMessage());
+            return "redirect:/customers"; 
+        }
+    }
+    @GetMapping("/customer/orders/{id}")
+    public String viewSupplierBuy(@PathVariable Long id, Model model,  @AuthenticationPrincipal UserDetails userDetails) {
+        User currentUser = userService.getUserByUsername(userDetails.getUsername());
+        model.addAttribute("currentUser", currentUser);
+        try {
+            Customer customer = customerRepository.findById(id);
+            if (customer == null) {
+                model.addAttribute("errorMessage", "customer not found");
+                return "redirect:/customers";
+            }
+            model.addAttribute("customer", customer);
+            List<Order> order = orderRepository.findByCustomerId(id);
+            model.addAttribute("customerorders", order);
+            return "customerOrders";
+        }
+        catch (Exception e)
+        {
+            model.addAttribute("errorMessage", "Failed to show customer orders: " + e.getMessage());
             return "redirect:/customers"; 
         }
     }

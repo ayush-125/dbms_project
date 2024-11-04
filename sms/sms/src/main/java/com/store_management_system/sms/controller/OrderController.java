@@ -53,7 +53,7 @@ public class OrderController {
             model.addAttribute("order", order);
             return "order";
         } catch (Exception e) {
-            model.addAttribute("errorMessage", e.getMessage());
+            model.addAttribute("errorMessage", "Something went wrong. Please try again later: " + e.getMessage());
             model.addAttribute("currentUser", currentUser);
             return "order";
         }
@@ -71,7 +71,7 @@ public class OrderController {
             // System.err.println(order.getProductId()+"bbbbb"+order.getStoreId()+"bbbbbb"+order.getEmployeeId());
             List<Inventory> inventories=inventoryRepository.findByProductAndStoreId(order.getProductId(),order.getStoreId());
             if(inventories.size()==0){
-                model.addAttribute("errorMessage", "Incorrect Details3.."+order.getProductId()+order.getStoreId());
+                model.addAttribute("errorMessage", "Incorrect details. ");
                 
             model.addAttribute("order", order);
             model.addAttribute("currentUser", currentUser);
@@ -82,7 +82,7 @@ public class OrderController {
 
             if(customerRepository.findById(customerId)==null || quantity==null || quantity>qmax){
                 
-                model.addAttribute("errorMessage", "Incorrect Details..");
+                model.addAttribute("errorMessage", "Incorrect Details. ");
                 
             model.addAttribute("order", order);
             model.addAttribute("currentUser", currentUser);
@@ -101,12 +101,14 @@ public class OrderController {
         return "redirect:/customers";
     }
     
-    @PostMapping("/delete/order/{id}")
-    public String deleteOrder(Model model,@PathVariable Long id) {
+    @PostMapping("/delete/order/{orderId}/{customerId}")
+    public String deleteOrder(Model model,@PathVariable Long orderId, @PathVariable Long customerId, @AuthenticationPrincipal UserDetails userDetails) {
+        User currentUser = userService.getUserByUsername(userDetails.getUsername());
+        model.addAttribute("currentUser", currentUser);
         try {
-            Order order=orderRepository.findById(id);
+            Order order=orderRepository.findById(orderId);
             Inventory inventory=inventoryRepository.findByProductAndStoreId(order.getProductId(),order.getStoreId()).get(0);
-            Customer customer=customerRepository.findById(order.getCustomerId());
+            Customer customer=customerRepository.findById(customerId);
             Double customerAccount=customer.getAccount();
             
             
@@ -115,13 +117,12 @@ public class OrderController {
             inventory.setQuantity(q+order.getQuantity());
             customerRepository.save(customer);
             inventoryRepository.update(inventory);
-            orderRepository.deleteById(id);
+            orderRepository.deleteById(orderId);
         } catch (Exception e) {
             model.addAttribute("errorMessage", "Unable to delete."+e.getMessage());
-        
+            return "error";
         }
-        
-        return "redirect:/customers";
+        return "redirect:/customer/orders/" + customerId;
     }
     
 }
