@@ -30,20 +30,18 @@ public class InventoryController {
     // Display the inventory management page
     @GetMapping("/inventory")
     public String showInventoryManagement(Model model,@AuthenticationPrincipal UserDetails userDetails) {
+        User currentUser = userService.getUserByUsername(userDetails.getUsername());
+        model.addAttribute("currentUser", currentUser);
         try {
-            User currentUser = userService.getUserByUsername(userDetails.getUsername());
             if(currentUser.getRoleId().equals(1L)){
                 List<Store> stores = storeService.findAllStores();
                 model.addAttribute("stores", stores);
-                model.addAttribute("currentUser", currentUser);
             }else{
                 Long storeId=userService.getStoreIdByUsername(currentUser.getUsername());
                 List<Store> stores = storeService.findById(storeId);
                 model.addAttribute("stores", stores);
-                model.addAttribute("currentUser", currentUser);
-                return "storeinventorys";
+                return "storeInventory";
             }
-        
                  
         // model.addAttribute("inventory", inventory);
         return "inventorys"; 

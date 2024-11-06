@@ -41,20 +41,60 @@
                     <h5 class="text-muted mb-3">Products in this Store</h5>
                     <div th:if="${store.products.size() > 0}">
                         <div th:each="product : ${store.products}" class="card mb-3">
-                            <div class="card-header bg-light">
-                                <h5><i class="fas fa-box"></i> <span th:text="${product.name}"></span> (Product ID: <span th:text="${product.id}"></span>)</h5>
-                            </div>
-                            <div class="card-body">
+
+                            <div class="product-card p-4 bg-white shadow-sm">
+                                <h5 class="mb-2">
+                                    <i class="fas fa-box-open"></i><span th:text="${product.name}"></span>
+                                </h5>
+                                <p class="text-muted mb-2">
+                                    <small>ID: <span th:text="${product.id}"></span></small>
+                                </p>
                                 <div class="row">
-                                    <div class="col-md-6">
-                                        <p><strong>Category:</strong> <span th:text="${product.category}"></span></p>
-                                        <p><strong>Sub-category:</strong> <span th:text="${product.subcategory}"></span></p>
-                                        <p><strong>Brand:</strong> <span th:text="${product.brand}"></span></p>
+                                    <!-- Product Details -->
+                                    <div class="col-md-6 mb-3">
+                                        <p class="mb-1">
+                                            <i class="fas fa-tag text-success"></i> 
+                                            <strong>Name:</strong> <span th:text="${product.name}"></span>
+                                        </p>
+                                        <p class="mb-1">
+                                            <i class="fas fa-list-alt text-info"></i>
+                                            <strong>Category:</strong> <span th:text="${product.category}"></span>
+                                        </p>
+                                        <p class="mb-1">
+                                            <i class="fas fa-th-large text-warning"></i>
+                                            <strong>Subcategory:</strong> 
+                                            <span th:text="${product.subcategory}"></span>
+                                        </p>
+                                        <p class="mb-1">
+                                            <i class="fas fa-industry text-dark"></i>
+                                            <strong>Brand:</strong> <span th:text="${product.brand}"></span>
+                                        </p>
                                     </div>
-                                    <div class="col-md-6">
-                                        <p><strong>Size:</strong> <span th:text="${product.size}"></span></p>
-                                        <p><strong>Color:</strong> <span th:text="${product.color}"></span></p>
-                                        <p><strong>Price:</strong> ₹<span th:text="${product.price}"></span></p>
+            
+                                    <div class="col-md-6 mb-3">
+                                        <p class="mb-1">
+                                            <i class="fas fa-ruler-combined text-primary"></i> 
+                                            <strong>Size:</strong> <span th:text="${product.size}"></span>
+                                        </p>
+                                        <p class="mb-1">
+                                            <i class="fas fa-palette text-primary"></i>
+                                            <strong>Color:</strong> <span th:text="${product.color}"></span>
+                                        </p>
+                                        
+                                        <!-- Display Discounted Price if Available -->
+                                        <p class="mb-1">
+                                            <i class="fas fa-tags text-success"></i>
+                                            <strong>Price:</strong>
+                                            <span th:if="${product.discount.size() > 0}">
+                                                <!-- Calculate the discounted price: original price - (original price * discount rate / 100) -->
+                                                ₹<span th:text="${product.price - (product.price * product.discount[0].rate / 100)}"></span> 
+                                                <small class="text-muted"><s>₹<span th:text="${product.price}"></span></s></small>
+                                                <span class="text-danger">(<span th:text="${product.discount[0].rate}"></span>% off)</span> <!-- Original price struck-through -->
+                                            </span>
+                                            <span th:if="${product.discount.size() == 0}">
+                                                ₹<span th:text="${product.price}"></span> <!-- Original price shown if no discount -->
+                                            </span>
+                                        </p>
                                     </div>
                                 </div>
 
@@ -84,7 +124,7 @@
                                     </div>
                                 </div>
                             </div>
-                        </div>
+
                     </div>
                     <div th:if="${store.products.size() == 0}" class="text-muted">
                         No products found for this store.

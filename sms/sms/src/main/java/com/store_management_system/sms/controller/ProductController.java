@@ -7,6 +7,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import com.store_management_system.sms.model.*;
 import com.store_management_system.sms.repository.ProductRepository;
+import com.store_management_system.sms.repository.ProductDiscountRepository;
+
 import com.store_management_system.sms.service.UserService;
 
 import org.springframework.web.bind.annotation.GetMapping;
@@ -23,12 +25,18 @@ public class ProductController {
     @Autowired
     private ProductRepository productRepository;
     @Autowired
+    private ProductDiscountRepository productdiscountRepository;
+    @Autowired
     private UserService userService;
 
     @GetMapping("/products")
     public String showProducts(Model model,@AuthenticationPrincipal UserDetails userDetails){
+        User currentUser= userService.getUserByUsername(userDetails.getUsername());
+        model.addAttribute("currentUser", currentUser);
         try {
-            List<Product>products=productRepository.findAll();
+            List<Product> products=productRepository.findAll();
+
+            // List<Discount> discounts=productdiscountRepository.findByProductId();
             model.addAttribute("products",products);
             return "products";
         } catch (Exception e) {
@@ -40,10 +48,9 @@ public class ProductController {
 
     @GetMapping("/create/product")
     public String getCreateProduct(Model model,@AuthenticationPrincipal UserDetails userDetails) {
-        try {
-            User currentUser= userService.getUserByUsername(userDetails.getUsername());
+        User currentUser= userService.getUserByUsername(userDetails.getUsername());
         model.addAttribute("currentUser", currentUser);
-
+        try {
             Product product=new Product();
             if(currentUser.getRoleId().equals(3L)){
                 return "error/403";
@@ -58,9 +65,9 @@ public class ProductController {
 
     @PostMapping("/create/product")
     public String postCreateProduct(@ModelAttribute Product product,Model model,@AuthenticationPrincipal UserDetails userDetails) {
-        try {
-            User currentUser= userService.getUserByUsername(userDetails.getUsername());
+        User currentUser= userService.getUserByUsername(userDetails.getUsername());
         model.addAttribute("currentUser", currentUser);
+        try {
             
             if(currentUser.getRoleId().equals(3L)){
                 return "error/403";
@@ -77,9 +84,9 @@ public class ProductController {
 
     @GetMapping("/view/product/{id}")
     public String viewProduct(@PathVariable Long id,Model model,@AuthenticationPrincipal UserDetails userDetails) {
-        try {
-            User currentUser= userService.getUserByUsername(userDetails.getUsername());
+        User currentUser= userService.getUserByUsername(userDetails.getUsername());
         model.addAttribute("currentUser", currentUser);
+        try {
             
             if(currentUser.getRoleId().equals(3L)){
                 return "error/403";
@@ -96,9 +103,9 @@ public class ProductController {
 
     @PostMapping("/update/product/{id}")
     public String updateProduct(@PathVariable Long id,Model model,@ModelAttribute Product product,@AuthenticationPrincipal UserDetails userDetails) {
-        try {
-            User currentUser= userService.getUserByUsername(userDetails.getUsername());
+        User currentUser= userService.getUserByUsername(userDetails.getUsername());
         model.addAttribute("currentUser", currentUser);
+        try {
             
             if(currentUser.getRoleId().equals(3L)){
                 return "error/403";
@@ -115,9 +122,9 @@ public class ProductController {
 
     @PostMapping("/delete/product/{id}")
     public String deleteProduct(@PathVariable Long id,Model model,@AuthenticationPrincipal UserDetails userDetails) {
-        try {
-            User currentUser= userService.getUserByUsername(userDetails.getUsername());
+        User currentUser= userService.getUserByUsername(userDetails.getUsername());
         model.addAttribute("currentUser", currentUser);
+        try {
             
             if(currentUser.getRoleId().equals(3L)){
                 return "error/403";
@@ -130,5 +137,5 @@ public class ProductController {
         }
     }
 
-    
+
 }

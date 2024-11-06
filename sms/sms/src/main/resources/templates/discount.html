@@ -1,46 +1,125 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>Users</title>
+    <title>Discounts</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link rel="stylesheet" href="/css/styles.css" />
-    
+    <style>
+        .btn-custom {
+            background-color: #0d6efd;
+            color: white;
+        }
+        .btn-custom:hover {
+            background-color: #084298;
+        }
+        .form-control {
+            max-width: 300px;
+        }
+        .container {
+            max-width: 800px;
+            position: relative;
+            margin-top: 20px;
+            margin-bottom: 60px;
+            padding: 30px;
+            background-color: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+            z-index: 2;
+        }
+        .list-group-item {
+            border: none;
+            padding: 15px 20px;
+            border: 1px solid #ddd;
+        }
+    </style>
 </head>
 <body>
-    <h1>Welcome</h1>
+    <div th:replace="navbar :: navbar"></div>
+    <div class="container mt-3">
+        <h2 class="text-info text-center">Manage Discount</h2>
+        <hr>
+        <!-- Create Product Button -->
 
-    <div>
-        <a th:href="@{/create/discount}" class="button">Create Discount</a>
+        <!-- Products List Section -->
+        <div>
+            <h2 class="mb-3">All Discount</h2>
+            <div class="row">
+                <div class="col-md-12">
+                    <ul id="discountList" class="list-unstyled">
+                        <!-- Product Items -->
+                        <li th:each="discount : ${discounts}" class="card mb-4">
+                            <div class="discount-card p-4 bg-white shadow-sm">
+                                <div class="d-flex justify-content-between align-items-center mb-2">
+                                    <h5>
+                                        <i class="fas fa-percentage text-success"></i>
+                                        <span th:text="${discount.description}"></span>
+                                    <h5>
+                                    <a class="btn btn-outline-secondary btn-sm" th:href="@{/discount/product/{id}(id=${discount.id})}">
+                                        <i class="fas fa-eye"></i> See Product
+                                    </a>
+                                </div>
+                                <p class="text-muted mb-2">
+                                    <small>ID: <span th:text="${discount.id}"></span></small>
+                                </p>
+                                <div class="row">
+                                    <!-- Product Details -->
+                                    <div class="col-md-6 mb-3">
+                                        <p class="mb-1">
+                                            <i class="fas fa-tag text-success"></i> 
+                                            <strong>Discount tag:</strong> <span th:text="${discount.description}"></span>
+                                        </p>
+                                        <p class="mb-1">
+                                            <i class="fas fa-percent text-info"></i>
+                                            <strong>Discount rate:</strong> <span th:text="${discount.rate}"></span>
+                                        </p>
+                                    </div>
+            
+                                    <div class="col-md-6 mb-3">
+                                        <p class="mb-1">
+                                            <i class="fas fa-calendar-day text-primary"></i> 
+                                            <strong>Start date:</strong> <span th:text="${discount.dos}"></span>
+                                        </p>
+                                        <p class="mb-1">
+                                            <i class="fas fa-calendar-alt text-primary"></i>
+                                            <strong>End date:</strong> <span th:text="${discount.doe}"></span>
+                                        </p>
+                                    </div>
+                                </div>
+                                <!-- View Product Button -->
+                                <a class="btn btn-info btn-sm" th:href="@{/view/discount/{id}(id=${discount.id})}">
+                                    <i class="fas fa-edit"></i> Edit Discount
+                                </a>
+
+                                <!-- Conditional Delete Button (Visible for Authorized Users) -->
+                                <form th:action="@{/delete/discount/{id}(id=${discount.id})}" method="post" class="d-inline-block" 
+                                      onsubmit="return confirm('Are you sure you want to delete this discount?');">
+                                    <input type="hidden" name="_method" value="delete" />
+                                    <button type="submit" th:if="${#authorization.expression('hasAnyAuthority(''ADMIN'', ''MANAGER'')')}"
+                                            class="btn btn-outline-danger btn-sm delete-btn">
+                                        <i class="fas fa-trash-alt"></i> Delete
+                                    </button>
+                                </form>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Back to Home Button -->
+        <div class="row mt-3">
+            <div class="col text-left">
+                <a class="btn btn-secondary" th:href="@{/home}">Home</a>
+            </div>
+            <div class="text-right;">
+                <a th:href="@{/create/discount}" class="btn btn-primary">Create Discount</a>
+            </div>
+        </div>
     </div>
-
-    <div>
-        <h2>Discounts</h2>
-        <ul id="discountList">
-            <li th:each="discount : ${discounts}">
-                (ID:<span th:text="${discount.id}"></span>) - 
-                <span th:text="${discount.description}"></span> 
-                
-                
-                <a class="button" th:href="@{/view/discount/{id}(id=${discount.id})}">View Discount</a>
-                <form th:action="@{/delete/discount/{id}(id=${discount.id})}" method="post" onsubmit="return confirm('Are you sure you want to delete this discount?');">
-                    <input type="hidden" name="_method" value="delete" />
-                    <button th:if="${#authorization.expression('hasAnyAuthority(''ADMIN'', ''MANAGER'')')}"
-                    type="submit">Delete Discount</button>
-                </form>
-                
-            </li>
-        </ul>
-    </div>
-
-    <a class="button" th:href="@{/home}">Home</a>
+    <!-- Bootstrap JS and jQuery -->
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
-
-
-
-<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.bundle.min.js"></script>
-<script src="/js/style.js"></script>
-
+    <script src="/js/style.js"></script>
 </body>
 </html>
-
