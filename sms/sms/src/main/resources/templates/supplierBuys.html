@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Supplier Buys</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/css/styles.css" />
+    <style>
+        .btn-custom {
+            background-color: #0d6efd;
+            color: white;
+        }
+        .btn-custom:hover {
+            background-color: #084298;
+        }
+        .form-control {
+            max-width: 300px;
+        }
+        .container {
+            max-width: 800px;
+            position: relative;
+            margin-top: 20px;
+            margin-bottom: 60px;
+            padding: 30px;
+            background-color: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+            z-index: 2;
+        }
+        .accordion-button {
+            background-color: #f8f9fa;
+            color: #333;
+            font-size: 1.1rem;
+            font-weight: 500;
+            padding: 10px 20px;
+            border-radius: 5px;
+            border: none;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .accordion-button.collapsed {
+            background-color: #0b4c73;
+            color: white;
+        }
+        .accordion-button i {
+            margin-right: 10px;
+        }
+        .accordion-button:after {
+            content: '\f078'; /* fa-chevron-down */
+            font-family: 'Font Awesome 5 Free';
+            font-weight: 900;
+            transition: transform 0.3s ease;
+        }
+        .accordion-button.collapsed:after {
+            transform: rotate(-180deg);
+        }
+        .accordion-body {
+            padding: 15px 30px;
+            background-color: #f8f9fa;
+            border-radius: 5px;
+            margin-top: 10px;
+        }
+        .list-group-item {
+            border: none;
+            padding: 15px 20px;
+            border: 1px solid #ddd;
+        }
+    </style>
+</head>
+<body>
+    <div th:replace="navbar :: navbar"></div>
+    <div class="container mt-4">
+        <h2 class="text-info text-center"><i class="fas fa-truck" style="margin-right:10px;"></i>Supplier Buys</h2>
+        <hr>
+
+        <span style="font-size:18px;"><i class="fas fa-store"></i>  (Id -</i><span th:text="${supplier.id}"></span>) : <strong th:text="${supplier.name} + ' ' + ${supplier.street} + ' ' + ${supplier.city}"></strong> </span>
+        <span style="font-weight:bold; float:right;"><i class="fas fa-mobile-alt icon "></i><span class="phoneNo" th:text="${supplier.phoneNo}"></span></span>
+        <hr>
+        <!-- List content for supplier buys (without accordion) -->
+        <div id="buysSection">
+            <ul th:each="buy : ${supplierbuys}" class="list-group">
+                <li class="list-group-item">
+                    <div class="card mb-4 shadow-sm border-0">
+                        <div class="card-body">
+                            <h5 class="card-title text-primary d-flex align-items-center">
+                                <i class="fas fa-receipt mr-2"></i> Buy ID: <span th:text="${buy.id}" class="ml-2"></span>
+                            </h5>
+                            <hr>
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <p class="mb-1"><i class="fas fa-box-open text-success"></i> 
+                                        <strong>Quantity:</strong> <span th:text="${buy.quantity}"></span>
+                                    </p>
+                                    <p class="mb-1"><i class="fas fa-rupee-sign text-info"></i>
+                                        <strong>Price:</strong> ₹<span th:text="${buy.price}"></span>
+                                    </p>
+                                    <p class="mb-1">
+                                        <i class="fas fa-warehouse text-warning"></i>
+                                        <strong>Product ID:</strong> 
+                                        <a th:href="@{/view/product/{id}(id=${buy.productId})}" th:text="${buy.productId}"></a>
+                                    </p>
+                                    <p class="mb-1"><i class="fas fa-calendar text-info"></i>
+                                        <strong>Buy Date:</strong> <span th:text="${buy.dop}"></span>
+                                    </p>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <p class="mb-1"><i class="fas fa-calculator text-primary"></i> 
+                                        <strong>Total Amount:</strong> ₹<span th:text="${buy.price * buy.quantity}"></span>
+                                    </p>
+                                    <p class="mb-1"><i class="fas fa-credit-card text-primary"></i>
+                                        <strong>Payment Method:</strong> <span th:text="${buy.paymentMethod}"></span>
+                                    </p>
+                                    <p class="mb-1"><i class="fas fa-money-bill-wave text-success"></i>
+                                        <strong>Payment:</strong> ₹<span th:text="${buy.payment}"></span>
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="d-flex justify-content-between mt-4">
+                                <div>
+                                    <form th:action="@{/delete/buy/{id}(id=${buy.id})}" method="post" class="d-inline-block"
+                                        onsubmit="return confirm('Are you sure you want to delete this buy?');">
+                                        <input type="hidden" name="_method" value="delete" />
+                                        <button type="submit" class="btn btn-outline-danger btn-sm">
+                                        <i class="fas fa-trash-alt"></i> Delete Buy
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </li>
+            </ul>
+            <span th:if="${supplier == null || supplierbuys == null || supplierbuys.size() == 0}">
+                No buys for this supplier
+            </span>
+        </div>
+    </div>
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="/js/style.js"></script>
+</body>
+</html>

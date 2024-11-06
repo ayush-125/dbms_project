@@ -7,6 +7,7 @@ import org.springframework.stereotype.Controller;
 
 import com.store_management_system.sms.repository.SupplierPaymentRepository;
 import com.store_management_system.sms.repository.SupplierRepository;
+import com.store_management_system.sms.repository.BuyRepository;
 import com.store_management_system.sms.service.UserService;
 
 import org.springframework.web.bind.annotation.GetMapping;
@@ -30,6 +31,8 @@ public class SupplierController {
     SupplierRepository supplierRepository;
     @Autowired
     SupplierPaymentRepository supplierPaymentRepository;
+    @Autowired
+    BuyRepository buyRepository;
     @Autowired
     UserService userService;
 
@@ -224,6 +227,28 @@ public class SupplierController {
         catch (Exception e)
         {
             model.addAttribute("errorMessage", "Failed to show payment details: " + e.getMessage());
+            return "redirect:/suppliers"; 
+        }
+    }
+
+    @GetMapping("/supplier/buys/{id}")
+    public String viewSupplierBuy(@PathVariable Long id, Model model,  @AuthenticationPrincipal UserDetails userDetails) {
+        User currentUser = userService.getUserByUsername(userDetails.getUsername());
+        model.addAttribute("currentUser", currentUser);
+        try {
+            Supplier supplier = supplierRepository.findById(id);
+            if (supplier == null) {
+                model.addAttribute("error", "Supplier not found");
+                return "redirect:/suppliers";
+            }
+            model.addAttribute("supplier", supplier);
+            List<Buy> buy = buyRepository.findBySupplierId(id);
+            model.addAttribute("supplierbuys", buy);
+            return "supplierBuys";
+        }
+        catch (Exception e)
+        {
+            model.addAttribute("errorMessage", "Failed to show supplier buys: " + e.getMessage());
             return "redirect:/suppliers"; 
         }
     }

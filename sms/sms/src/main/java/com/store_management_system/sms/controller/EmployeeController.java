@@ -150,7 +150,7 @@ public String createEmployee(@AuthenticationPrincipal UserDetails userDetails,@M
         }
         return "redirect:/employees"; 
     } catch (Exception e) {
-        model.addAttribute("errorMessage", e.getMessage());
+        model.addAttribute("errorMessage", "Something went wrong. Please try again later: " + e.getMessage());
         model.addAttribute("employee", employee);
         return "createEmployee"; 
     }
@@ -203,7 +203,7 @@ public String showCreateEmployeeForStore(@AuthenticationPrincipal UserDetails us
             model.addAttribute("employees", employees);
             return "employees";
         }catch(Exception e){
-            model.addAttribute("errorMessage", e.getMessage());
+            model.addAttribute("errorMessage", "Something went wrong. Try again later." + e.getMessage());
             return "employees";
         }
          

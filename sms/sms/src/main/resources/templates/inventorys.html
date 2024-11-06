@@ -1,199 +1,120 @@
-<!-- <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <title>Inventory Management</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link rel="stylesheet" href="/css/styles.css" />
-</head>
-<body>
-
-    <h1>Inventory Management</h1>
-
-    <div th:if="${errorMessage}">
-        <p class="error" th:text="${errorMessage}"></p> 
-    </div>
-
-
-
-    <ul>
-        <li th:each="store : ${stores}">
-            <span class="caret" th:text="${store.name}"></span> (Store ID: <span th:text="${store.id}"></span>)
-            
-            <ul class="nested">
-                <h3>Products in this Store</h3>
-                <li th:each="product : ${store.products}">
-                    <span class="caret" th:text="${product.name}"></span> (Product ID: <span th:text="${product.id}"></span>)
-                    ,Category=<span th:text="${product.category}">  </span>,Sub-category=<span th:text="${product.subcategory}"></span>,Brand=<span th:text="${product.brand}"></span>
-                    ,size=<span th:text="${product.size}"></span>,color=<span th:text="${product.color}"></span>,price=<span th:text="${product.price}"></span>
-                    
-                    
-                    <a class="button createInventory" th:href="@{/create/{storeId}/{productId}(storeId=${store.id},productId=${product.id})}">Create Inventory</a>
-
-                    <ul class="nested">
-                        <h4>Inventories for this product</h4>
-                        <li th:each="inventory : ${product.inventories}">
-                           
-                            (Inventory ID: <span th:text="${inventory.id}"></span>)
-                            
-                            <button type="button" th:if="${currentUser.roles[0].name == 'MANAGER' ||currentUser.roles[0].name=='ADMIN'}" id="editButton" onclick="">Edit</button>
-                            <button type="button" th:if="${currentUser.roles[0].name == 'MANAGER' ||currentUser.roles[0].name=='ADMIN'}" id="cancelButton" onclick="">Cancel</button>
-                            
-                            <form th:action="@{/update/inventory/{id}(id=${inventory.id})}" th:object="${inventory}" method="post" onsubmit="return confirm('Are you sure you want to update this inventory?');"></form>
-                                <input type="hidden" name="_method" value="update" />
-                                <label for="quantity">Account</label>
-                                <input id="quantity" th:field="$*{id}" type="text" th: readonly="true">
-                                <button th:if="${currentUser.roles[0].name == 'MANAGER' ||currentUser.roles[0].name=='ADMIN'}" type="submit" style="display: none;">Update Inventory</button>
-                            </form>
-                             <form th:action="@{/delete/inventory/{id}(id=${inventory.id})}" method="post" onsubmit="return confirm('Are you sure you want to delete this inventory?');">
-                                <input type="hidden" name="_method" value="delete" />
-                                <button th:if="${currentUser.roles[0].name == 'MANAGER' ||currentUser.roles[0].name=='ADMIN'}" type="submit">Delete Inventory</button>
-                            </form>
-                            
-                        </li>
-                        <li th:if="${product.inventories == null || product.inventories.size()==0}">No inventory found for this product</li>
-                    </ul>
-                </li>
-                <li th:if="${store==null || store.products.size() == 0}">No products found for this store</li>
-            </ul>
-        </li>
-        <li th:if="${stores==null || stores.size() == 0}">No stores found</li>
-    </ul>
-
-    <script>
-            // Toggle visibility of nested lists
-            const caretElements = document.querySelectorAll('.caret');
-            caretElements.forEach(caret => {
-                caret.addEventListener('click', function () {
-                    this.parentElement.querySelector('.nested').classList.toggle('active');
-                    this.classList.toggle('caret-down');
-                });
-            });
-    </script>
-
-<a class="button" th:href="@{/home}">Home</a>
-
-</body>
-</html> -->
-<!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
-<head>
-    <title>Inventory Management</title>
-    <link rel="stylesheet" href="/css/styles.css" />
-</head>
-<body>
-
-    <h1>Inventory Management</h1>
-
-    <div th:if="${errorMessage}">
-        <p class="error" th:text="${errorMessage}"></p> <!-- Error handling -->
-    </div>
-
-    <ul>
-        <li th:each="store : ${stores}">
-            <span class="caret" th:text="${store.name}"></span> (Store ID: <span th:text="${store.id}"></span>)
-            <ul class="nested">
-                <h3>Products in this Store</h3>
-                <li th:each="product : ${store.products}">
-                    <span class="caret" th:text="${product.name}"></span> (Product ID: <span th:text="${product.id}"></span>)
-                    
-                    Category: <span th:text="${product.category}"></span>,
-                    Sub-category: <span th:text="${product.subcategory}"></span>,
-                    Brand: <span th:text="${product.brand}"></span>,
-                    Size: <span th:text="${product.size}"></span>,
-                    Color: <span th:text="${product.color}"></span>,
-                    Price: $<span th:text="${product.price}"></span>
-                    <ul class="nested">
-                        <div id="createInventoryForm" th:if="${currentUser.roles[0].name == 'MANAGER' || currentUser.roles[0].name == 'ADMIN'}">
-                            <h3>Create Inventory</h3>
-                            <form th:action="@{/create/inventory}"  method="post" th:if="${currentUser.roles[0].name == 'MANAGER' || currentUser.roles[0].name == 'ADMIN'}">
-                                <label for="quantity">Quantity</label>
-                                <input id="quantity" name="quantity" type="text" required>
-                                <input type="hidden" name="storeId" th:value="${store.id}" readonly/>
-                                <input type="hidden" name="productId" th:value="${product.id}" readonly/>
-                                <button type="submit">Create Inventory</button>
-                            </form>
-                        </div>
-                        <h4>Inventories for this Product</h4>
-                        <li th:each="inventory : ${product.inventories}">
-
-                            <!-- (Inventory ID: <span th:text="${inventory.id}"></span>) -->
-                            Quantity: <span th:text="${inventory.quantity}"></span>
-                            <a th:href="@{/order/{productId}/{storeId}(productId=${inventory.productId},storeId=${inventory.storeId})}">Place Order</a>
-                            <a th:href="@{/buy/{productId}/{storeId}(productId=${inventory.productId},storeId=${inventory.storeId})}" th:if="${currentUser.roles[0].name == 'MANAGER' || currentUser.roles[0].name == 'ADMIN'}">Buy</a>
-                            <button type="button" th:if="${currentUser.roles[0].name == 'MANAGER' || currentUser.roles[0].name == 'ADMIN'}"
-                                    class="editButton" 
-                                    onclick="editInventory(this)">Edit</button>
-                            <button type="button" th:if="${currentUser.roles[0].name == 'MANAGER' || currentUser.roles[0].name == 'ADMIN'}"
-                                    class="cancelButton" 
-                                    onclick="cancelEdit(this)" style="display: none;">Cancel</button>
-
-                            <form th:action="@{/update/inventory/{productId}/{storeId}(productId=${inventory.productId},storeId=${inventory.storeId})}"  method="post" onsubmit="return confirm('Are you sure you want to update this inventory?');" class="updateForm" style="display: none;">
-                                <input type="hidden" name="_method" value="update" />
-                                <label for="quantity">Quantity</label>
-                                <input id="quantity" name="quantity" type="text" required>
-                                <button type="submit" class="updateButton">Update Inventory</button>
-                            </form>
-
-                            <form th:action="@{/delete/inventory/{productId}/{storeId}(productId=${inventory.productId},storeId=${inventory.storeId})}" method="post" onsubmit="return confirm('Are you sure you want to delete this inventory?');">
-                                <input type="hidden" name="_method" value="delete" />
-                                <button th:if="${currentUser.roles[0].name == 'MANAGER' || currentUser.roles[0].name == 'ADMIN'}" type="submit">Delete Inventory</button>
-                            </form>
-                        </li>
-                        <li th:if="${product.inventories == null || product.inventories.size() == 0}">No inventory found for this product</li>
-                    </ul>
-                </li>
-                <li th:if="${store == null || store.products.size() == 0}">No products found for this store</li>
-            </ul>
-        </li>
-        <li th:if="${stores == null || stores.size() == 0}">No stores found</li>
-    </ul>
-
+    <!-- <script src="/js/style.js"></script> -->
+    <style>
+        .caret {
+            cursor: pointer;
+            font-weight: bold;
+            margin-right: 5px;
+        }
     
+        .nested {
+            list-style-type: none;
+            padding-left: 20px;
+            display: none; /* Hidden by default */
+        }
+    
+        .caret-down::before {
+            content: "\25BC"; /* Down caret */
+            padding-right: 5px;
+        }
+    
+        /* Store icon for store caret */
+        .caret::before {
+            content: "\f54e"; /* Store icon from Font Awesome */
+            font-family: "Font Awesome 5 Free"; /* Ensure the font is Font Awesome */
+            font-weight: 900; /* Use the solid version of the icon */
+            padding-right: 5px;
+        }
+    
+        /* User icon for employee caret */
+        .employee-caret::before {
+            content: "\f007"; /* User icon from Font Awesome */
+            font-family: "Font Awesome 5 Free";
+            font-weight: 900;
+            padding-right: 5px;
+        }
+    
+        .active {
+            display: block; /* Show when active */
+        }
+    
+        .error {
+            color: red;
+            font-weight: bold;
+        }
+    
+        .button {
+            margin: 5px 0;
+        }
+    
+        .btn-custom {
+            font-weight: bold;
+            padding: 5px 15px;
+            text-transform: uppercase;
+        }
+    
+        .container {
+            position: relative;
+            margin-top: 20px;
+            margin-bottom: 60px;
+            padding: 30px;
+            background-color: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+            z-index: 2;
+        }
+    </style>
+</head>
+<body class="bg-light">
+    <div th:replace="navbar :: navbar"></div>
+    <div class="container mt-6">
+        <h1 class="display-6 text-center mb-4 text-info"><i class="fas fa-store"></i><strong> Inventory Management</strong></h1>
+        <hr>
+        <span class="bg-info text-white p-1 rounded shadow-sm" style="font-size:25px;">All Stores</span>
+        <div class="accordion" id="storeAccordion">
+            <ul class="list-group">
+                <li class="list-group-item" th:each="store : ${stores}">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h5>
+                            <span class="caret" th:text="${store.name}"></span> 
+                            (Store ID: <span th:text="${store.id}"></span>)
+                        </h5>
+                        <div>
+                            <a class="btn btn-outline-success btn-sm" th:href="@{/storeinventory/{storeId}(storeId=${store.id})}">All Inventory</a>
+                        </div>
+                    </div>
+                </li>
+                <li th:if="${stores==null || stores.size() == 0}" class="list-group-item text-danger">No stores found</li>
+            </ul>
+        </div>
+
+        <div class="text-center mt-4">
+            <a class="btn btn-secondary btn-custom" th:href="@{/home}">Home</a>
+        </div>
+    </div>
 
     <script>
         // Toggle visibility of nested lists
         const caretElements = document.querySelectorAll('.caret');
         caretElements.forEach(caret => {
             caret.addEventListener('click', function () {
-                this.parentElement.querySelector('.nested').classList.toggle('active');
-                this.classList.toggle('caret-down');
+                const nestedList = this.closest('li').querySelector('.nested');
+                nestedList.classList.toggle('active'); // Show/hide employee/user list
             });
         });
-
-        // Edit and cancel functions for inventory
-        function editInventory(button) {
-            const inventoryItem = button.closest('li'); // Get the closest inventory item
-            const form = inventoryItem.querySelector('.updateForm');
-            const editButton = inventoryItem.querySelector('.editButton');
-            const cancelButton = inventoryItem.querySelector('.cancelButton');
-
-            // Show the form and update button
-            form.style.display = 'block';
-            cancelButton.style.display = 'block';
-            editButton.style.display = 'none';
-        }
-
-        function cancelEdit(button) {
-            const inventoryItem = button.closest('li'); // Get the closest inventory item
-            const form = inventoryItem.querySelector('.updateForm');
-            const editButton = inventoryItem.querySelector('.editButton');
-            const cancelButton = button; // Use the cancel button
-
-            // Hide the form and buttons
-            form.style.display = 'none';
-            cancelButton.style.display = 'none';
-            editButton.style.display = 'block';
-        }
     </script>
-
-    <a class="button" th:href="@{/home}">Home</a>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
 
 
-
+    <!-- Include jQuery first, then Bootstrap (without duplicates) -->
 <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.bundle.min.js"></script>
 <script src="/js/style.js"></script>
-
 </body>
 </html>

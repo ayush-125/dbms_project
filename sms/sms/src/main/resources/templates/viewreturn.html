@@ -4,7 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Return Details</title>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link rel="stylesheet" href="/css/styles.css" />
     <script>
         document.addEventListener('DOMContentLoaded', function () {
@@ -68,7 +69,7 @@
         }
         .container {
             margin-top: 50px;
-            max-width: 900px; /* Wider container to fit two columns */
+            max-width: 600px; /* Wider container to fit two columns */
         }
         .card {
             padding: 40px;
@@ -119,9 +120,10 @@
     </style>
 </head>
 <body>
+    <div th:replace="navbar :: navbar"></div>
     <div class="container mt-3">
         <div class="card">
-            <h2 class="text-center text-info">Return Details</h2>
+            <h2 class="text-center text-info mb-0">Return Details</h2>
             <hr>
         <form id="returnForm" method="post" th:object="${return1}" th:action="@{/update/return/{id}(id=${return1.orderId})}">
             <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
@@ -171,11 +173,6 @@
         </form>
     </div>
 </div>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
-
-
-
 <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.bundle.min.js"></script>
 <script src="/js/style.js"></script>

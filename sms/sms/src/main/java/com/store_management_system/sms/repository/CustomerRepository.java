@@ -27,7 +27,6 @@ public class CustomerRepository {
             List<Customer> customers = jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(Customer.class));
             for (Customer customer :customers){
                 customer.setEmails(customerMailRepository.findByCustomerId(customer.getId()));
-                customer.setOrders(orderRepository.findByCustomerId((long)customer.getId()));
             }
             return customers;
         } catch (DataAccessException  e) {

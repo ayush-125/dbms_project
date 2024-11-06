@@ -11,6 +11,13 @@ public class Product {
     private Double price;
 
     private List<Inventory> inventories;
+    private List<Discount> discount;
+    public List<Discount> getDiscount() {
+        return discount;
+    }
+    public void setDiscount(List<Discount> discount) {
+        this.discount = discount;
+    }
     public boolean isEmpty(){
        return( (id==null && (name==null || name.isEmpty())
                 &&(category==null || category.isEmpty())

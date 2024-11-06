@@ -3,6 +3,8 @@ package com.store_management_system.sms.controller;
 import java.time.LocalDate;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -10,13 +12,11 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import com.store_management_system.sms.model.*;
-import com.store_management_system.sms.model.Customer;
-import com.store_management_system.sms.model.Inventory;
-import com.store_management_system.sms.model.Return;
 import com.store_management_system.sms.repository.CustomerRepository;
 import com.store_management_system.sms.repository.InventoryRepository;
 import com.store_management_system.sms.repository.OrderRepository;
 import com.store_management_system.sms.repository.ReturnRepository;
+import com.store_management_system.sms.service.UserService;
 
 @Controller
 public class ReturnController {
@@ -29,8 +29,13 @@ public class ReturnController {
     @Autowired
     private CustomerRepository customerRepository;
 
+    @Autowired
+    private UserService userService;
+
     @GetMapping("return/create/{id}")
-    public String createReturn(Model model,@PathVariable Long id){
+    public String createReturn(Model model,@PathVariable Long id, @AuthenticationPrincipal UserDetails userDetails){
+        User currentUser = userService.getUserByUsername(userDetails.getUsername());
+        model.addAttribute("currentUser", currentUser);
         try {
            Return return1 =new Return();
            return1.setOrderId(id);
@@ -40,19 +45,22 @@ public class ReturnController {
             return "createReturn";
         } catch (Exception e) {
             model.addAttribute("errorMessage", "Unable to get create return statement page."+e.getMessage());
-            return "redirect:/customers";
+            Order order=orderRepository.findById(id);
+            return "redirect:/customer/orders/" + order.getCustomerId();
         }
         
     }
     @PostMapping("return/create")
-    public String postCreateReturn(Model model,@ModelAttribute Return return1){
+    public String postCreateReturn(Model model,@ModelAttribute Return return1, @AuthenticationPrincipal UserDetails userDetails){
+        User currentUser = userService.getUserByUsername(userDetails.getUsername());
+        model.addAttribute("currentUser", currentUser);
         try {
             
             Long q=return1.getQuantity();
             Double newprice=return1.getPrice();
             Order order=orderRepository.findById(return1.getOrderId());
             if(order.getQuantity()<q){
-                model.addAttribute("errorMessage", "incorrect quantity..");
+                model.addAttribute("errorMessage", "Incorrect quantity..");
                 model.addAttribute("return1", return1);
             return "createReturn";
             }
@@ -65,7 +73,7 @@ public class ReturnController {
             customerRepository.save(customer);
 
             returnRepository.save(return1);
-            return "redirect:/customers";
+            return "redirect:/customer/orders/" + order.getCustomerId();
         } catch (Exception e) {
             model.addAttribute("errorMessage", "Unable to create return statement "+e.getMessage());
             model.addAttribute("return1", return1);
@@ -74,20 +82,25 @@ public class ReturnController {
     }
 
     @GetMapping("return/view/{id}")
-    public String viewReturn(Model model,@PathVariable Long id){
+    public String viewReturn(Model model,@PathVariable Long id, @AuthenticationPrincipal UserDetails userDetails){
+        User currentUser = userService.getUserByUsername(userDetails.getUsername());
+        model.addAttribute("currentUser", currentUser);
         try {
             Return return1=returnRepository.findByOrderId(id);
             model.addAttribute("return1", return1);
 
             return "viewreturn";
         } catch (Exception e) {
-            model.addAttribute("errorMessage", "Unable to get  return statement page."+e.getMessage());
-            return "redirect:/customers";
+            model.addAttribute("errorMessage", "Unable to get return statement page."+e.getMessage());
+            Order order=orderRepository.findById(id);
+            return "redirect:/customer/orders/" + order.getCustomerId();
         }
     }
 
     @PostMapping("update/return/{id}")
-    public String updateReturn(Model model,@PathVariable Long id,@ModelAttribute Return return1){
+    public String updateReturn(Model model,@PathVariable Long id,@ModelAttribute Return return1, @AuthenticationPrincipal UserDetails userDetails){
+        User currentUser = userService.getUserByUsername(userDetails.getUsername());
+        model.addAttribute("currentUser", currentUser);
         try {
             Return returnold=returnRepository.findByOrderId(return1.getOrderId());
             Long qold=returnold.getQuantity();
@@ -97,7 +110,7 @@ public class ReturnController {
             Order order=orderRepository.findById(return1.getOrderId());
             Double orderprice=order.getPrice();
             if(order.getQuantity()<qnew){
-                model.addAttribute("errorMessage", "incorrect quantity..");
+                model.addAttribute("errorMessage", "Incorrect quantity..");
                 model.addAttribute("return1", return1);
             return "createReturn";
             }
@@ -109,7 +122,7 @@ public class ReturnController {
             customerRepository.save(customer);
 
             returnRepository.save(return1);
-            return "redirect:/customers";
+            return "redirect:/customer/orders/" + order.getCustomerId();
         } catch (Exception e) {
             model.addAttribute("errorMessage", "Unable to update return statement page."+e.getMessage());
             model.addAttribute("return1",return1);
@@ -118,7 +131,9 @@ public class ReturnController {
     }
 
     @PostMapping("/delete/return/{id}")
-    public String deleteReturn(Model model,@PathVariable Long id) {
+    public String deleteReturn(Model model,@PathVariable Long id, @AuthenticationPrincipal UserDetails userDetails) {
+        User currentUser = userService.getUserByUsername(userDetails.getUsername());
+        model.addAttribute("currentUser", currentUser);
         try {
             Return return1=returnRepository.findByOrderId(id);
             Order order=orderRepository.findById(return1.getOrderId());
@@ -135,6 +150,7 @@ public class ReturnController {
         
         }
         
-        return "redirect:/customers";
+        Order order=orderRepository.findById(id);
+        return "redirect:/customer/orders/" + order.getCustomerId();
     }
 }

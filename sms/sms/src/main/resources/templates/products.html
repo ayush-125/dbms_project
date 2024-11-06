@@ -1,66 +1,307 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>Users</title>
+    <title>Products</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link rel="stylesheet" href="/css/styles.css" />
-    <!-- <script>
-        function filterSuppliers() {
-            const input = document.getElementById('searchBar').value.toLowerCase();
-    const ul = document.getElementById('supplierList');
-    const li = ul.getElementsByTagName('li');
-
-    for (let i = 0; i < li.length; i++) {
-        const phoneNo = li[i].getElementsByClassName('phoneNo')[0];
-        if (phoneNo && phoneNo.innerText.toLowerCase().includes(input)) {
-            li[i].style.display = "list-item";
-        } else {
-            li[i].style.display = "none";
+    <style>
+        .btn-custom {
+            background-color: #0d6efd;
+            color: white;
         }
-    }
+        .btn-custom:hover {
+            background-color: #084298;
         }
-    </script> -->
+        .form-control {
+            max-width: 300px;
+        }
+        .container {
+            max-width: 800px;
+            position: relative;
+            margin-top: 20px;
+            margin-bottom: 60px;
+            padding: 30px;
+            background-color: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+            z-index: 2;
+        }
+        .list-group-item {
+            border: none;
+            padding: 15px 20px;
+            border: 1px solid #ddd;
+        }
+    </style>
 </head>
 <body>
-    <h1>Welcome</h1>
+    <div th:replace="navbar :: navbar"></div>
+    <div class="container mt-3">
+        <h2 class="text-info text-center">Manage Products</h2>
+        <hr>
+        <!-- Create Product Button -->
 
-    <div>
-        <a th:href="@{/create/product}" class="button">Create Product</a>
+        <!-- Products List Section -->
+        <div>
+            <h2 class="mb-3">Products</h2>
+            <div class="row">
+                <div class="col-md-12">
+                    <ul id="productList" class="list-unstyled">
+                        <!-- Product Items -->
+                        <li th:each="product : ${products}" class="card mb-4">
+                            <div class="product-card p-4 bg-white shadow-sm">
+                                <h5 class="mb-2">
+                                    <i class="fas fa-box-open"></i><span th:text="${product.name}"></span>
+                                </h5>
+                                <p class="text-muted mb-2">
+                                    <small>ID: <span th:text="${product.id}"></span></small>
+                                </p>
+                                <div class="row">
+                                    <!-- Product Details -->
+                                    <div class="col-md-6 mb-3">
+                                        <p class="mb-1">
+                                            <i class="fas fa-tag text-success"></i> 
+                                            <strong>Name:</strong> <span th:text="${product.name}"></span>
+                                        </p>
+                                        <p class="mb-1">
+                                            <i class="fas fa-list-alt text-info"></i>
+                                            <strong>Category:</strong> <span th:text="${product.category}"></span>
+                                        </p>
+                                        <p class="mb-1">
+                                            <i class="fas fa-th-large text-warning"></i>
+                                            <strong>Subcategory:</strong> 
+                                            <span th:text="${product.subcategory}"></span>
+                                        </p>
+                                        <p class="mb-1">
+                                            <i class="fas fa-industry text-dark"></i>
+                                            <strong>Brand:</strong> <span th:text="${product.brand}"></span>
+                                        </p>
+                                    </div>
+            
+                                    <div class="col-md-6 mb-3">
+                                        <p class="mb-1">
+                                            <i class="fas fa-ruler-combined text-primary"></i> 
+                                            <strong>Size:</strong> <span th:text="${product.size}"></span>
+                                        </p>
+                                        <p class="mb-1">
+                                            <i class="fas fa-palette text-primary"></i>
+                                            <strong>Color:</strong> <span th:text="${product.color}"></span>
+                                        </p>
+                                        
+                                        <!-- Display Discounted Price if Available -->
+                                        <p class="mb-1">
+                                            <i class="fas fa-tags text-success"></i>
+                                            <strong>Price:</strong>
+                                            <span th:if="${product.discount.size() > 0}">
+                                                <!-- Calculate the discounted price: original price - (original price * discount rate / 100) -->
+                                                ₹<span th:text="${product.price - (product.price * product.discount[0].rate / 100)}"></span> 
+                                                <small class="text-muted"><s>₹<span th:text="${product.price}"></span></s></small>
+                                                <span class="text-danger">(<span th:text="${product.discount[0].rate}"></span>% off)</span> <!-- Original price struck-through -->
+                                            </span>
+                                            <span th:if="${product.discount.size() == 0}">
+                                                ₹<span th:text="${product.price}"></span> <!-- Original price shown if no discount -->
+                                            </span>
+                                        </p>
+                                    </div>
+                                </div>
+
+                                <!-- View Product Button -->
+                                <a class="btn btn-info btn-sm" th:href="@{/view/product/{id}(id=${product.id})}">
+                                    <i class="fas fa-edit"></i> Edit Product
+                                </a>
+
+                                <!-- Conditional Delete Button (Visible for Authorized Users) -->
+                                <form th:action="@{/delete/product/{id}(id=${product.id})}" method="post" class="d-inline-block" 
+                                      onsubmit="return confirm('Are you sure you want to delete this product?');">
+                                    <input type="hidden" name="_method" value="delete" />
+                                    <button type="submit" th:if="${#authorization.expression('hasAnyAuthority(''ADMIN'', ''MANAGER'')')}"
+                                            class="btn btn-outline-danger btn-sm delete-btn">
+                                        <i class="fas fa-trash-alt"></i> Delete
+                                    </button>
+                                </form>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Back to Home Button -->
+        <div class="row mt-3">
+            <div class="col text-left">
+                <a class="btn btn-secondary" th:href="@{/home}">Home</a>
+            </div>
+            <div class="text-right;">
+                <a th:href="@{/create/product}" class="btn btn-primary">Create Product</a>
+            </div>
+        </div>
     </div>
 
-    <div>
-        <h2>Products</h2>
-        <!-- <input type="number" step="1" maxlength="10" id="searchBar" onkeyup="filterSuppliers()" placeholder="Search for phone numbers.."> -->
-        <ul id="productList">
-            <li th:each="product : ${products}">
-                (ID:<span th:text="${product.id}"></span>) - 
-                <span th:text="${product.name}"></span> 
-                <!-- <span th:text="${supplier.middleName}"></span> 
-                <span th:text="${supplier.LastName}"></span> Mobile: -->
-                <!-- <span class="phoneNo" th:text="${supplier.phoneNo}"></span>  -->
-                <!-- <div><span>Account:</span><span th:if="${#authorization.expression('hasAnyAuthority(''ADMIN'', ''MANAGER'')')}"
-                    th:text="${supplier.account}"></span></div> -->
-                
-                <a class="button" th:href="@{/view/product/{id}(id=${product.id})}">View Product</a>
-                <form th:action="@{/delete/product/{id}(id=${product.id})}" method="post" onsubmit="return confirm('Are you sure you want to delete this product?');">
-                    <input type="hidden" name="_method" value="delete" />
-                    <button th:if="${#authorization.expression('hasAnyAuthority(''ADMIN'', ''MANAGER'')')}"
-                    type="submit">Delete Product</button>
-                </form>
-                
-            </li>
-        </ul>
+    <div class="modal fade" id="productModal" tabindex="-1" role="dialog" aria-labelledby="productModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title text-center text-info" id="productModalLabel">Find Customer</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close" style="color:black;">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body" style="padding-top:0px;">
+                    <div class="container">
+                        <div class="row">
+                            <!-- Column 1: First Name, Middle Name, Last Name -->
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="name">Name</label>
+                                    <input type="text" id="searchBar1" class="form-control mb-3" onkeyup="filterCustomers1()" placeholder="🔍 Search by first name...">
+                                </div>
+                                <div class="form-group">
+                                    <label for="category">Category</label>
+                                    <input type="text" id="searchBar2" class="form-control mb-3" onkeyup="filterCustomers2()" placeholder="🔍 Search by middle name...">
+                                </div>
+                                <div class="form-group">
+                                    <label for="brand">Brand</label>
+                                    <input type="text" id="searchBar3" class="form-control mb-3" onkeyup="filterCustomers3()" placeholder="🔍 Search by last name...">
+                                </div>
+                            </div>
+                            <!-- Column 2: Phone Number, City -->
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="size">Size</label>
+                                    <input type="text" maxlength="10" id="searchBar" class="form-control mb-3" onkeyup="filterCustomers()" placeholder="🔍 Search by phone number...">
+                                </div>
+                                <div class="form-group">
+                                    <label for="color">Color</label>
+                                    <input type="text" id="searchBar4" class="form-control mb-3" onkeyup="filterCustomers4()" placeholder="🔍 Search by color...">
+                                </div>
+                                <div class="form-group">
+                                    <label for="price">Price</label>
+                                    <input type="text" id="searchBar5" class="form-control mb-3" onkeyup="filterCustomers5()" placeholder="🔍 Search by price...">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="product-list mt-4" id="productList">
+                        <strong>Product List</strong>
+                        <div th:each="product : ${products}" class="product-item" th:data-id="${product.id}" th:data-phone="${product.size}" th:data-name="${product.name}" th:data-category="${product.category}" th:data-brand="${product.brand}" th:data-color="${product.color}">
+                            <span th:text="${product.category} + ', ' + ${product.name} + ', ' + ${product.brand} + ' - ' + ${product.size} + ', ' + ${product.color} + ', ₹' + ${product.price}" ></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
     </div>
-
-    <a class="button" th:href="@{/home}">Home</a>
+    <!-- Bootstrap JS and jQuery -->
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="/js/style.js"></script>
+    <script>
+        function filterCustomers() {
+            const input = document.getElementById('searchBar').value.toLowerCase();
+            const productItems = document.getElementsByClassName('product-item'); // Select all product items
+        
+            // Loop through each product item and check if the phone number matches the input
+            for (let i = 0; i < productItems.length; i++) {
+                const size = productItems[i].getAttribute('data-phone').toLowerCase(); // Get the phone number from data attribute
+                if (size.includes(input)) {
+                    productItems[i].style.display = "block"; // Show the matching product
+                } else {
+                    productItems[i].style.display = "none"; // Hide non-matching products
+                }
+            }
+        }
+        function filterCustomers1() {
+            const input = document.getElementById('searchBar1').value.toLowerCase();
+            const productItems = document.getElementsByClassName('product-item'); // Select all product items
+        
+            // Loop through each product item and check if the phone number matches the input
+            for (let i = 0; i < productItems.length; i++) {
+                const name = productItems[i].getAttribute('data-name').toLowerCase(); // Get the phone number from data attribute
+                if (name.includes(input)) {
+                    productItems[i].style.display = "block"; // Show the matching product
+                } else {
+                    productItems[i].style.display = "none"; // Hide non-matching products
+                }
+            }
+        }
+        function filterCustomers2() {
+            const input = document.getElementById('searchBar2').value.toLowerCase();
+            const productItems = document.getElementsByClassName('product-item'); // Select all product items
+        
+            // Loop through each product item and check if the phone number matches the input
+            for (let i = 0; i < productItems.length; i++) {
+                const category = productItems[i].getAttribute('data-category').toLowerCase(); // Get the phone number from data attribute
+                if (category.includes(input)) {
+                    productItems[i].style.display = "block"; // Show the matching product
+                } else {
+                    productItems[i].style.display = "none"; // Hide non-matching products
+                }
+            }
+        }
+        function filterCustomers3() {
+            const input = document.getElementById('searchBar3').value.toLowerCase();
+            const productItems = document.getElementsByClassName('product-item'); // Select all product items
+        
+            // Loop through each product item and check if the phone number matches the input
+            for (let i = 0; i < productItems.length; i++) {
+                const brand = productItems[i].getAttribute('data-brand').toLowerCase(); // Get the phone number from data attribute
+                if (brand.includes(input)) {
+                    productItems[i].style.display = "block"; // Show the matching product
+                } else {
+                    productItems[i].style.display = "none"; // Hide non-matching products
+                }
+            }
+        }
+        function filterCustomers4() {
+            const input = document.getElementById('searchBar4').value.toLowerCase();
+            const productItems = document.getElementsByClassName('product-item'); // Select all product items
+        
+            // Loop through each product item and check if the phone number matches the input
+            for (let i = 0; i < productItems.length; i++) {
+                const color = productItems[i].getAttribute('data-color').toLowerCase(); // Get the phone number from data attribute
+                if (color.includes(input)) {
+                    productItems[i].style.display = "block"; // Show the matching product
+                } else {
+                    productItems[i].style.display = "none"; // Hide non-matching products
+                }
+            }
+        }
+        function filterCustomers5() {
+            const input = document.getElementById('searchBar5').value.toLowerCase();
+            const productItems = document.getElementsByClassName('product-item'); // Select all product items
+        
+            // Loop through each product item and check if the phone number matches the input
+            for (let i = 0; i < productItems.length; i++) {
+                const price = productItems[i].getAttribute('data-price').toLowerCase(); // Get the phone number from data attribute
+                if (price.includes(input)) {
+                    productItems[i].style.display = "block"; // Show the matching product
+                } else {
+                    productItems[i].style.display = "none"; // Hide non-matching products
+                }
+            }
+        }
+        $(document).ready(function() {
+            $('#filterButton').on('click', function() {
+                const filter = $('#productPhone').val().toLowerCase(); // Get the value from the input field and convert to lowercase
+                $('.product-item').each(function() {
+                    const phone = $(this).data('phone').toLowerCase(); // Get the phone number of each product and convert to lowercase
+                    if (phone.includes(filter)) {
+                        $(this).show(); // Show if phone includes the filter
+                    } else {
+                        $(this).hide(); // Hide if it doesn't
+                    }
+                });
+            });
 
-
-
-<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.bundle.min.js"></script>
-<script src="/js/style.js"></script>
-
+            $('.product-item').on('click', function() {
+                const productId = $(this).data('id');
+                $('#productId').val(productId);
+                $('#productModal').modal('hide');
+            });
+        });
+    </script>
 </body>
 </html>
-

@@ -28,7 +28,6 @@ public class SupplierRepository {
             List<Supplier> suppliers = jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(Supplier.class));
             for (Supplier supplier :suppliers){
                 supplier.setEmails(supplierMailRepository.findBySupplierId(supplier.getId()));
-                supplier.setBuys(buyRepository.findBySupplierId((long)supplier.getId()));
             }
             return suppliers;
         } catch (DataAccessException e) {

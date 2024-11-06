@@ -278,6 +278,12 @@ p.brand as brand, p.color as color, round(p.price*(1-coalesce(max(d.rate),0)/100
 from products p left join productDiscount pd on p.id=pd.productId left join discount d on pd.discountId=d.id 
 group by p.id;
 
+create or replace view productD as
+select p.id as id, p.name as name,p.category as category, p.subcategory as subcategory,
+p.brand as brand, p.color as color, p.size as size, round(p.price*(1-coalesce(max(d.rate),0)/100),2) as price
+from products p left join productDiscount pd on p.id=pd.productId left join discount d on pd.discountId=d.id 
+group by p.id;
+
 
 -- index for employees
 create index idx_storeId on employees(storeId);
