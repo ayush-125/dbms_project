@@ -73,6 +73,34 @@
             margin-right: 0;
         }
     </style>
+    <script>
+        function checkForDuplicateEmails() {
+            // Get all email input fields and the save button
+            const emailInputs = document.querySelectorAll(".email-input");
+            const saveButton = document.getElementById("saveButton");
+            const emailValues = [];
+            let hasDuplicate = false;  // Track if there is a duplicate
+
+            emailInputs.forEach((input, index) => {
+                const email = input.value.trim();
+                const errorMessage = input.nextElementSibling; // Error span for this input
+
+                // Check if this email already exists in the array
+                if (email && emailValues.includes(email)) {
+                    errorMessage.style.display = "inline"; // Show error
+                    input.style.borderColor = "red"; // Highlight duplicate field
+                    hasDuplicate = true;  // Mark that a duplicate exists
+                } else {
+                    errorMessage.style.display = "none"; // Hide error if no duplicate
+                    input.style.borderColor = ""; // Reset border color
+                    emailValues.push(email); // Add email to the list if unique
+                }
+            });
+
+            // Disable the save button if there is any duplicate
+            saveButton.disabled = hasDuplicate;
+        }
+    </script>
 </head>
 <body>
     <div th:replace="navbar :: navbar"></div>
@@ -149,9 +177,13 @@
                             <label for="email">Email:</label>
                             <div th:each="mail, iterStat : ${customer.emails}">
                                 <input type="hidden" th:field="*{emails[__${iterStat.index}__].customerId}" class="form-control" th:value="*{id}" />
-                                <input type="email" th:field="*{emails[__${iterStat.index}__].customerEmail}" class="form-control" style="margin:5px;" placeholder="Email" />
+                                <input type="email" th:field="*{emails[__${iterStat.index}__].customerEmail}"
+                                       class="form-control email-input" style="margin:5px;" placeholder="Email"
+                                       data-index="${iterStat.index}" oninput="checkForDuplicateEmails()" />
+                                <span class="error-message" style="color: red; display: none;">Duplicate email!</span>
                             </div>
                         </div>
+                        
 
                     </div>
                 </div>
@@ -160,14 +192,14 @@
                         <a class="btn btn-link btn-outline-info" th:href="@{/home}">Home</a>
                     </div>
                     <div class="col text-right">
-                        <button type="submit" class="btn btn-success">Save</button>
+                        <button type="submit" class="btn btn-success" id="saveButton">Save</button>
                     </div>
                 </div>
             </form>
 
-            <div th:if="${errorMessage}">
+            <!-- <div th:if="${errorMessage}">
                 <p th:text="${errorMessage}" style="color: red;"></p>
-            </div>
+            </div> -->
         
         </div>
     </div>
