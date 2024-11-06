@@ -30,7 +30,7 @@ public class ProductRepository {
             for (Product product : products) {
                 // SQL to join productDiscount and discount tables to get active discounts
                 String discountSql = "SELECT d.* FROM productdiscount pd JOIN discount d ON pd.discountid = d.id " +
-                                     "WHERE pd.productid = ? AND d.dos <= ? AND d.doe >= ?";
+                                     "WHERE pd.productid = ? AND d.dos <= ? AND d.doe >= ? order by d.rate desc";
                 
                 List<Discount> activeDiscounts = jdbcTemplate.query(
                     discountSql,
@@ -49,7 +49,6 @@ public class ProductRepository {
             throw new CustomDatabaseException("Error querying products " + e.getMessage(), e);
         }
     }
-
     public List<Product> findByStoreId(Long storeId){
         try {
             String sql="select * from productD where id in (select distinct productId from inventory where storeId=? )";

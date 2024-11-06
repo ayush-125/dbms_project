@@ -3,6 +3,8 @@ package com.store_management_system.sms.controller;
 import java.time.LocalDate;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -14,6 +16,7 @@ import com.store_management_system.sms.repository.CustomerRepository;
 import com.store_management_system.sms.repository.InventoryRepository;
 import com.store_management_system.sms.repository.OrderRepository;
 import com.store_management_system.sms.repository.ReturnRepository;
+import com.store_management_system.sms.service.UserService;
 
 @Controller
 public class ReturnController {
@@ -26,8 +29,13 @@ public class ReturnController {
     @Autowired
     private CustomerRepository customerRepository;
 
+    @Autowired
+    private UserService userService;
+
     @GetMapping("return/create/{id}")
-    public String createReturn(Model model,@PathVariable Long id){
+    public String createReturn(Model model,@PathVariable Long id, @AuthenticationPrincipal UserDetails userDetails){
+        User currentUser = userService.getUserByUsername(userDetails.getUsername());
+        model.addAttribute("currentUser", currentUser);
         try {
            Return return1 =new Return();
            return1.setOrderId(id);
@@ -43,7 +51,9 @@ public class ReturnController {
         
     }
     @PostMapping("return/create")
-    public String postCreateReturn(Model model,@ModelAttribute Return return1){
+    public String postCreateReturn(Model model,@ModelAttribute Return return1, @AuthenticationPrincipal UserDetails userDetails){
+        User currentUser = userService.getUserByUsername(userDetails.getUsername());
+        model.addAttribute("currentUser", currentUser);
         try {
             
             Long q=return1.getQuantity();
@@ -72,7 +82,9 @@ public class ReturnController {
     }
 
     @GetMapping("return/view/{id}")
-    public String viewReturn(Model model,@PathVariable Long id){
+    public String viewReturn(Model model,@PathVariable Long id, @AuthenticationPrincipal UserDetails userDetails){
+        User currentUser = userService.getUserByUsername(userDetails.getUsername());
+        model.addAttribute("currentUser", currentUser);
         try {
             Return return1=returnRepository.findByOrderId(id);
             model.addAttribute("return1", return1);
@@ -86,7 +98,9 @@ public class ReturnController {
     }
 
     @PostMapping("update/return/{id}")
-    public String updateReturn(Model model,@PathVariable Long id,@ModelAttribute Return return1){
+    public String updateReturn(Model model,@PathVariable Long id,@ModelAttribute Return return1, @AuthenticationPrincipal UserDetails userDetails){
+        User currentUser = userService.getUserByUsername(userDetails.getUsername());
+        model.addAttribute("currentUser", currentUser);
         try {
             Return returnold=returnRepository.findByOrderId(return1.getOrderId());
             Long qold=returnold.getQuantity();
@@ -117,7 +131,9 @@ public class ReturnController {
     }
 
     @PostMapping("/delete/return/{id}")
-    public String deleteReturn(Model model,@PathVariable Long id) {
+    public String deleteReturn(Model model,@PathVariable Long id, @AuthenticationPrincipal UserDetails userDetails) {
+        User currentUser = userService.getUserByUsername(userDetails.getUsername());
+        model.addAttribute("currentUser", currentUser);
         try {
             Return return1=returnRepository.findByOrderId(id);
             Order order=orderRepository.findById(return1.getOrderId());
