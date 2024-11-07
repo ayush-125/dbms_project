@@ -50,6 +50,22 @@ public class EmployeeRepository {
             // return null;
         }
     }
+    public Employee findByPhoneNo(Long id) {
+        try {
+            String sql = "SELECT * FROM employees WHERE phoneNo = ?";
+            List<Employee> employees = jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(Employee.class), id);
+            if (employees.isEmpty()) {
+                return null;
+            }
+            Employee employee = employees.get(0);
+            
+            return employee;
+        } catch (DataAccessException e) {
+            System.err.println("Error querying employee by phone no: " + e.getMessage());
+            throw new CustomDatabaseException("Error querying  employee with phone no:"+id,e);
+            // return null;
+        }
+    }
 
     public void save(Employee employee) {
         try {
@@ -158,4 +174,5 @@ public class EmployeeRepository {
             throw new CustomDatabaseException("Error querying managers for store ID: " + storeId, e);
         }
     }
+
 }
