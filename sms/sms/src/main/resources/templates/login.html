@@ -50,7 +50,7 @@
     <div class="container bg-">
         <h1>Welcome to the Store of VastraVihar</h1>
         <p>Dear member, login with your details</p>
-        <div th:if="${param.error}" class="alert alert-danger" th:text="${param.error}"></div>
+        <div th:if="${param.error}" class="alert alert-danger"> Invalid username and password</div>
         <form th:action="@{/login}" method="post">
             <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
             <div class="form-group">
