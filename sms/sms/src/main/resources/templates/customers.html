@@ -114,7 +114,7 @@
                         </span>
                     
                         <!-- Payment Amount Input (Same Line as Account Display) -->
-                        <form action="#" th:action="@{/customer/{id}/pay(id=${customer.id})}" method="post" class="d-inline ml-2">
+                        <form th:if="${currentUser.roles[0].name == 'MANAGER' || currentUser.roles[0].name=='ADMIN'}" action="#" th:action="@{/customer/{id}/pay(id=${customer.id})}" method="post" class="d-inline ml-2">
                             <div class="input-group input-group-sm" style="max-width: 200px;">
                                 <input type="number" class="form-control" name="paymentAmount" required placeholder="Amount">
                                 <div class="input-group-append">
