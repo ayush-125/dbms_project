@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import com.store_management_system.sms.model.*;
+import com.store_management_system.sms.repository.EmployeeRepository;
 import com.store_management_system.sms.service.*;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -26,7 +27,10 @@ public class EmployeeController {
     @Autowired
     private EmployeeService employeeService;
     @Autowired
+    private EmployeeRepository employeeRepository;
+    @Autowired
     private StoreService storeService;
+
 
     @GetMapping("/view/employee/{id}")
 public String viewEmployeeDetails(Model model, @AuthenticationPrincipal UserDetails userDetails, @PathVariable Long id) {
@@ -82,7 +86,13 @@ public String updateEmployee(@AuthenticationPrincipal UserDetails userDetails, @
         } else {
             return "error/403"; 
         }
-        
+        Long phone_no = employee.getPhoneNo();
+        if(phone_no!=null && (employeeRepository.findByPhoneNo(phone_no)!=null)){
+            model.addAttribute("errorMessage", "Duplicate phone number");
+            model.addAttribute("employee", employee);
+            return "createEmployee";
+
+        }
         
         return "redirect:/view/employee/" + id;
     } catch (Exception e) {
@@ -147,6 +157,14 @@ public String createEmployee(@AuthenticationPrincipal UserDetails userDetails,@M
         }
         if(currentUser.getRoleId().equals(1)){
             return "redirect:/admin/stores";
+        }
+
+        Long phone_no = employee.getPhoneNo();
+        if(phone_no!=null && (employeeRepository.findByPhoneNo(phone_no)!=null)){
+            model.addAttribute("errorMessage", "Duplicate phone number");
+            model.addAttribute("employee", employee);
+            return "createEmployee";
+
         }
         return "redirect:/employees"; 
     } catch (Exception e) {

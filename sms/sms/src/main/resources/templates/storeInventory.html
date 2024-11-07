@@ -41,6 +41,7 @@
                     <h5 class="text-muted mb-3">Products in this Store</h5>
                     <div th:if="${store.products.size() > 0}">
                         <div th:each="product : ${store.products}" class="card mb-3">
+
                             <div class="product-card p-4 bg-white shadow-sm">
                                 <h5 class="mb-2">
                                     <i class="fas fa-box-open"></i><span th:text="${product.name}"></span>
@@ -96,6 +97,7 @@
                                         </p>
                                     </div>
                                 </div>
+
                                 <div th:if="${product.inventories.size() == 1}">
                                     <h6 class="text-dark mt-4" style="font-size:20px;">Inventory Details</h6>
                                     <div class="d-flex align-items-center" style="margin-bottom:10px;">
@@ -124,6 +126,7 @@
                                     </div>
                                 </div>
                             </div>
+
                     </div>
                     <div th:if="${store.products.size() == 0}" class="text-muted">
                         No products found for this store.

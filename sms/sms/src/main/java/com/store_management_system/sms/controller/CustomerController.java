@@ -87,10 +87,17 @@ public class CustomerController {
             if(customer.getEmails()!=null){
                 customer.getEmails().removeIf(email -> email.getCustomerEmail() == null || email.getCustomerEmail().isEmpty());
             }
+            Long phone_no = customer.getPhoneNo();
+            if(phone_no!=null && customerRepository.findByPhoneNo(phone_no)!=null){
+                model.addAttribute("errorMessage", "Duplicate phone number");
+                model.addAttribute("customer", customer);
+                return "createCustomer";
+            }
             customerRepository.save(customer);
             return "redirect:/customers";
         } catch (Exception e) {
-            model.addAttribute("errorMessage", "Failed to create Customers. "+e.getMessage());
+            // model.addAttribute("errorMessage", "Failed to create Customers. "+e.getMessage());
+            model.addAttribute("errorMessage", "Failed to create Customers. "+"Duplicate value of phone number or email");
             return "createCustomer";
         }
     }
@@ -131,7 +138,12 @@ public class CustomerController {
                 if(customer.getEmails()!=null){
                     customer.getEmails().removeIf(email -> email.getCustomerEmail() == null || email.getCustomerEmail().isEmpty());
                 }
-                
+                Long phone_no = customer.getPhoneNo();
+                if(phone_no!=null && customerRepository.findByPhoneNo(phone_no)!=null){
+                    model.addAttribute("errorMessage", "Duplicate phone number");
+                    model.addAttribute("customer", customer);
+                    return "createCustomer";
+                }
                 customerRepository.save(customer);
             }else{
                 return "error/403";
