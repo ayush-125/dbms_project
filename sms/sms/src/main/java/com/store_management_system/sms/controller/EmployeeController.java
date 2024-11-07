@@ -82,17 +82,18 @@ public String updateEmployee(@AuthenticationPrincipal UserDetails userDetails, @
                     return "createEmployee";
                 }
                 }
+                Long phone_no = employee.getPhoneNo();
+                if(phone_no!=null && (employeeRepository.findByPhoneNo(phone_no)!=null)){
+                    model.addAttribute("errorMessage", "Duplicate phone number");
+                    model.addAttribute("employee", employee);
+                    return "createEmployee";
+
+                }
                 employeeService.saveEmployee(employee);
         } else {
             return "error/403"; 
         }
-        Long phone_no = employee.getPhoneNo();
-        if(phone_no!=null && (employeeRepository.findByPhoneNo(phone_no)!=null)){
-            model.addAttribute("errorMessage", "Duplicate phone number");
-            model.addAttribute("employee", employee);
-            return "createEmployee";
-
-        }
+        
         
         return "redirect:/view/employee/" + id;
     } catch (Exception e) {
@@ -150,7 +151,14 @@ public String createEmployee(@AuthenticationPrincipal UserDetails userDetails,@M
                     return "createEmployee";
                 }
                 }
-                
+                    
+                Long phone_no = employee.getPhoneNo();
+                if(phone_no!=null && (employeeRepository.findByPhoneNo(phone_no)!=null)){
+                    model.addAttribute("errorMessage", "Duplicate phone number");
+                    model.addAttribute("employee", employee);
+                    return "createEmployee";
+
+                }
                 employeeService.saveEmployee(employee);
         } else  {
             return "error/403"; 
@@ -159,13 +167,6 @@ public String createEmployee(@AuthenticationPrincipal UserDetails userDetails,@M
             return "redirect:/admin/stores";
         }
 
-        Long phone_no = employee.getPhoneNo();
-        if(phone_no!=null && (employeeRepository.findByPhoneNo(phone_no)!=null)){
-            model.addAttribute("errorMessage", "Duplicate phone number");
-            model.addAttribute("employee", employee);
-            return "createEmployee";
-
-        }
         return "redirect:/employees"; 
     } catch (Exception e) {
         model.addAttribute("errorMessage", "Something went wrong. Please try again later: " + e.getMessage());

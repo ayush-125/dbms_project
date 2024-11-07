@@ -143,17 +143,17 @@ public class SupplierController {
             model.addAttribute("currentUser", currentUser);
             if(currentUser.getRoleId().equals(  1L) || currentUser.getRoleId().equals(2L)){
                 supplier.getEmails().removeIf(email -> email.getSupplierEmail() == null || email.getSupplierEmail().isEmpty());
-        
+                Long phone_no = supplier.getPhoneNo();
+                if(phone_no!=null && supplierRepository.findByPhoneNo(phone_no)!=null){
+                    model.addAttribute("errorMessage", "Duplicate phone number");
+                    model.addAttribute("supplier", supplier);
+                    return "createSupplier";
+                }
                 supplierRepository.save(supplier);
             }else{
                 return "error/403";
             }
-            Long phone_no = supplier.getPhoneNo();
-            if(phone_no!=null && supplierRepository.findByPhoneNo(phone_no)!=null){
-                model.addAttribute("errorMessage", "Duplicate phone number");
-                model.addAttribute("supplier", supplier);
-                return "createSupplier";
-            }
+            
             return "redirect:/view/supplier/{id}";
         } catch (Exception e) {
             model.addAttribute("errorMessage", "Failed to update supplier details.."+e.getMessage());
