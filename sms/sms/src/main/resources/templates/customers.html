@@ -110,7 +110,6 @@
                         <i class="fas fa-wallet icon text-warning" style="margin-right:5px;"></i>
                         <span class="bg-info text-white p-1 rounded shadow-sm"> ₹
                             <span class="bg-info text-white p-1 rounded shadow-sm" 
-                                  th:if="${#authorization.expression('hasAnyAuthority(''ADMIN'', ''MANAGER'')')}" 
                                   th:text="${customer.account}"></span>
                         </span>
                     
